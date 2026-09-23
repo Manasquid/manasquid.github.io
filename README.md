@@ -1,2 +1,1 @@
-# squidcs.github.io
-Online Character Sheet
+# Squid's Character Sheet
