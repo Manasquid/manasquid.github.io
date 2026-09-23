@@ -80,6 +80,15 @@
     h1 { margin-bottom: .45rem; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.05; }
     .lede { margin: 0; color: var(--muted); }
     .sheet-actions { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .storage-panel { margin-bottom: 1.25rem; }
+    .storage-tools { display: flex; flex-wrap: wrap; align-items: end; gap: .65rem; }
+    .storage-tools .field { min-width: min(100%, 18rem); flex: 1 1 16rem; }
+    .saved-list { display: grid; gap: .65rem; margin-top: 1rem; }
+    .saved-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
+    .saved-item strong { display: block; font-size: .9rem; }
+    .saved-item small { color: var(--muted); }
+    .saved-actions { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .saved-empty { color: var(--muted); font-size: .85rem; }
 
     .sheet { display: grid; gap: 1.25rem; }
     .panel {
@@ -184,7 +193,7 @@
     @media print {
       :root { color-scheme: light; }
       body { background: #fff; color: #111; }
-      .topbar, .sheet-actions, .feature-actions, .add-feature, .feature-editor, footer { display: none !important; }
+      .topbar, .sheet-actions, .feature-actions, .add-feature, .feature-editor, .storage-panel, footer { display: none !important; }
       .shell { width: 100%; }
       main { padding: 0; }
       .panel { box-shadow: none; break-inside: avoid; }
@@ -200,6 +209,7 @@
       <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ 5.5e sheet maker</span></a>
       <div class="top-actions">
         <span class="status" id="save-status" role="status">Ready to edit</span>
+        <button class="button primary" id="save-character" type="button">Save character</button>
         <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
         <button class="button primary" id="print-sheet" type="button">Print / save PDF</button>
       </div>
@@ -216,6 +226,24 @@
         <a class="button" href="#features">Jump to features</a>
       </div>
     </div>
+
+    <section class="panel storage-panel" aria-labelledby="storage-heading">
+      <div class="panel-heading">
+        <div><h2 id="storage-heading">Saved characters</h2><p>Save sheets in this browser or move them with a JSON file.</p></div>
+        <div class="storage-tools">
+          <button class="button" id="export-sheet" type="button">Export JSON</button>
+          <button class="button" id="import-sheet" type="button">Import JSON</button>
+          <input class="sr-only" id="import-file" type="file" accept="application/json,.json">
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="storage-tools">
+          <div class="field"><label for="save-name">Save as</label><input id="save-name" placeholder="e.g. Manasquid — level 3"></div>
+          <button class="button primary" id="save-named-sheet" type="button">Save snapshot</button>
+        </div>
+        <div class="saved-list" id="saved-list" aria-live="polite"></div>
+      </div>
+    </section>
 
     <form class="sheet" id="character-sheet">
       <section class="panel" aria-labelledby="identity-heading">
@@ -325,11 +353,17 @@
       const emptyState = document.querySelector("#empty-state");
       const template = document.querySelector("#feature-template");
       const saveStatus = document.querySelector("#save-status");
+      const storageKey = "manasquid.character-sheets";
+      const draftKey = "manasquid.character-draft";
 
       const setStatus = (message) => {
         saveStatus.textContent = message;
         window.clearTimeout(setStatus.timer);
         setStatus.timer = window.setTimeout(() => { saveStatus.textContent = "Ready to edit"; }, 1800);
+      };
+
+      const persistDraft = () => {
+        try { localStorage.setItem(draftKey, JSON.stringify(collectSheet())); } catch { setStatus("Browser storage unavailable"); }
       };
 
       const updateModifiers = () => {
@@ -383,6 +417,7 @@
         card.querySelector(".remove-feature").addEventListener("click", () => {
           card.remove();
           updateEmptyState();
+          persistDraft();
           setStatus("Feature removed");
         });
         featureList.appendChild(fragment);
@@ -405,6 +440,69 @@
         emptyState.hidden = featureList.querySelectorAll(".feature-card").length > 0;
       };
 
+      const collectSheet = () => {
+        const fields = {};
+        sheet.querySelectorAll("[name]").forEach((input) => {
+          fields[input.name] = input.value;
+        });
+        const features = [...featureList.querySelectorAll(".feature-card")].map((card) => ({
+          title: card.dataset.title,
+          description: card.dataset.description,
+          source: card.dataset.source,
+          uses: card.dataset.uses
+        }));
+        return { version: 1, fields, features };
+      };
+
+      const applySheet = (data) => {
+        if (!data || typeof data !== "object" || !data.fields || !Array.isArray(data.features)) throw new Error("Invalid character sheet");
+        sheet.querySelectorAll("[name]").forEach((input) => {
+          if (Object.prototype.hasOwnProperty.call(data.fields, input.name)) input.value = data.fields[input.name];
+        });
+        featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
+        data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
+        updateModifiers();
+        updateEmptyState();
+      };
+
+      const readSavedSheets = () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+          return Array.isArray(saved) ? saved : [];
+        } catch {
+          return [];
+        }
+      };
+
+      const writeSavedSheets = (saved) => localStorage.setItem(storageKey, JSON.stringify(saved));
+
+      const renderSavedSheets = () => {
+        const savedList = document.querySelector("#saved-list");
+        const saved = readSavedSheets();
+        savedList.replaceChildren();
+        if (!saved.length) {
+          savedList.innerHTML = '<span class="saved-empty">No saved characters yet. Save a snapshot to keep a version here.</span>';
+          return;
+        }
+        saved.forEach((entry) => {
+          const item = document.createElement("div");
+          item.className = "saved-item";
+          const date = new Date(entry.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+          item.innerHTML = `<div><strong></strong><small>Saved ${date}</small></div><div class="saved-actions"><button class="button load-saved" type="button">Load</button><button class="button subtle delete-saved" type="button">Delete</button></div>`;
+          item.querySelector("strong").textContent = entry.name;
+          item.querySelector(".load-saved").addEventListener("click", () => {
+            applySheet(entry.sheet);
+            setStatus(`Loaded ${entry.name}`);
+          });
+          item.querySelector(".delete-saved").addEventListener("click", () => {
+            writeSavedSheets(readSavedSheets().filter((savedEntry) => savedEntry.id !== entry.id));
+            renderSavedSheets();
+            setStatus("Saved character deleted");
+          });
+          savedList.appendChild(item);
+        });
+      };
+
       document.querySelector("#add-feature").addEventListener("click", () => {
         openFeatureEditor();
       });
@@ -422,21 +520,70 @@
           setStatus("Feature added");
         }
         closeFeatureEditor();
+        persistDraft();
       });
       document.querySelector("#cancel-feature").addEventListener("click", () => {
         closeFeatureEditor();
       });
+      document.querySelector("#save-character").addEventListener("click", () => {
+        document.querySelector("#save-name").focus();
+        document.querySelector("#storage-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      document.querySelector("#save-named-sheet").addEventListener("click", () => {
+        const nameInput = document.querySelector("#save-name");
+        const name = nameInput.value.trim() || sheet.querySelector('[name="character-name"]').value.trim() || "Unnamed character";
+        const saved = readSavedSheets();
+        const existing = saved.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
+        const id = existing?.id || (window.crypto?.randomUUID ? window.crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
+        const entry = { id, name, updatedAt: new Date().toISOString(), sheet: collectSheet() };
+        writeSavedSheets([entry, ...saved.filter((savedEntry) => savedEntry.id !== entry.id)]);
+        nameInput.value = "";
+        renderSavedSheets();
+        setStatus(`Saved ${name}`);
+      });
+      document.querySelector("#export-sheet").addEventListener("click", () => {
+        const name = sheet.querySelector('[name="character-name"]').value.trim() || "character-sheet";
+        const blob = new Blob([JSON.stringify(collectSheet(), null, 2)], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "character-sheet"}.json`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        setStatus("Sheet exported");
+      });
+      document.querySelector("#import-sheet").addEventListener("click", () => document.querySelector("#import-file").click());
+      document.querySelector("#import-file").addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        try {
+          applySheet(JSON.parse(await file.text()));
+          persistDraft();
+          setStatus("Sheet imported");
+        } catch {
+          setStatus("Import failed: invalid sheet file");
+        }
+        event.target.value = "";
+      });
       document.querySelectorAll(".score").forEach((input) => input.addEventListener("input", updateModifiers));
+      sheet.addEventListener("input", () => {
+        persistDraft();
+      });
       document.querySelector("#print-sheet").addEventListener("click", () => window.print());
       document.querySelector("#clear-sheet").addEventListener("click", () => {
         if (!window.confirm("Clear all fields and remove every feature?")) return;
         sheet.reset();
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         closeFeatureEditor();
+        localStorage.removeItem(draftKey);
         updateModifiers();
         updateEmptyState();
         setStatus("Sheet cleared");
       });
+      try {
+        const draft = JSON.parse(localStorage.getItem(draftKey) || "null");
+        if (draft) applySheet(draft);
+      } catch { setStatus("Could not restore browser draft"); }
+      renderSavedSheets();
       updateModifiers();
     })();
   </script>
