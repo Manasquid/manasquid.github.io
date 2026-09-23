@@ -172,6 +172,16 @@
     .feature-editor-actions { display: flex; justify-content: end; gap: .55rem; }
 
     .notes { min-height: 10rem; }
+    .proficiency-table { display: grid; gap: .45rem; }
+    .skill-row { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 2.2rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
+    .skill-row .skill-name { font-weight: 650; }
+    .skill-row .skill-ability { color: var(--muted); font-size: .8rem; }
+    .skill-row input[type="number"] { height: 2.2rem; }
+    .skill-row input[type="checkbox"] { width: 1.1rem; height: 1.1rem; justify-self: center; accent-color: var(--accent); }
+    .proficiency-header { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 2.2rem 2.2rem; gap: .55rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .proficiency-header span:nth-child(n+3) { text-align: center; }
+    .proficiency-actions { display: flex; justify-content: end; margin-top: .8rem; }
+    .proficiency-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     footer { padding: 1.5rem 0 2.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
     :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
@@ -190,6 +200,8 @@
       .field, .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
+      .skill-row, .proficiency-header { grid-template-columns: minmax(7rem, 1fr) 5.5rem 3.5rem 2rem 2rem; }
+      .proficiency-fields { grid-template-columns: 1fr; }
     }
     @media print {
       :root { color-scheme: light; }
@@ -321,12 +333,19 @@
         </div>
       </section>
 
-      <section class="panel" aria-labelledby="notes-heading">
+      <section class="panel" aria-labelledby="proficiencies-heading">
         <div class="panel-heading">
-          <div><h2 id="notes-heading">Notes &amp; proficiencies</h2><p>Keep the details you reference between turns.</p></div>
+          <div><h2 id="proficiencies-heading">Proficiencies</h2><p>Track standard skills and add custom skills for any setting.</p></div>
         </div>
         <div class="panel-body">
-          <label class="sr-only" for="notes">Notes and proficiencies</label>
+          <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>Bonus</span><span>Proficient</span><span></span></div>
+          <div class="proficiency-table" id="skill-list"></div>
+          <div class="proficiency-actions"><button class="button" id="add-skill" type="button">+ Add custom skill</button></div>
+          <div class="proficiency-fields">
+            <div class="field"><label for="weapon-proficiencies">Weapon proficiencies</label><textarea id="weapon-proficiencies" name="weapon-proficiencies" placeholder="Simple weapons, martial weapons, hand crossbows..."></textarea></div>
+            <div class="field"><label for="tool-proficiencies">Tool proficiencies</label><textarea id="tool-proficiencies" name="tool-proficiencies" placeholder="Thieves' tools, tinker's tools, vehicles..."></textarea></div>
+          </div>
+          <label class="sr-only" for="notes">General notes</label>
           <textarea class="notes" id="notes" name="notes" placeholder="Saving throws, skills, languages, equipment, spells, personality, or campaign notes..."></textarea>
         </div>
       </section>
@@ -348,6 +367,17 @@
       </div>
     </article>
   </template>
+  <template id="skill-template">
+    <div class="skill-row">
+      <input class="skill-name" aria-label="Skill name" placeholder="Custom skill">
+      <select class="skill-ability" aria-label="Skill ability">
+        <option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option>
+      </select>
+      <input class="skill-bonus" type="number" aria-label="Skill bonus" placeholder="+0">
+      <input class="skill-proficient" type="checkbox" aria-label="Proficient">
+      <button class="icon-button remove-skill" type="button" aria-label="Remove skill">×</button>
+    </div>
+  </template>
 
   <script>
     (() => {
@@ -355,6 +385,8 @@
       const featureList = document.querySelector("#feature-list");
       const emptyState = document.querySelector("#empty-state");
       const template = document.querySelector("#feature-template");
+      const skillTemplate = document.querySelector("#skill-template");
+      const skillList = document.querySelector("#skill-list");
       const saveStatus = document.querySelector("#save-status");
       const storageKey = "manasquid.character-sheets";
       const draftKey = "manasquid.character-draft";
@@ -443,6 +475,36 @@
         emptyState.hidden = featureList.querySelectorAll(".feature-card").length > 0;
       };
 
+      const standardSkills = [
+        ["Acrobatics", "DEX"], ["Animal Handling", "WIS"], ["Arcana", "INT"], ["Athletics", "STR"],
+        ["Deception", "CHA"], ["History", "INT"], ["Insight", "WIS"], ["Intimidation", "CHA"],
+        ["Investigation", "INT"], ["Medicine", "WIS"], ["Nature", "INT"], ["Perception", "WIS"],
+        ["Performance", "CHA"], ["Persuasion", "CHA"], ["Religion", "INT"], ["Sleight of Hand", "DEX"],
+        ["Stealth", "DEX"], ["Survival", "WIS"]
+      ];
+
+      const addSkill = (name = "Custom skill", ability = "INT", bonus = "", proficient = false, removable = true) => {
+        const row = skillTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".skill-name").value = name;
+        row.querySelector(".skill-ability").value = ability;
+        row.querySelector(".skill-bonus").value = bonus;
+        row.querySelector(".skill-proficient").checked = proficient;
+        row.querySelector(".remove-skill").hidden = !removable;
+        row.querySelector(".remove-skill").addEventListener("click", () => {
+          row.remove();
+          persistDraft();
+        });
+        skillList.appendChild(row);
+      };
+
+      const collectSkills = () => [...skillList.querySelectorAll(".skill-row")].map((row) => ({
+        name: row.querySelector(".skill-name").value,
+        ability: row.querySelector(".skill-ability").value,
+        bonus: row.querySelector(".skill-bonus").value,
+        proficient: row.querySelector(".skill-proficient").checked,
+        removable: !row.querySelector(".remove-skill").hidden
+      }));
+
       const collectSheet = () => {
         const fields = {};
         sheet.querySelectorAll("[name]").forEach((input) => {
@@ -454,7 +516,7 @@
           source: card.dataset.source,
           uses: card.dataset.uses
         }));
-        return { version: 1, fields, features };
+        return { version: 1, fields, features, skills: collectSkills() };
       };
 
       const applySheet = (data) => {
@@ -471,6 +533,9 @@
         });
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
+        skillList.replaceChildren();
+        (Array.isArray(data.skills) ? data.skills : standardSkills.map(([name, ability]) => ({ name, ability, bonus: "", proficient: false, removable: false })))
+          .forEach((skill) => addSkill(skill.name, skill.ability, skill.bonus, skill.proficient, skill.removable));
         updateModifiers();
         updateEmptyState();
       };
@@ -523,6 +588,11 @@
           "",
           "FEATURES & TRAITS",
           ...data.features.flatMap((feature) => [feature.title, `${feature.source} · ${feature.uses}`, feature.description, ""]),
+          "SKILL PROFICIENCIES",
+          ...(data.skills || []).map((skill) => `${skill.name}: ${skill.ability} ${skill.bonus || "+0"}${skill.proficient ? " (Proficient)" : ""}`),
+          `Weapon proficiencies: ${fields["weapon-proficiencies"] || "—"}`,
+          `Tool proficiencies: ${fields["tool-proficiencies"] || "—"}`,
+          "",
           "NOTES",
           ...(fields.notes || "—").split(/\r?\n/)
         ];
@@ -599,6 +669,11 @@
       document.querySelector("#add-feature").addEventListener("click", () => {
         openFeatureEditor();
       });
+      document.querySelector("#add-skill").addEventListener("click", () => {
+        addSkill();
+        skillList.lastElementChild.querySelector(".skill-name").focus();
+        persistDraft();
+      });
       document.querySelector("#save-feature").addEventListener("click", () => {
         if (editingCard) {
           updateFeatureCard(editingCard);
@@ -666,6 +741,8 @@
         if (!window.confirm("Clear all fields and remove every feature?")) return;
         sheet.reset();
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
+        skillList.replaceChildren();
+        standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false));
         closeFeatureEditor();
         localStorage.removeItem(draftKey);
         updateModifiers();
@@ -675,6 +752,7 @@
       try {
         const draft = JSON.parse(localStorage.getItem(draftKey) || "null");
         if (draft) applySheet(draft);
+        else standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false));
       } catch { setStatus("Could not restore browser draft"); }
       renderSavedSheets();
       updateModifiers();
