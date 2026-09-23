@@ -154,6 +154,12 @@
     .feature-actions { display: flex; align-items: start; gap: .35rem; }
     .remove-feature { color: var(--danger); }
     .empty-state { padding: 2rem 1rem; border: 1px dashed var(--line-strong); border-radius: .5rem; color: var(--muted); text-align: center; }
+    .feature-editor { display: grid; gap: 1rem; margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--accent); border-radius: .55rem; background: var(--accent-soft); }
+    .feature-editor[hidden] { display: none; }
+    .feature-editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+    .feature-editor .field { grid-column: auto; }
+    .feature-editor .field.full { grid-column: 1 / -1; }
+    .feature-editor-actions { display: flex; justify-content: end; gap: .55rem; }
 
     .notes { min-height: 10rem; }
     footer { padding: 1.5rem 0 2.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
@@ -178,7 +184,7 @@
     @media print {
       :root { color-scheme: light; }
       body { background: #fff; color: #111; }
-      .topbar, .sheet-actions, .feature-actions, .add-feature, footer { display: none !important; }
+      .topbar, .sheet-actions, .feature-actions, .add-feature, .feature-editor, footer { display: none !important; }
       .shell { width: 100%; }
       main { padding: 0; }
       .panel { box-shadow: none; break-inside: avoid; }
@@ -266,6 +272,18 @@
           <button class="button primary add-feature" id="add-feature" type="button">+ Add feature</button>
         </div>
         <div class="panel-body">
+          <div class="feature-editor" id="feature-editor" hidden>
+            <div class="feature-editor-grid">
+              <div class="field"><label for="feature-name">Feature name</label><input id="feature-name" placeholder="e.g. Action Surge"></div>
+              <div class="field"><label for="feature-source">Source</label><input id="feature-source" placeholder="e.g. Fighter, species, feat"></div>
+              <div class="field full"><label for="feature-description">Description</label><textarea id="feature-description" rows="3" placeholder="What does this feature do? Include its activation, range, and effect."></textarea></div>
+              <div class="field"><label for="feature-uses">Uses / recharge</label><input id="feature-uses" placeholder="e.g. 1 / Short Rest"></div>
+            </div>
+            <div class="feature-editor-actions">
+              <button class="button subtle" id="cancel-feature" type="button">Cancel</button>
+              <button class="button primary" id="save-feature" type="button">Save feature</button>
+            </div>
+          </div>
           <div class="feature-list" id="feature-list" aria-live="polite">
             <div class="empty-state" id="empty-state">No features yet. Add your first feature to start building the sheet.</div>
           </div>
@@ -324,7 +342,33 @@
         });
       };
 
-      const makeFeature = (title = "New feature", description = "Describe what this feature does and when to use it.", source = "Class feature", uses = "Always available") => {
+      const featureEditor = document.querySelector("#feature-editor");
+      const featureName = document.querySelector("#feature-name");
+      const featureDescription = document.querySelector("#feature-description");
+      const featureSource = document.querySelector("#feature-source");
+      const featureUses = document.querySelector("#feature-uses");
+      let editingCard = null;
+
+      const openFeatureEditor = (card = null) => {
+        editingCard = card;
+        featureName.value = card ? card.dataset.title : "";
+        featureDescription.value = card ? card.dataset.description : "";
+        featureSource.value = card ? card.dataset.source : "";
+        featureUses.value = card ? card.dataset.uses : "";
+        featureEditor.hidden = false;
+        featureName.focus();
+      };
+
+      const closeFeatureEditor = () => {
+        editingCard = null;
+        featureEditor.hidden = true;
+        featureName.value = "";
+        featureDescription.value = "";
+        featureSource.value = "";
+        featureUses.value = "";
+      };
+
+      const makeFeature = (title, description, source, uses) => {
         const fragment = template.content.cloneNode(true);
         const card = fragment.querySelector(".feature-card");
         card.dataset.title = title;
@@ -335,7 +379,7 @@
         card.querySelector(".feature-description").textContent = description;
         card.querySelector(".feature-source").textContent = source;
         card.querySelector(".feature-uses").textContent = uses;
-        card.querySelector(".edit-feature").addEventListener("click", () => editFeature(card));
+        card.querySelector(".edit-feature").addEventListener("click", () => openFeatureEditor(card));
         card.querySelector(".remove-feature").addEventListener("click", () => {
           card.remove();
           updateEmptyState();
@@ -346,24 +390,15 @@
         return featureList.lastElementChild;
       };
 
-      const editFeature = (card) => {
-        const title = window.prompt("Feature name", card.dataset.title);
-        if (title === null) return;
-        const description = window.prompt("Feature description", card.dataset.description);
-        if (description === null) return;
-        const source = window.prompt("Source (class, species, feat, or other)", card.dataset.source);
-        if (source === null) return;
-        const uses = window.prompt("Uses or recharge", card.dataset.uses);
-        if (uses === null) return;
-        card.dataset.title = title.trim() || "Untitled feature";
-        card.dataset.description = description.trim() || "No description added.";
-        card.dataset.source = source.trim() || "Other";
-        card.dataset.uses = uses.trim() || "Always available";
+      const updateFeatureCard = (card) => {
+        card.dataset.title = featureName.value.trim() || "Untitled feature";
+        card.dataset.description = featureDescription.value.trim() || "No description added.";
+        card.dataset.source = featureSource.value.trim() || "Other";
+        card.dataset.uses = featureUses.value.trim() || "Always available";
         card.querySelector(".feature-title").textContent = card.dataset.title;
         card.querySelector(".feature-description").textContent = card.dataset.description;
         card.querySelector(".feature-source").textContent = card.dataset.source;
         card.querySelector(".feature-uses").textContent = card.dataset.uses;
-        setStatus("Feature updated");
       };
 
       const updateEmptyState = () => {
@@ -371,9 +406,25 @@
       };
 
       document.querySelector("#add-feature").addEventListener("click", () => {
-        const card = makeFeature();
-        editFeature(card);
-        setStatus("Feature added");
+        openFeatureEditor();
+      });
+      document.querySelector("#save-feature").addEventListener("click", () => {
+        if (editingCard) {
+          updateFeatureCard(editingCard);
+          setStatus("Feature updated");
+        } else {
+          makeFeature(
+            featureName.value.trim() || "Untitled feature",
+            featureDescription.value.trim() || "No description added.",
+            featureSource.value.trim() || "Other",
+            featureUses.value.trim() || "Always available"
+          );
+          setStatus("Feature added");
+        }
+        closeFeatureEditor();
+      });
+      document.querySelector("#cancel-feature").addEventListener("click", () => {
+        closeFeatureEditor();
       });
       document.querySelectorAll(".score").forEach((input) => input.addEventListener("input", updateModifiers));
       document.querySelector("#print-sheet").addEventListener("click", () => window.print());
@@ -381,6 +432,7 @@
         if (!window.confirm("Clear all fields and remove every feature?")) return;
         sheet.reset();
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
+        closeFeatureEditor();
         updateModifiers();
         updateEmptyState();
         setStatus("Sheet cleared");
