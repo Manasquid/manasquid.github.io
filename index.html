@@ -318,7 +318,6 @@
               <label class="combat-card"><span class="field-label">Speed</span><input name="speed" placeholder="30 ft."></label>
               <label class="combat-card"><span class="field-label">Max HP</span><input name="max-hp" type="number" placeholder="10"></label>
               <label class="combat-card"><span class="field-label">Current HP</span><input name="current-hp" type="number" placeholder="10"></label>
-              <label class="combat-card"><span class="field-label">Hit dice amount</span><input name="hit-dice-amount" type="number" min="0" placeholder="1"></label>
               <label class="combat-card"><span class="field-label">Hit die size</span><input name="hit-dice-size" type="number" min="1" placeholder="8"></label>
               <label class="combat-card"><span class="field-label">Proficiency bonus</span><input name="proficiency-bonus" type="number" min="0" placeholder="2"></label>
               <div class="armor-proficiencies"><span class="field-label">Armor proficiencies</span><div class="armor-options">
@@ -619,13 +618,6 @@
 
       const applySheet = (data) => {
         if (!data || typeof data !== "object" || !data.fields || !Array.isArray(data.features)) throw new Error("Invalid character sheet");
-        if (data.fields["hit-dice"] && !data.fields["hit-dice-amount"] && !data.fields["hit-dice-size"]) {
-          const legacyHitDice = String(data.fields["hit-dice"]).match(/^(\d+)\s*d\s*(\d+)$/i);
-          if (legacyHitDice) {
-            data.fields["hit-dice-amount"] = legacyHitDice[1];
-            data.fields["hit-dice-size"] = legacyHitDice[2];
-          }
-        }
         sheet.querySelectorAll("[name]").forEach((input) => {
           if (Object.prototype.hasOwnProperty.call(data.fields, input.name)) input.value = data.fields[input.name];
         });
@@ -662,9 +654,10 @@
 
       const pdfEscape = (value) => String(value).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
       const getHitDice = (fields) => {
-        const amount = String(fields["hit-dice-amount"] || "").trim();
+        const level = Number.parseInt(fields.level, 10);
         const size = String(fields["hit-dice-size"] || "").trim();
-        return amount && size ? `${amount}d${size}` : "—";
+        if (!Number.isFinite(level) || level < 1 || !size) return "—";
+        return `${level}d${size}`;
       };
       const fileName = (extension) => {
         const name = sheet.querySelector('[name="character-name"]').value.trim() || "character-sheet";
