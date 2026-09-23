@@ -191,14 +191,11 @@
     .background-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .background-grid .field.full { grid-column: 1 / -1; }
     .inventory-grid { display: grid; grid-template-columns: 1.3fr .7fr; gap: 1rem; }
-    .currency-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .65rem; }
-    .currency-card { display: grid; gap: .35rem; padding: .7rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface-soft); }
-    .currency-card input { height: 2.3rem; }
-    .custom-currency-list { display: grid; gap: .5rem; margin-top: .65rem; }
-    .custom-currency-row { display: grid; grid-template-columns: 1fr .6fr 2.2rem; gap: .45rem; }
-    .custom-currency-row input { height: 2.3rem; }
-    .custom-currency-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: 1rem; }
-    .custom-currency-heading .field-label { margin: 0; }
+    .currency-list { display: grid; gap: .5rem; margin-top: .65rem; }
+    .currency-row { display: grid; grid-template-columns: 1fr .6fr 2.2rem; gap: .45rem; }
+    .currency-row input { height: 2.3rem; }
+    .currency-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    .currency-heading .field-label { margin: 0; }
     footer { padding: 1.5rem 0 2.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
     :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
@@ -221,7 +218,6 @@
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
-      .currency-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media print {
       :root { color-scheme: light; }
@@ -394,15 +390,8 @@
           <div class="inventory-grid">
             <div class="field"><label for="inventory">Inventory</label><textarea id="inventory" name="inventory" class="notes" placeholder="Weapons, armor, adventuring gear, treasures, and other carried items..."></textarea></div>
             <div>
-              <span class="field-label">Standard currency</span>
-              <div class="currency-grid">
-                <label class="currency-card"><span class="field-label">Copper (CP)</span><input name="currency-copper" type="number" min="0" placeholder="0"></label>
-                <label class="currency-card"><span class="field-label">Silver (SP)</span><input name="currency-silver" type="number" min="0" placeholder="0"></label>
-                <label class="currency-card"><span class="field-label">Electrum (EP)</span><input name="currency-electrum" type="number" min="0" placeholder="0"></label>
-                <label class="currency-card"><span class="field-label">Gold (GP)</span><input name="currency-gold" type="number" min="0" placeholder="0"></label>
-              </div>
-              <div class="custom-currency-heading"><span class="field-label">Custom currency</span><button class="button" id="add-currency" type="button">+ Add</button></div>
-              <div class="custom-currency-list" id="custom-currency-list"></div>
+              <div class="currency-heading"><span class="field-label">Currencies</span><button class="button" id="add-currency" type="button">+ Add currency</button></div>
+              <div class="currency-list" id="currency-list"></div>
             </div>
           </div>
         </div>
@@ -437,10 +426,10 @@
     </div>
   </template>
   <template id="currency-template">
-    <div class="custom-currency-row">
-      <input class="currency-name" aria-label="Custom currency name" placeholder="Currency name">
-      <input class="currency-amount" type="number" min="0" aria-label="Custom currency amount" placeholder="Amount">
-      <button class="icon-button remove-currency" type="button" aria-label="Remove custom currency">×</button>
+    <div class="currency-row">
+      <input class="currency-name" aria-label="Currency name" placeholder="Currency name">
+      <input class="currency-amount" type="number" min="0" aria-label="Currency amount" placeholder="Amount">
+      <button class="icon-button remove-currency" type="button" aria-label="Remove currency">×</button>
     </div>
   </template>
 
@@ -453,7 +442,7 @@
       const skillTemplate = document.querySelector("#skill-template");
       const skillList = document.querySelector("#skill-list");
       const currencyTemplate = document.querySelector("#currency-template");
-      const customCurrencyList = document.querySelector("#custom-currency-list");
+      const currencyList = document.querySelector("#currency-list");
       const saveStatus = document.querySelector("#save-status");
       const storageKey = "manasquid.character-sheets";
       const draftKey = "manasquid.character-draft";
@@ -598,7 +587,7 @@
         removable: !row.querySelector(".remove-skill").hidden
       }));
 
-      const addCustomCurrency = (name = "", amount = "") => {
+      const addCurrency = (name = "", amount = "") => {
         const row = currencyTemplate.content.cloneNode(true).firstElementChild;
         row.querySelector(".currency-name").value = name;
         row.querySelector(".currency-amount").value = amount;
@@ -606,10 +595,10 @@
           row.remove();
           persistDraft();
         });
-        customCurrencyList.appendChild(row);
+        currencyList.appendChild(row);
       };
 
-      const collectCustomCurrency = () => [...customCurrencyList.querySelectorAll(".custom-currency-row")].map((row) => ({
+      const collectCurrencies = () => [...currencyList.querySelectorAll(".currency-row")].map((row) => ({
         name: row.querySelector(".currency-name").value,
         amount: row.querySelector(".currency-amount").value
       }));
@@ -625,7 +614,7 @@
           source: card.dataset.source,
           uses: card.dataset.uses
         }));
-        return { version: 1, fields, features, skills: collectSkills(), customCurrency: collectCustomCurrency() };
+        return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies() };
       };
 
       const applySheet = (data) => {
@@ -645,8 +634,14 @@
         skillList.replaceChildren();
         (Array.isArray(data.skills) ? data.skills : standardSkills.map(([name, ability]) => ({ name, ability, bonus: "", proficient: false, removable: false })))
           .forEach((skill) => addSkill(skill.name, skill.ability, skill.bonus, skill.proficient, skill.removable));
-        customCurrencyList.replaceChildren();
-        (Array.isArray(data.customCurrency) ? data.customCurrency : []).forEach((currency) => addCustomCurrency(currency.name, currency.amount));
+        currencyList.replaceChildren();
+        const currencies = Array.isArray(data.currencies) ? data.currencies : [
+          { name: "Copper (CP)", amount: data.fields["currency-copper"] || "" },
+          { name: "Silver (SP)", amount: data.fields["currency-silver"] || "" },
+          { name: "Electrum (EP)", amount: data.fields["currency-electrum"] || "" },
+          { name: "Gold (GP)", amount: data.fields["currency-gold"] || "" }
+        ];
+        currencies.forEach((currency) => addCurrency(currency.name, currency.amount));
         syncArmorProficiencies();
         updateModifiers();
         updateEmptyState();
@@ -715,8 +710,7 @@
           "",
           "INVENTORY & CURRENCY",
           `Inventory: ${fields.inventory || "—"}`,
-          `CP ${fields["currency-copper"] || "0"}  SP ${fields["currency-silver"] || "0"}  EP ${fields["currency-electrum"] || "0"}  GP ${fields["currency-gold"] || "0"}`,
-          ...(data.customCurrency || []).map((currency) => `${currency.name || "Custom"}: ${currency.amount || "0"}`),
+          ...(data.currencies || []).map((currency) => `${currency.name || "Currency"}: ${currency.amount || "0"}`),
           "",
           "NOTES",
           ...(fields.notes || "—").split(/\r?\n/)
@@ -800,8 +794,8 @@
         persistDraft();
       });
       document.querySelector("#add-currency").addEventListener("click", () => {
-        addCustomCurrency();
-        customCurrencyList.lastElementChild.querySelector(".currency-name").focus();
+        addCurrency();
+        currencyList.lastElementChild.querySelector(".currency-name").focus();
         persistDraft();
       });
       document.querySelector("#save-feature").addEventListener("click", () => {
@@ -890,7 +884,8 @@
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         skillList.replaceChildren();
         standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false));
-        customCurrencyList.replaceChildren();
+        currencyList.replaceChildren();
+        [["Copper (CP)", ""], ["Silver (SP)", ""], ["Electrum (EP)", ""], ["Gold (GP)", ""]].forEach(([name, amount]) => addCurrency(name, amount));
         closeFeatureEditor();
         localStorage.removeItem(draftKey);
         updateModifiers();
