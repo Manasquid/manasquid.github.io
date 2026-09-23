@@ -3,386 +3,390 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Manasquid, a tideborn spellblade character sheet.">
-  <title>Manasquid — Tideborn Spellblade</title>
+  <meta name="description" content="A focused D&D 5.5e character sheet maker by Manasquid.">
+  <title>Manasquid Character Sheet Maker</title>
   <style>
     :root {
       color-scheme: dark;
-      --ink: #eef9f8;
-      --muted: #9ab8bb;
-      --deep: #07151f;
-      --panel: rgba(11, 35, 47, .78);
-      --line: rgba(135, 219, 215, .18);
-      --aqua: #64e3d5;
-      --blue: #78b9ff;
-      --coral: #ff9a83;
-      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+      --bg: #111318;
+      --surface: #1a1d24;
+      --surface-raised: #232731;
+      --surface-soft: #20242d;
+      --line: #363b48;
+      --line-strong: #4b5363;
+      --text: #f2f3f5;
+      --muted: #aeb5c1;
+      --accent: #d8ae62;
+      --accent-soft: #2d281e;
+      --success: #93c99b;
+      --danger: #e68d8d;
+      --shadow: 0 16px 45px rgba(0, 0, 0, .22);
     }
 
     * { box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
-
     body {
       margin: 0;
       min-width: 320px;
-      background:
-        radial-gradient(circle at 82% 6%, rgba(54, 139, 164, .28), transparent 27rem),
-        radial-gradient(circle at 15% 35%, rgba(42, 94, 123, .18), transparent 32rem),
-        var(--deep);
-      color: var(--ink);
-      font: 400 1rem/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font: 400 .95rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
+    button, input, select, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
     a { color: inherit; }
+    .shell { width: min(1240px, calc(100% - 2.5rem)); margin: 0 auto; }
 
-    .shell {
-      width: min(1120px, calc(100% - 2.5rem));
-      margin: 0 auto;
+    .topbar {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 19, 24, .94);
+      backdrop-filter: blur(14px);
     }
+    .topbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 4.25rem; }
+    .brand { display: flex; align-items: center; gap: .7rem; color: var(--text); font-weight: 750; letter-spacing: -.02em; text-decoration: none; }
+    .brand-mark { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 1px solid var(--accent); border-radius: .45rem; color: var(--accent); font-size: .75rem; }
+    .version { color: var(--muted); font-size: .78rem; font-weight: 500; }
+    .top-actions { display: flex; align-items: center; gap: .65rem; }
+    .status { color: var(--success); font-size: .78rem; }
 
-    header {
-      padding: 1.4rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, .08);
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-    }
-
-    .brand {
-      color: var(--aqua);
-      font-size: .82rem;
-      font-weight: 800;
-      letter-spacing: .18em;
-      text-decoration: none;
-      text-transform: uppercase;
-    }
-
-    nav ul {
-      display: flex;
-      gap: 1.4rem;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    nav a {
-      color: var(--muted);
-      font-size: .88rem;
-      text-decoration: none;
-    }
-
-    nav a:hover, nav a:focus-visible { color: var(--ink); }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      align-items: center;
-      gap: 4rem;
-      min-height: 620px;
-      padding: 5rem 0 5.5rem;
-    }
-
-    .eyebrow, .section-label {
-      color: var(--aqua);
-      font-size: .75rem;
-      font-weight: 800;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-    }
-
-    h1, h2, h3, p { margin-top: 0; }
-
-    h1 {
-      max-width: 650px;
-      margin-bottom: 1.25rem;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(3.8rem, 10vw, 7.8rem);
-      letter-spacing: -.08em;
-      line-height: .88;
-    }
-
-    h1 span {
-      display: block;
-      color: var(--aqua);
-      font-size: .31em;
-      letter-spacing: .08em;
-      line-height: 1.7;
-      text-transform: uppercase;
-    }
-
-    .intro {
-      max-width: 540px;
-      color: var(--muted);
-      font-size: 1.12rem;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .9rem;
-      margin-top: 2rem;
-    }
-
-    .button {
+    .button, .icon-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 3rem;
-      padding: .7rem 1.3rem;
-      border: 1px solid var(--aqua);
-      border-radius: 999px;
-      background: var(--aqua);
-      color: #062229;
-      font-weight: 800;
+      border: 1px solid var(--line-strong);
+      border-radius: .45rem;
+      background: var(--surface-raised);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 650;
       text-decoration: none;
-      transition: transform .2s ease, box-shadow .2s ease;
+      transition: border-color .15s ease, background .15s ease;
     }
+    .button { min-height: 2.45rem; padding: .5rem .9rem; }
+    .icon-button { width: 2.2rem; height: 2.2rem; padding: 0; }
+    .button:hover, .button:focus-visible, .icon-button:hover, .icon-button:focus-visible { border-color: var(--accent); background: var(--surface-soft); }
+    .button.primary { border-color: var(--accent); background: var(--accent); color: #20170b; }
+    .button.primary:hover, .button.primary:focus-visible { background: #e9c982; }
+    .button.subtle { border-color: transparent; background: transparent; color: var(--muted); }
+    .button.subtle:hover, .button.subtle:focus-visible { border-color: var(--line); color: var(--text); }
 
-    .button:hover, .button:focus-visible {
-      box-shadow: 0 0 0 4px rgba(100, 227, 213, .18);
-      transform: translateY(-2px);
-    }
+    main { padding: 2.75rem 0 5rem; }
+    .page-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2 { letter-spacing: -.04em; }
+    h1 { margin-bottom: .45rem; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.05; }
+    .lede { margin: 0; color: var(--muted); }
+    .sheet-actions { display: flex; flex-wrap: wrap; gap: .65rem; }
 
-    .button.secondary {
-      border-color: var(--line);
-      background: transparent;
-      color: var(--ink);
-    }
-
-    .portrait {
-      position: relative;
-      display: grid;
-      place-items: center;
-      min-height: 410px;
-      overflow: hidden;
+    .sheet { display: grid; gap: 1.25rem; }
+    .panel {
       border: 1px solid var(--line);
-      border-radius: 2rem;
-      background:
-        linear-gradient(145deg, rgba(100, 227, 213, .17), transparent 45%),
-        linear-gradient(35deg, rgba(255, 154, 131, .12), transparent 55%),
-        #0b2937;
+      border-radius: .75rem;
+      background: var(--surface);
       box-shadow: var(--shadow);
-      isolation: isolate;
     }
-
-    .portrait::before, .portrait::after {
-      position: absolute;
-      content: "";
-      border: 1px solid rgba(100, 227, 213, .25);
-      border-radius: 50%;
-    }
-
-    .portrait::before { width: 24rem; height: 24rem; }
-    .portrait::after { width: 17rem; height: 17rem; }
-
-    .orb {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      place-items: center;
-      width: 12rem;
-      height: 12rem;
-      border: 1px solid rgba(255, 255, 255, .38);
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #b2fff2, #3db5bd 35%, #134d6a 72%);
-      box-shadow: 0 0 55px rgba(100, 227, 213, .45), inset -20px -18px 30px rgba(4, 24, 45, .52);
-    }
-
-    .orb span { font-size: 5rem; filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .4)); }
-
-    .portrait figcaption {
-      position: absolute;
-      right: 1.25rem;
-      bottom: 1rem;
-      left: 1.25rem;
-      color: #b8e4e2;
-      font-size: .78rem;
-      letter-spacing: .08em;
-      text-align: center;
-      text-transform: uppercase;
-    }
-
-    section { padding: 5rem 0; }
-
-    .section-heading {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    h2 {
-      margin-bottom: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.2rem, 5vw, 3.8rem);
-      letter-spacing: -.05em;
-      line-height: 1;
-    }
-
-    .section-heading p { max-width: 380px; margin-bottom: 0; color: var(--muted); }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 1.25rem;
-      background: var(--line);
-    }
-
-    .stat { padding: 1.5rem; background: var(--panel); }
-    .stat strong { display: block; color: var(--aqua); font-size: 2.3rem; line-height: 1; }
-    .stat span { display: block; margin-top: .55rem; color: var(--muted); font-size: .82rem; text-transform: uppercase; }
-
-    .abilities {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-
-    .ability {
-      padding: 1.6rem;
-      border: 1px solid var(--line);
-      border-radius: 1.25rem;
-      background: linear-gradient(145deg, var(--panel), rgba(11, 35, 47, .42));
-    }
-
-    .ability-icon { color: var(--coral); font-size: 1.5rem; }
-    .ability h3 { margin: 1.2rem 0 .45rem; font-size: 1.12rem; }
-    .ability p { margin-bottom: 0; color: var(--muted); font-size: .93rem; }
-
-    .cta {
+    .panel-heading {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 2rem;
-      padding: 2.5rem;
-      border: 1px solid rgba(100, 227, 213, .28);
-      border-radius: 1.5rem;
-      background: linear-gradient(110deg, rgba(35, 104, 116, .45), rgba(11, 35, 47, .75));
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid var(--line);
     }
+    .panel-heading h2 { margin: 0; font-size: 1rem; }
+    .panel-heading p { margin: .25rem 0 0; color: var(--muted); font-size: .82rem; }
+    .panel-body { padding: 1.25rem; }
 
-    .cta h2 { max-width: 600px; }
-    .cta p { margin: .8rem 0 0; color: var(--muted); }
-
-    footer {
-      padding: 2rem 0 3rem;
-      border-top: 1px solid rgba(255, 255, 255, .08);
-      color: var(--muted);
-      font-size: .84rem;
+    .fields { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
+    .field { display: grid; gap: .35rem; grid-column: span 3; }
+    .field.wide { grid-column: span 6; }
+    .field.full { grid-column: 1 / -1; }
+    label, .field-label { color: var(--muted); font-size: .74rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: .4rem;
+      outline: none;
+      background: var(--surface-soft);
+      color: var(--text);
     }
+    input, select { height: 2.55rem; padding: .45rem .65rem; }
+    textarea { min-height: 6rem; padding: .6rem .65rem; resize: vertical; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(216, 174, 98, .14); }
+    input::placeholder, textarea::placeholder { color: #77808e; }
 
-    :focus-visible { outline: 3px solid var(--coral); outline-offset: 4px; }
-
-    @media (max-width: 760px) {
-      .shell { width: min(100% - 1.5rem, 600px); }
-      nav ul { gap: .8rem; }
-      .hero { grid-template-columns: 1fr; gap: 2.5rem; min-height: auto; padding: 4rem 0; }
-      .portrait { min-height: 330px; }
-      section { padding: 3.5rem 0; }
-      .section-heading, .cta { align-items: start; flex-direction: column; }
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .abilities { grid-template-columns: 1fr; }
+    .sheet-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); gap: 1.25rem; align-items: start; }
+    .ability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+    .ability {
+      display: grid;
+      gap: .3rem;
+      padding: .8rem;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      background: var(--surface-soft);
+      text-align: center;
     }
+    .ability input { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
+    .ability-name { color: var(--muted); font-size: .72rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .ability-mod { color: var(--accent); font-size: .8rem; }
 
-    @media (max-width: 420px) {
-      nav { align-items: start; flex-direction: column; }
-      nav ul { width: 100%; justify-content: space-between; }
-      h1 { font-size: 4rem; }
-      .cta { padding: 1.6rem; }
+    .combat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+    .combat-card { padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
+    .combat-card strong { display: block; margin-top: .25rem; color: var(--text); font-size: 1.3rem; }
+
+    .feature-list { display: grid; gap: .75rem; }
+    .feature-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: .55rem;
+      background: var(--surface-soft);
     }
+    .feature-card h3 { margin: 0 0 .45rem; font-size: .98rem; }
+    .feature-card p { margin: 0; color: var(--muted); white-space: pre-wrap; }
+    .feature-meta { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .7rem; }
+    .tag { display: inline-flex; align-items: center; min-height: 1.45rem; padding: .15rem .45rem; border: 1px solid var(--line-strong); border-radius: .3rem; color: var(--muted); font-size: .7rem; }
+    .feature-actions { display: flex; align-items: start; gap: .35rem; }
+    .remove-feature { color: var(--danger); }
+    .empty-state { padding: 2rem 1rem; border: 1px dashed var(--line-strong); border-radius: .5rem; color: var(--muted); text-align: center; }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    .notes { min-height: 10rem; }
+    footer { padding: 1.5rem 0 2.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+    @media (max-width: 800px) {
+      .page-heading { align-items: start; flex-direction: column; }
+      .sheet-grid { grid-template-columns: 1fr; }
+      .field, .field.wide { grid-column: span 6; }
+    }
+    @media (max-width: 520px) {
+      .shell { width: min(100% - 1.25rem, 440px); }
+      .topbar-inner { align-items: start; flex-direction: column; padding: .85rem 0; }
+      .top-actions { width: 100%; justify-content: space-between; }
+      main { padding-top: 2rem; }
+      .fields, .ability-grid, .combat-grid { grid-template-columns: 1fr 1fr; }
+      .field, .field.wide { grid-column: span 2; }
+      .feature-card { grid-template-columns: 1fr; }
+      .feature-actions { justify-content: end; }
+    }
+    @media print {
+      :root { color-scheme: light; }
+      body { background: #fff; color: #111; }
+      .topbar, .sheet-actions, .feature-actions, .add-feature, footer { display: none !important; }
+      .shell { width: 100%; }
+      main { padding: 0; }
+      .panel { box-shadow: none; break-inside: avoid; }
+      input, select, textarea { border-color: #bbb; background: #fff; color: #111; }
+      .panel, .feature-card, .ability, .combat-card { border-color: #bbb; background: #fff; }
+      .muted, .lede, .feature-card p, label, .field-label, .ability-name { color: #444; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <nav class="shell" aria-label="Primary navigation">
-      <a class="brand" href="#top">Manasquid / 07</a>
-      <ul>
-        <li><a href="#profile">Profile</a></li>
-        <li><a href="#abilities">Abilities</a></li>
-        <li><a href="#summon">Summon</a></li>
-      </ul>
-    </nav>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ 5.5e sheet maker</span></a>
+      <div class="top-actions">
+        <span class="status" id="save-status" role="status">Ready to edit</span>
+        <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
+        <button class="button primary" id="print-sheet" type="button">Print / save PDF</button>
+      </div>
+    </div>
   </header>
 
-  <main id="top">
-    <section class="hero shell" id="profile" aria-labelledby="hero-title">
+  <main class="shell" id="top">
+    <div class="page-heading">
       <div>
-        <p class="eyebrow">Character dossier · abyssal tide</p>
-        <h1 id="hero-title">Manasquid<span>Tideborn spellblade</span></h1>
-        <p class="intro">A brilliant deep-sea wanderer with eight hands, one impossible mission, and enough mana to light the ocean floor.</p>
-        <div class="actions">
-          <a class="button" href="#summon">Add to party <span aria-hidden="true">&nbsp;→</span></a>
-          <a class="button secondary" href="#abilities">View abilities</a>
+        <h1>Character sheet</h1>
+        <p class="lede">Build a D&amp;D 5.5e character and keep every feature in one place.</p>
+      </div>
+      <div class="sheet-actions">
+        <a class="button" href="#features">Jump to features</a>
+      </div>
+    </div>
+
+    <form class="sheet" id="character-sheet">
+      <section class="panel" aria-labelledby="identity-heading">
+        <div class="panel-heading">
+          <div><h2 id="identity-heading">Character identity</h2><p>The basics of who is at the table.</p></div>
         </div>
-      </div>
-      <figure class="portrait">
-        <div class="orb" role="img" aria-label="Stylized glowing blue orb representing Manasquid"><span aria-hidden="true">✦</span></div>
-        <figcaption>“The dark is only the ocean waiting to glow.”</figcaption>
-      </figure>
-    </section>
-
-    <section class="shell" aria-labelledby="stats-title">
-      <div class="section-heading">
-        <div><p class="section-label">Field readout</p><h2 id="stats-title">Built different.</h2></div>
-        <p>Part familiar, part frontline caster, entirely at home where the pressure breaks lesser heroes.</p>
-      </div>
-      <div class="stats">
-        <div class="stat"><strong>08</strong><span>Arms of action</span></div>
-        <div class="stat"><strong>92</strong><span>Depth tolerance</span></div>
-        <div class="stat"><strong>∞</strong><span>Mana reserve</span></div>
-        <div class="stat"><strong>A+</strong><span>Party synergy</span></div>
-      </div>
-    </section>
-
-    <section class="shell" id="abilities" aria-labelledby="abilities-title">
-      <div class="section-heading">
-        <div><p class="section-label">Signature kit</p><h2 id="abilities-title">Make waves.</h2></div>
-        <p>Every spell leaves a little more light behind. Every encounter becomes a legend.</p>
-      </div>
-      <div class="abilities">
-        <article class="ability">
-          <div class="ability-icon" aria-hidden="true">◈</div>
-          <h3>Inkblot Eclipse</h3>
-          <p>Floods the arena in living shadow, then reveals every hidden threat in a constellation of sparks.</p>
-        </article>
-        <article class="ability">
-          <div class="ability-icon" aria-hidden="true">⌁</div>
-          <h3>Current Shift</h3>
-          <p>Turns incoming force into momentum, sliding Manasquid and an ally safely beyond the next wave.</p>
-        </article>
-        <article class="ability">
-          <div class="ability-icon" aria-hidden="true">✧</div>
-          <h3>Eightfold Oath</h3>
-          <p>Eight blades, one rhythm. A final combo that restores the party and redraws the battlefield.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="shell" id="summon" aria-labelledby="cta-title">
-      <div class="cta">
-        <div>
-          <h2 id="cta-title">Ready to go deeper?</h2>
-          <p>Bring Manasquid along. The next horizon is below the surface.</p>
+        <div class="panel-body fields">
+          <div class="field wide"><label for="character-name">Character name</label><input id="character-name" name="character-name" placeholder="e.g. Manasquid" autocomplete="off"></div>
+          <div class="field"><label for="class">Class</label><input id="class" name="class" placeholder="e.g. Wizard"></div>
+          <div class="field"><label for="level">Level</label><input id="level" name="level" type="number" min="1" max="20" placeholder="1"></div>
+          <div class="field"><label for="species">Species</label><input id="species" name="species" placeholder="e.g. Human"></div>
+          <div class="field"><label for="background">Background</label><input id="background" name="background" placeholder="e.g. Sage"></div>
+          <div class="field wide"><label for="alignment">Alignment / notes</label><input id="alignment" name="alignment" placeholder="Optional details"></div>
         </div>
-        <a class="button" href="mailto:hello@manasquid.example">Send a signal <span aria-hidden="true">&nbsp;↗</span></a>
+      </section>
+
+      <div class="sheet-grid">
+        <section class="panel" aria-labelledby="abilities-heading">
+          <div class="panel-heading">
+            <div><h2 id="abilities-heading">Ability scores</h2><p>Enter the score from your character creation method.</p></div>
+          </div>
+          <div class="panel-body">
+            <div class="ability-grid">
+              <label class="ability"><span class="ability-name">Strength</span><input class="score" name="strength" type="number" min="1" max="30" value="10" aria-label="Strength score"><span class="ability-mod" data-mod-for="strength">+0 modifier</span></label>
+              <label class="ability"><span class="ability-name">Dexterity</span><input class="score" name="dexterity" type="number" min="1" max="30" value="10" aria-label="Dexterity score"><span class="ability-mod" data-mod-for="dexterity">+0 modifier</span></label>
+              <label class="ability"><span class="ability-name">Constitution</span><input class="score" name="constitution" type="number" min="1" max="30" value="10" aria-label="Constitution score"><span class="ability-mod" data-mod-for="constitution">+0 modifier</span></label>
+              <label class="ability"><span class="ability-name">Intelligence</span><input class="score" name="intelligence" type="number" min="1" max="30" value="10" aria-label="Intelligence score"><span class="ability-mod" data-mod-for="intelligence">+0 modifier</span></label>
+              <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><span class="ability-mod" data-mod-for="wisdom">+0 modifier</span></label>
+              <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><span class="ability-mod" data-mod-for="charisma">+0 modifier</span></label>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="combat-heading">
+          <div class="panel-heading">
+            <div><h2 id="combat-heading">Combat snapshot</h2><p>Quick numbers for the table.</p></div>
+          </div>
+          <div class="panel-body">
+            <div class="combat-grid">
+              <label class="combat-card"><span class="field-label">Armor class</span><input name="armor-class" type="number" placeholder="10"></label>
+              <label class="combat-card"><span class="field-label">Initiative</span><input name="initiative" placeholder="+0"></label>
+              <label class="combat-card"><span class="field-label">Speed</span><input name="speed" placeholder="30 ft."></label>
+              <label class="combat-card"><span class="field-label">Max HP</span><input name="max-hp" type="number" placeholder="10"></label>
+              <label class="combat-card"><span class="field-label">Current HP</span><input name="current-hp" type="number" placeholder="10"></label>
+              <label class="combat-card"><span class="field-label">Hit dice</span><input name="hit-dice" placeholder="1d8"></label>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+
+      <section class="panel" id="features" aria-labelledby="features-heading">
+        <div class="panel-heading">
+          <div><h2 id="features-heading">Features &amp; traits</h2><p>Add class features, species traits, feats, and anything else you need at the table.</p></div>
+          <button class="button primary add-feature" id="add-feature" type="button">+ Add feature</button>
+        </div>
+        <div class="panel-body">
+          <div class="feature-list" id="feature-list" aria-live="polite">
+            <div class="empty-state" id="empty-state">No features yet. Add your first feature to start building the sheet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="notes-heading">
+        <div class="panel-heading">
+          <div><h2 id="notes-heading">Notes &amp; proficiencies</h2><p>Keep the details you reference between turns.</p></div>
+        </div>
+        <div class="panel-body">
+          <label class="sr-only" for="notes">Notes and proficiencies</label>
+          <textarea class="notes" id="notes" name="notes" placeholder="Saving throws, skills, languages, equipment, spells, personality, or campaign notes..."></textarea>
+        </div>
+      </section>
+    </form>
   </main>
 
-  <footer>
-    <div class="shell">© 2025 Manasquid · A fictional field guide for imaginary oceans.</div>
-  </footer>
+  <footer><div class="shell">Manasquid Character Sheet Maker · Built for personal D&amp;D 5.5e prep. Your sheet stays in this browser until you print or save it.</div></footer>
+
+  <template id="feature-template">
+    <article class="feature-card">
+      <div>
+        <h3 class="feature-title"></h3>
+        <p class="feature-description"></p>
+        <div class="feature-meta"><span class="tag feature-source"></span><span class="tag feature-uses"></span></div>
+      </div>
+      <div class="feature-actions">
+        <button class="icon-button edit-feature" type="button" aria-label="Edit feature">✎</button>
+        <button class="icon-button remove-feature" type="button" aria-label="Remove feature">×</button>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    (() => {
+      const sheet = document.querySelector("#character-sheet");
+      const featureList = document.querySelector("#feature-list");
+      const emptyState = document.querySelector("#empty-state");
+      const template = document.querySelector("#feature-template");
+      const saveStatus = document.querySelector("#save-status");
+
+      const setStatus = (message) => {
+        saveStatus.textContent = message;
+        window.clearTimeout(setStatus.timer);
+        setStatus.timer = window.setTimeout(() => { saveStatus.textContent = "Ready to edit"; }, 1800);
+      };
+
+      const updateModifiers = () => {
+        document.querySelectorAll(".score").forEach((input) => {
+          const score = Number(input.value) || 0;
+          const modifier = Math.floor((score - 10) / 2);
+          const sign = modifier >= 0 ? "+" : "";
+          const output = document.querySelector(`[data-mod-for="${input.name}"]`);
+          if (output) output.textContent = `${sign}${modifier} modifier`;
+        });
+      };
+
+      const makeFeature = (title = "New feature", description = "Describe what this feature does and when to use it.", source = "Class feature", uses = "Always available") => {
+        const fragment = template.content.cloneNode(true);
+        const card = fragment.querySelector(".feature-card");
+        card.dataset.title = title;
+        card.dataset.description = description;
+        card.dataset.source = source;
+        card.dataset.uses = uses;
+        card.querySelector(".feature-title").textContent = title;
+        card.querySelector(".feature-description").textContent = description;
+        card.querySelector(".feature-source").textContent = source;
+        card.querySelector(".feature-uses").textContent = uses;
+        card.querySelector(".edit-feature").addEventListener("click", () => editFeature(card));
+        card.querySelector(".remove-feature").addEventListener("click", () => {
+          card.remove();
+          updateEmptyState();
+          setStatus("Feature removed");
+        });
+        featureList.appendChild(fragment);
+        updateEmptyState();
+        return featureList.lastElementChild;
+      };
+
+      const editFeature = (card) => {
+        const title = window.prompt("Feature name", card.dataset.title);
+        if (title === null) return;
+        const description = window.prompt("Feature description", card.dataset.description);
+        if (description === null) return;
+        const source = window.prompt("Source (class, species, feat, or other)", card.dataset.source);
+        if (source === null) return;
+        const uses = window.prompt("Uses or recharge", card.dataset.uses);
+        if (uses === null) return;
+        card.dataset.title = title.trim() || "Untitled feature";
+        card.dataset.description = description.trim() || "No description added.";
+        card.dataset.source = source.trim() || "Other";
+        card.dataset.uses = uses.trim() || "Always available";
+        card.querySelector(".feature-title").textContent = card.dataset.title;
+        card.querySelector(".feature-description").textContent = card.dataset.description;
+        card.querySelector(".feature-source").textContent = card.dataset.source;
+        card.querySelector(".feature-uses").textContent = card.dataset.uses;
+        setStatus("Feature updated");
+      };
+
+      const updateEmptyState = () => {
+        emptyState.hidden = featureList.querySelectorAll(".feature-card").length > 0;
+      };
+
+      document.querySelector("#add-feature").addEventListener("click", () => {
+        const card = makeFeature();
+        editFeature(card);
+        setStatus("Feature added");
+      });
+      document.querySelectorAll(".score").forEach((input) => input.addEventListener("input", updateModifiers));
+      document.querySelector("#print-sheet").addEventListener("click", () => window.print());
+      document.querySelector("#clear-sheet").addEventListener("click", () => {
+        if (!window.confirm("Clear all fields and remove every feature?")) return;
+        sheet.reset();
+        featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
+        updateModifiers();
+        updateEmptyState();
+        setStatus("Sheet cleared");
+      });
+      updateModifiers();
+    })();
+  </script>
 </body>
 </html>
