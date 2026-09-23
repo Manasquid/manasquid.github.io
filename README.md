@@ -1,1 +1,0 @@
-# Squid's Character Sheet
