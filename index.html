@@ -83,6 +83,7 @@
     .storage-panel { margin-bottom: 1.25rem; }
     .storage-tools { display: flex; flex-wrap: wrap; align-items: end; gap: .65rem; }
     .storage-tools .field { min-width: min(100%, 18rem); flex: 1 1 16rem; }
+    .storage-help { margin: .45rem 0 0; color: var(--muted); font-size: .78rem; }
     .saved-list { display: grid; gap: .65rem; margin-top: 1rem; }
     .saved-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .saved-item strong { display: block; font-size: .9rem; }
@@ -209,9 +210,9 @@
       <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ 5.5e sheet maker</span></a>
       <div class="top-actions">
         <span class="status" id="save-status" role="status">Ready to edit</span>
-        <button class="button primary" id="save-character" type="button">Save character</button>
+        <button class="button primary" id="save-character" type="button">Save / manage</button>
         <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
-        <button class="button primary" id="print-sheet" type="button">Download PDF</button>
+        <button class="button primary" id="print-sheet" type="button">Download PDF (importable)</button>
       </div>
     </div>
   </header>
@@ -229,18 +230,19 @@
 
     <section class="panel storage-panel" aria-labelledby="storage-heading">
       <div class="panel-heading">
-        <div><h2 id="storage-heading">Saved characters</h2><p>Save sheets in this browser or move them with a JSON file.</p></div>
+        <div><h2 id="storage-heading">Save &amp; transfer characters</h2><p>Keep versions in this browser or move a complete sheet between devices.</p></div>
         <div class="storage-tools">
-          <button class="button" id="export-sheet" type="button">Export JSON</button>
-          <button class="button" id="import-sheet" type="button">Import JSON</button>
+          <button class="button" id="export-sheet" type="button">Download JSON</button>
+          <button class="button" id="import-sheet" type="button">Import JSON or PDF</button>
           <input class="sr-only" id="import-file" type="file" accept="application/json,application/pdf,.json,.pdf">
         </div>
       </div>
       <div class="panel-body">
         <div class="storage-tools">
           <div class="field"><label for="save-name">Save as</label><input id="save-name" placeholder="e.g. Manasquid — level 3"></div>
-          <button class="button primary" id="save-named-sheet" type="button">Save snapshot</button>
+          <button class="button primary" id="save-named-sheet" type="button">Save browser copy</button>
         </div>
+        <p class="storage-help">Use <strong>Download JSON</strong> for the most reliable backup. PDFs downloaded with <strong>Download PDF</strong> can also be imported here.</p>
         <div class="saved-list" id="saved-list" aria-live="polite"></div>
       </div>
     </section>
@@ -479,6 +481,18 @@
       };
 
       const pdfEscape = (value) => String(value).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+      const fileName = (extension) => {
+        const name = sheet.querySelector('[name="character-name"]').value.trim() || "character-sheet";
+        return `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "character-sheet"}.${extension}`;
+      };
+      const downloadFile = (blob, name) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = name;
+        link.click();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      };
 
       const makeSheetPdf = (data) => {
         const fields = data.fields;
@@ -608,14 +622,8 @@
         setStatus(`Saved ${name}`);
       });
       document.querySelector("#export-sheet").addEventListener("click", () => {
-        const name = sheet.querySelector('[name="character-name"]').value.trim() || "character-sheet";
-        const blob = new Blob([JSON.stringify(collectSheet(), null, 2)], { type: "application/json" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "character-sheet"}.json`;
-        link.click();
-        URL.revokeObjectURL(link.href);
-        setStatus("Sheet exported");
+        downloadFile(new Blob([JSON.stringify(collectSheet(), null, 2)], { type: "application/json" }), fileName("json"));
+        setStatus("JSON backup downloaded");
       });
       document.querySelector("#import-sheet").addEventListener("click", () => document.querySelector("#import-file").click());
       document.querySelector("#import-file").addEventListener("change", async (event) => {
@@ -627,9 +635,9 @@
             : JSON.parse(await file.text());
           applySheet(imported);
           persistDraft();
-          setStatus("Sheet imported");
+          setStatus(`${file.name.toLowerCase().endsWith(".pdf") ? "PDF" : "JSON"} imported`);
         } catch {
-          setStatus("Import failed: invalid sheet file");
+          setStatus("Import failed: choose a Manasquid PDF or sheet JSON");
         }
         event.target.value = "";
       });
@@ -638,13 +646,8 @@
         persistDraft();
       });
       document.querySelector("#print-sheet").addEventListener("click", () => {
-        const name = sheet.querySelector('[name="character-name"]').value.trim() || "character-sheet";
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(makeSheetPdf(collectSheet()));
-        link.download = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "character-sheet"}.pdf`;
-        link.click();
-        URL.revokeObjectURL(link.href);
-        setStatus("PDF exported with importable sheet data");
+        downloadFile(makeSheetPdf(collectSheet()), fileName("pdf"));
+        setStatus("Importable PDF downloaded");
       });
       document.querySelector("#clear-sheet").addEventListener("click", () => {
         if (!window.confirm("Clear all fields and remove every feature?")) return;
