@@ -211,7 +211,7 @@
         <span class="status" id="save-status" role="status">Ready to edit</span>
         <button class="button primary" id="save-character" type="button">Save character</button>
         <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
-        <button class="button primary" id="print-sheet" type="button">Print / save PDF</button>
+        <button class="button primary" id="print-sheet" type="button">Download PDF</button>
       </div>
     </div>
   </header>
@@ -233,7 +233,7 @@
         <div class="storage-tools">
           <button class="button" id="export-sheet" type="button">Export JSON</button>
           <button class="button" id="import-sheet" type="button">Import JSON</button>
-          <input class="sr-only" id="import-file" type="file" accept="application/json,.json">
+          <input class="sr-only" id="import-file" type="file" accept="application/json,application/pdf,.json,.pdf">
         </div>
       </div>
       <div class="panel-body">
@@ -465,6 +465,72 @@
         updateEmptyState();
       };
 
+      const encodeSheet = (data) => {
+        const bytes = new TextEncoder().encode(JSON.stringify(data));
+        let binary = "";
+        bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+        return window.btoa(binary);
+      };
+
+      const decodeSheet = (encoded) => {
+        const binary = window.atob(encoded);
+        const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+        return JSON.parse(new TextDecoder().decode(bytes));
+      };
+
+      const pdfEscape = (value) => String(value).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+
+      const makeSheetPdf = (data) => {
+        const fields = data.fields;
+        const lines = [
+          fields["character-name"] || "Unnamed character",
+          `${fields.class || "Class"} · Level ${fields.level || "—"} · ${fields.species || "Species"}`,
+          `Background: ${fields.background || "—"}`,
+          "",
+          "ABILITY SCORES",
+          ...["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"].map((name) => `${name[0].toUpperCase()}${name.slice(1)}: ${fields[name] || "—"}`),
+          "",
+          "COMBAT",
+          `AC ${fields["armor-class"] || "—"}  Initiative ${fields.initiative || "—"}  Speed ${fields.speed || "—"}`,
+          `HP ${fields["current-hp"] || "—"} / ${fields["max-hp"] || "—"}  Hit dice ${fields["hit-dice"] || "—"}`,
+          "",
+          "FEATURES & TRAITS",
+          ...data.features.flatMap((feature) => [feature.title, `${feature.source} · ${feature.uses}`, feature.description, ""]),
+          "NOTES",
+          ...(fields.notes || "—").split(/\r?\n/)
+        ];
+        const content = ["BT", "/F1 16 Tf", "50 750 Td", ...lines.flatMap((line, index) => [`(${pdfEscape(line)}) Tj`, index === 0 ? "0 -24 Td" : "0 -17 Td"]), "ET"].join("\n");
+        const metadata = `MANASQUID_SHEET_JSON:${encodeSheet(data)}`;
+        const objects = [
+          "<< /Type /Catalog /Pages 2 0 R >>",
+          "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+          "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+          "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+          `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+          `<< /Title (${pdfEscape(fields["character-name"] || "Character Sheet")}) /Subject (${metadata}) >>`
+        ];
+        let pdf = "%PDF-1.4\n";
+        const offsets = [0];
+        objects.forEach((object, index) => {
+          offsets.push(pdf.length);
+          pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+        });
+        const xref = pdf.length;
+        pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+        offsets.slice(1).forEach((offset) => { pdf += `${String(offset).padStart(10, "0")} 00000 n \n`; });
+        pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R /Info 6 0 R >>\nstartxref\n${xref}\n%%EOF`;
+        return new Blob([pdf], { type: "application/pdf" });
+      };
+
+      const readPdfSheet = async (file) => {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        let binary = "";
+        bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+        const match = binary.match(/MANASQUID_SHEET_JSON:([A-Za-z0-9+/=]+)/);
+        if (!match) throw new Error("This PDF was not created by Manasquid.");
+        return decodeSheet(match[1]);
+      };
+
       const readSavedSheets = () => {
         try {
           const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
@@ -556,7 +622,10 @@
         const file = event.target.files[0];
         if (!file) return;
         try {
-          applySheet(JSON.parse(await file.text()));
+          const imported = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
+            ? await readPdfSheet(file)
+            : JSON.parse(await file.text());
+          applySheet(imported);
           persistDraft();
           setStatus("Sheet imported");
         } catch {
@@ -568,7 +637,15 @@
       sheet.addEventListener("input", () => {
         persistDraft();
       });
-      document.querySelector("#print-sheet").addEventListener("click", () => window.print());
+      document.querySelector("#print-sheet").addEventListener("click", () => {
+        const name = sheet.querySelector('[name="character-name"]').value.trim() || "character-sheet";
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(makeSheetPdf(collectSheet()));
+        link.download = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "character-sheet"}.pdf`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        setStatus("PDF exported with importable sheet data");
+      });
       document.querySelector("#clear-sheet").addEventListener("click", () => {
         if (!window.confirm("Clear all fields and remove every feature?")) return;
         sheet.reset();
