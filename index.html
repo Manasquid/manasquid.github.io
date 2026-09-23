@@ -1,1 +1,388 @@
-# Character Sheet
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Manasquid, a tideborn spellblade character sheet.">
+  <title>Manasquid — Tideborn Spellblade</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #eef9f8;
+      --muted: #9ab8bb;
+      --deep: #07151f;
+      --panel: rgba(11, 35, 47, .78);
+      --line: rgba(135, 219, 215, .18);
+      --aqua: #64e3d5;
+      --blue: #78b9ff;
+      --coral: #ff9a83;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 82% 6%, rgba(54, 139, 164, .28), transparent 27rem),
+        radial-gradient(circle at 15% 35%, rgba(42, 94, 123, .18), transparent 32rem),
+        var(--deep);
+      color: var(--ink);
+      font: 400 1rem/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(1120px, calc(100% - 2.5rem));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 1.4rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .brand {
+      color: var(--aqua);
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 1.4rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    nav a {
+      color: var(--muted);
+      font-size: .88rem;
+      text-decoration: none;
+    }
+
+    nav a:hover, nav a:focus-visible { color: var(--ink); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+      gap: 4rem;
+      min-height: 620px;
+      padding: 5rem 0 5.5rem;
+    }
+
+    .eyebrow, .section-label {
+      color: var(--aqua);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 650px;
+      margin-bottom: 1.25rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3.8rem, 10vw, 7.8rem);
+      letter-spacing: -.08em;
+      line-height: .88;
+    }
+
+    h1 span {
+      display: block;
+      color: var(--aqua);
+      font-size: .31em;
+      letter-spacing: .08em;
+      line-height: 1.7;
+      text-transform: uppercase;
+    }
+
+    .intro {
+      max-width: 540px;
+      color: var(--muted);
+      font-size: 1.12rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .9rem;
+      margin-top: 2rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3rem;
+      padding: .7rem 1.3rem;
+      border: 1px solid var(--aqua);
+      border-radius: 999px;
+      background: var(--aqua);
+      color: #062229;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .button:hover, .button:focus-visible {
+      box-shadow: 0 0 0 4px rgba(100, 227, 213, .18);
+      transform: translateY(-2px);
+    }
+
+    .button.secondary {
+      border-color: var(--line);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .portrait {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 410px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 2rem;
+      background:
+        linear-gradient(145deg, rgba(100, 227, 213, .17), transparent 45%),
+        linear-gradient(35deg, rgba(255, 154, 131, .12), transparent 55%),
+        #0b2937;
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .portrait::before, .portrait::after {
+      position: absolute;
+      content: "";
+      border: 1px solid rgba(100, 227, 213, .25);
+      border-radius: 50%;
+    }
+
+    .portrait::before { width: 24rem; height: 24rem; }
+    .portrait::after { width: 17rem; height: 17rem; }
+
+    .orb {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      width: 12rem;
+      height: 12rem;
+      border: 1px solid rgba(255, 255, 255, .38);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #b2fff2, #3db5bd 35%, #134d6a 72%);
+      box-shadow: 0 0 55px rgba(100, 227, 213, .45), inset -20px -18px 30px rgba(4, 24, 45, .52);
+    }
+
+    .orb span { font-size: 5rem; filter: drop-shadow(0 8px 8px rgba(0, 0, 0, .4)); }
+
+    .portrait figcaption {
+      position: absolute;
+      right: 1.25rem;
+      bottom: 1rem;
+      left: 1.25rem;
+      color: #b8e4e2;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    section { padding: 5rem 0; }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      letter-spacing: -.05em;
+      line-height: 1;
+    }
+
+    .section-heading p { max-width: 380px; margin-bottom: 0; color: var(--muted); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 1.25rem;
+      background: var(--line);
+    }
+
+    .stat { padding: 1.5rem; background: var(--panel); }
+    .stat strong { display: block; color: var(--aqua); font-size: 2.3rem; line-height: 1; }
+    .stat span { display: block; margin-top: .55rem; color: var(--muted); font-size: .82rem; text-transform: uppercase; }
+
+    .abilities {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .ability {
+      padding: 1.6rem;
+      border: 1px solid var(--line);
+      border-radius: 1.25rem;
+      background: linear-gradient(145deg, var(--panel), rgba(11, 35, 47, .42));
+    }
+
+    .ability-icon { color: var(--coral); font-size: 1.5rem; }
+    .ability h3 { margin: 1.2rem 0 .45rem; font-size: 1.12rem; }
+    .ability p { margin-bottom: 0; color: var(--muted); font-size: .93rem; }
+
+    .cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 2.5rem;
+      border: 1px solid rgba(100, 227, 213, .28);
+      border-radius: 1.5rem;
+      background: linear-gradient(110deg, rgba(35, 104, 116, .45), rgba(11, 35, 47, .75));
+    }
+
+    .cta h2 { max-width: 600px; }
+    .cta p { margin: .8rem 0 0; color: var(--muted); }
+
+    footer {
+      padding: 2rem 0 3rem;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    :focus-visible { outline: 3px solid var(--coral); outline-offset: 4px; }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 1.5rem, 600px); }
+      nav ul { gap: .8rem; }
+      .hero { grid-template-columns: 1fr; gap: 2.5rem; min-height: auto; padding: 4rem 0; }
+      .portrait { min-height: 330px; }
+      section { padding: 3.5rem 0; }
+      .section-heading, .cta { align-items: start; flex-direction: column; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .abilities { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 420px) {
+      nav { align-items: start; flex-direction: column; }
+      nav ul { width: 100%; justify-content: space-between; }
+      h1 { font-size: 4rem; }
+      .cta { padding: 1.6rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="shell" aria-label="Primary navigation">
+      <a class="brand" href="#top">Manasquid / 07</a>
+      <ul>
+        <li><a href="#profile">Profile</a></li>
+        <li><a href="#abilities">Abilities</a></li>
+        <li><a href="#summon">Summon</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero shell" id="profile" aria-labelledby="hero-title">
+      <div>
+        <p class="eyebrow">Character dossier · abyssal tide</p>
+        <h1 id="hero-title">Manasquid<span>Tideborn spellblade</span></h1>
+        <p class="intro">A brilliant deep-sea wanderer with eight hands, one impossible mission, and enough mana to light the ocean floor.</p>
+        <div class="actions">
+          <a class="button" href="#summon">Add to party <span aria-hidden="true">&nbsp;→</span></a>
+          <a class="button secondary" href="#abilities">View abilities</a>
+        </div>
+      </div>
+      <figure class="portrait">
+        <div class="orb" role="img" aria-label="Stylized glowing blue orb representing Manasquid"><span aria-hidden="true">✦</span></div>
+        <figcaption>“The dark is only the ocean waiting to glow.”</figcaption>
+      </figure>
+    </section>
+
+    <section class="shell" aria-labelledby="stats-title">
+      <div class="section-heading">
+        <div><p class="section-label">Field readout</p><h2 id="stats-title">Built different.</h2></div>
+        <p>Part familiar, part frontline caster, entirely at home where the pressure breaks lesser heroes.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>08</strong><span>Arms of action</span></div>
+        <div class="stat"><strong>92</strong><span>Depth tolerance</span></div>
+        <div class="stat"><strong>∞</strong><span>Mana reserve</span></div>
+        <div class="stat"><strong>A+</strong><span>Party synergy</span></div>
+      </div>
+    </section>
+
+    <section class="shell" id="abilities" aria-labelledby="abilities-title">
+      <div class="section-heading">
+        <div><p class="section-label">Signature kit</p><h2 id="abilities-title">Make waves.</h2></div>
+        <p>Every spell leaves a little more light behind. Every encounter becomes a legend.</p>
+      </div>
+      <div class="abilities">
+        <article class="ability">
+          <div class="ability-icon" aria-hidden="true">◈</div>
+          <h3>Inkblot Eclipse</h3>
+          <p>Floods the arena in living shadow, then reveals every hidden threat in a constellation of sparks.</p>
+        </article>
+        <article class="ability">
+          <div class="ability-icon" aria-hidden="true">⌁</div>
+          <h3>Current Shift</h3>
+          <p>Turns incoming force into momentum, sliding Manasquid and an ally safely beyond the next wave.</p>
+        </article>
+        <article class="ability">
+          <div class="ability-icon" aria-hidden="true">✧</div>
+          <h3>Eightfold Oath</h3>
+          <p>Eight blades, one rhythm. A final combo that restores the party and redraws the battlefield.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="shell" id="summon" aria-labelledby="cta-title">
+      <div class="cta">
+        <div>
+          <h2 id="cta-title">Ready to go deeper?</h2>
+          <p>Bring Manasquid along. The next horizon is below the surface.</p>
+        </div>
+        <a class="button" href="mailto:hello@manasquid.example">Send a signal <span aria-hidden="true">&nbsp;↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">© 2025 Manasquid · A fictional field guide for imaginary oceans.</div>
+  </footer>
+</body>
+</html>
