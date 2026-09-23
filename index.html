@@ -605,7 +605,7 @@
       const collectSheet = () => {
         const fields = {};
         sheet.querySelectorAll("[name]").forEach((input) => {
-          fields[input.name] = input.value;
+          fields[input.name] = input.type === "checkbox" ? (input.checked ? "on" : "") : input.value;
         });
         const features = [...featureList.querySelectorAll(".feature-card")].map((card) => ({
           title: card.dataset.title,
@@ -619,7 +619,12 @@
       const applySheet = (data) => {
         if (!data || typeof data !== "object" || !data.fields || !Array.isArray(data.features)) throw new Error("Invalid character sheet");
         sheet.querySelectorAll("[name]").forEach((input) => {
-          if (Object.prototype.hasOwnProperty.call(data.fields, input.name)) input.value = data.fields[input.name];
+          if (!Object.prototype.hasOwnProperty.call(data.fields, input.name)) return;
+          if (input.type === "checkbox") {
+            input.checked = data.fields[input.name] === true || data.fields[input.name] === "on";
+          } else {
+            input.value = data.fields[input.name];
+          }
         });
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
