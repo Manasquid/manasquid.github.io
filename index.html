@@ -212,7 +212,6 @@
         <span class="status" id="save-status" role="status">Ready to edit</span>
         <button class="button primary" id="save-character" type="button">Save / manage</button>
         <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
-        <button class="button primary" id="print-sheet" type="button">Download PDF (importable)</button>
       </div>
     </div>
   </header>
@@ -232,6 +231,7 @@
       <div class="panel-heading">
         <div><h2 id="storage-heading">Save &amp; transfer characters</h2><p>Keep versions in this browser or move a complete sheet between devices.</p></div>
         <div class="storage-tools">
+          <button class="button" id="print-sheet" type="button">Download PDF</button>
           <button class="button" id="export-sheet" type="button">Download JSON</button>
           <button class="button" id="import-sheet" type="button">Import JSON or PDF</button>
           <input class="sr-only" id="import-file" type="file" accept="application/json,application/pdf,.json,.pdf">
@@ -242,7 +242,7 @@
           <div class="field"><label for="save-name">Save as</label><input id="save-name" placeholder="e.g. Manasquid — level 3"></div>
           <button class="button primary" id="save-named-sheet" type="button">Save browser copy</button>
         </div>
-        <p class="storage-help">Use <strong>Download JSON</strong> for the most reliable backup. PDFs downloaded with <strong>Download PDF</strong> can also be imported here.</p>
+        <p class="storage-help">Download either format for a portable copy. Import JSON files or PDFs created by this site from the same group of buttons.</p>
         <div class="saved-list" id="saved-list" aria-live="polite"></div>
       </div>
     </section>
