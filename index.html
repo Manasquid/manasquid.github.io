@@ -97,18 +97,19 @@
     .spell-slot-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; }
     .spell-slot-field[hidden] { display: none; }
     .spell-list { display: grid; gap: .65rem; }
-    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 2.5rem 1.35fr .8fr .48fr .8fr 1.9fr 5.4rem 5.25rem 1.85rem; gap: .55rem; align-items: end; }
+    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 2.8rem 1.2fr .8fr .48fr .8fr 1.9fr 5.4rem 5.25rem 1.9rem; gap: .55rem; align-items: end; }
     .spell-row input { height: 2.35rem; }
     .spell-prepared { display: flex; align-items: center; justify-content: center; gap: .3rem; min-height: 2.35rem; padding: 0 .35rem; color: var(--muted); font-size: .72rem; }
     .spell-prepared input { width: 1rem; height: 1rem; accent-color: var(--accent); }
     .remove-spell {
-      width: 1.85rem;
-      height: 1.85rem;
-      min-width: 1.85rem;
+      width: 1.9rem;
+      height: 1.9rem;
+      min-width: 1.9rem;
       padding: 0;
       font-size: .85rem;
       flex-shrink: 0;
       align-self: center;
+      justify-self: center;
     }
     @media (max-width: 520px) {
       .spell-slot-fields { grid-template-columns: repeat(2, 1fr); }
