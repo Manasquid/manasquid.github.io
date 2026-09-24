@@ -464,7 +464,7 @@
             <div class="field"><label for="spellcasting-ability">Spellcasting ability</label><select id="spellcasting-ability" name="spellcasting-ability"><option value="">Select ability</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
             <div class="field"><label for="spell-save-dc">Spell save DC</label><input id="spell-save-dc" name="spell-save-dc" type="number" min="0" placeholder="8 + modifier + proficiency" readonly></div>
             <div class="field"><label for="spell-attack-bonus">Spell attack bonus</label><input id="spell-attack-bonus" name="spell-attack-bonus" placeholder="+0" readonly></div>
-            <div class="field"><label for="caster-progression">Caster progression</label><select id="caster-progression" name="caster-progression"><option value="half">Half-caster (up to 5th)</option><option value="full">Full-caster (up to 9th)</option></select></div>
+            <div class="field"><label for="caster-progression">Caster progression</label><select id="caster-progression" name="caster-progression"><option value="full" selected>Full-caster (up to 9th)</option><option value="half">Half-caster (up to 5th)</option></select></div>
             <div class="field full"><span class="field-label">Maximum spell slots</span><div class="spell-slot-fields">
               <label class="spell-slot-field" data-slot-level="1"><span class="field-label">1st level</span><input name="spell-slot-1" type="number" min="0" placeholder="0"></label>
               <label class="spell-slot-field" data-slot-level="2"><span class="field-label">2nd level</span><input name="spell-slot-2" type="number" min="0" placeholder="0"></label>
@@ -533,7 +533,7 @@
       <label><span class="field-label">Range</span><input class="spell-range" placeholder="60 ft."></label>
       <label><span class="field-label">Duration</span><input class="spell-duration" placeholder="1 minute"></label>
       <label><span class="field-label">Components</span><input class="spell-components" placeholder="V, S, M"></label>
-      <label><span class="field-label">Effects</span><input class="spell-effects" placeholder="Damage, condition, or rider effect"></label>
+      <label><span class="field-label">Effects</span><input class="spell-effects" placeholder="Damage or effect"></label>
       <label><span class="field-label">Source / page</span><input class="spell-reference" placeholder="PHB p. 123"></label>
       <label class="spell-prepared"><input class="spell-prepared-input" type="checkbox" aria-label="Prepared spell"> Prepped</label>
       <button class="icon-button remove-spell" type="button" aria-label="Remove spell">×</button>
@@ -1145,6 +1145,10 @@
         persistDraft();
       });
       spellcasterToggle.addEventListener("change", () => {
+        if (spellcasterToggle.checked) {
+          document.querySelector('[name="caster-progression"]').value = "full";
+          updateSpellSlots();
+        }
         updateSpellcastingVisibility();
         persistDraft();
       });
