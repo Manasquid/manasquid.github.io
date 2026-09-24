@@ -154,7 +154,7 @@
       --topbar-bg: rgba(5, 7, 10, .94);
       --bonus: #ff5d5d;
     }
-    body[data-theme="jungle"] {
+    body[data-theme="verdant"] {
       --bg: #071d1e;
       --surface: #0c2c2a;
       --surface-raised: #123933;
@@ -172,7 +172,7 @@
       --topbar-bg: rgba(7, 29, 30, .94);
       --bonus: #f7b267;
     }
-    body[data-theme="desert"] {
+    body[data-theme="parchment"] {
       --bg: #d7b88d;
       --surface: #e7d1a4;
       --surface-raised: #f0dfbe;
@@ -190,11 +190,33 @@
       --topbar-bg: rgba(215, 184, 141, .94);
       --bonus: #8d2b2b;
     }
+    body[data-theme="radiation-poisoning"] {
+      --bg: #040a08;
+      --surface: #0d1b12;
+      --surface-raised: #163225;
+      --surface-soft: #102214;
+      --line: #355c3e;
+      --line-strong: #5d8d5d;
+      --text: #8fe39d;
+      --muted: #c8f8b4;
+      --accent: #d5f26d;
+      --accent-soft: #1a2617;
+      --field-text: #f5dc6d;
+      --field-placeholder: #8da27a;
+      --button-strong-text: #0d120f;
+      --button-strong-hover: #e7f57d;
+      --topbar-bg: rgba(4, 10, 8, .94);
+      --bonus: #d9d758;
+    }
     body[data-modifier-color="amber"] { --bonus: #ffba5c; }
+    body[data-modifier-color="copper"] { --bonus: #cb7a52; }
     body[data-modifier-color="gold"] { --bonus: #ffd166; }
     body[data-modifier-color="cream"] { --bonus: #f7e8c7; }
     body[data-modifier-color="cyan"] { --bonus: #8fe3ff; }
     body[data-modifier-color="green"] { --bonus: #8fe39d; }
+    body[data-modifier-color="lime"] { --bonus: #c9f26d; }
+    body[data-modifier-color="purple"] { --bonus: #d1a4ff; }
+    body[data-modifier-color="rose"] { --bonus: #ff8a9a; }
     body[data-modifier-color="maroon"] { --bonus: #b13a42; }
     body[data-modifier-color="red"] { --bonus: #ff5d5d; }
 
@@ -516,8 +538,8 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="sunset">Sunset amber</option><option value="ember">Ember red</option><option value="ocean">Ocean blue</option><option value="starlight">Starlight Walk</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="jungle">Jungle</option><option value="desert">Desert</option></select></label>
-        <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="green">Green</option><option value="maroon">Maroon</option></select></label>
+        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="sunset">Sunset amber</option><option value="ember">Ember red</option><option value="ocean">Ocean blue</option><option value="starlight">Starlight Walk</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="verdant">Verdant</option><option value="parchment">Parchment</option><option value="radiation-poisoning">Radiation Poisoning</option></select></label>
+        <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
       </div>
@@ -1038,7 +1060,7 @@
       };
 
       const applyTheme = (themeName) => {
-        const validThemes = new Set(["sunset", "ember", "ocean", "starlight", "monochrome", "office", "void", "jungle", "desert"]);
+        const validThemes = new Set(["sunset", "ember", "ocean", "starlight", "monochrome", "office", "void", "verdant", "parchment", "radiation-poisoning"]);
         const theme = validThemes.has(themeName) ? themeName : "sunset";
         document.body.dataset.theme = theme;
         const themeSelect = document.querySelector('[name="theme"]');
@@ -1046,7 +1068,7 @@
       };
 
       const applyModifierColor = (modifierColor) => {
-        const validColors = new Set(["red", "amber", "gold", "cream", "cyan", "green", "maroon"]);
+        const validColors = new Set(["red", "amber", "copper", "gold", "cream", "cyan", "green", "lime", "purple", "rose", "maroon"]);
         const color = validColors.has(modifierColor) ? modifierColor : "red";
         document.body.dataset.modifierColor = color;
         const modifierSelect = document.querySelector('[name="modifier-color"]');
