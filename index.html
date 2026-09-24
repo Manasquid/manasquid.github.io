@@ -190,7 +190,7 @@
       --topbar-bg: rgba(215, 184, 141, .94);
       --bonus: #8d2b2b;
     }
-    body[data-theme="radiation-poisoning"] {
+    body[data-theme="radiation"] {
       --bg: #040a08;
       --surface: #0d1b12;
       --surface-raised: #163225;
@@ -208,7 +208,7 @@
       --topbar-bg: rgba(4, 10, 8, .94);
       --bonus: #d9d758;
     }
-    body[data-theme="hypertech"] {
+    body[data-theme="neontech"] {
       --bg: #02050a;
       --surface: #0f1220;
       --surface-raised: #171d2f;
@@ -225,6 +225,42 @@
       --button-strong-hover: #69f0ff;
       --topbar-bg: rgba(2, 5, 10, .94);
       --bonus: #ff5ac7;
+    }
+    body[data-theme="sunset"] {
+      --bg: #1a1112;
+      --surface: #2c1c1c;
+      --surface-raised: #3c2827;
+      --surface-soft: #2b1b1c;
+      --line: #704d49;
+      --line-strong: #9d6d5d;
+      --text: #ffb48d;
+      --muted: #ffd6be;
+      --accent: #ff9f68;
+      --accent-soft: #3a201d;
+      --field-text: #ffe1a8;
+      --field-placeholder: #cb9a8c;
+      --button-strong-text: #26110d;
+      --button-strong-hover: #ffd6a0;
+      --topbar-bg: rgba(26, 17, 18, .94);
+      --bonus: #ff7b7b;
+    }
+    body[data-theme="moonwalk"] {
+      --bg: #0d1220;
+      --surface: #171d2d;
+      --surface-raised: #1f2a3d;
+      --surface-soft: #141d2f;
+      --line: #4d5f84;
+      --line-strong: #7589b5;
+      --text: #dfe9ff;
+      --muted: #bfd1ff;
+      --accent: #bca2ff;
+      --accent-soft: #1e2038;
+      --field-text: #f3ebff;
+      --field-placeholder: #8a9dc5;
+      --button-strong-text: #0d1220;
+      --button-strong-hover: #d7d9ff;
+      --topbar-bg: rgba(13, 18, 32, .94);
+      --bonus: #7ad7ff;
     }
     body[data-modifier-color="amber"] { --bonus: #ffba5c; }
     body[data-modifier-color="copper"] { --bonus: #cb7a52; }
@@ -556,7 +592,7 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation-poisoning">Radiation Poisoning</option><option value="hypertech">Hypertech</option></select></label>
+        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option></select></label>
         <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
@@ -1078,7 +1114,7 @@
       };
 
       const applyTheme = (themeName) => {
-        const validThemes = new Set(["streetlamp", "ember", "depths", "starlight", "monochrome", "office", "void", "venom", "parchment", "radiation-poisoning", "hypertech"]);
+        const validThemes = new Set(["streetlamp", "ember", "depths", "starlight", "monochrome", "office", "void", "venom", "parchment", "radiation", "neontech", "sunset", "moonwalk"]);
         const theme = validThemes.has(themeName) ? themeName : "streetlamp";
         document.body.dataset.theme = theme;
         const themeSelect = document.querySelector('[name="theme"]');
