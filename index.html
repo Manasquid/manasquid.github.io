@@ -97,12 +97,16 @@
     .spell-slot-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; }
     .spell-slot-field[hidden] { display: none; }
     .spell-list { display: grid; gap: .65rem; }
-    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 5rem 1.3fr 2fr 2.2rem; gap: .55rem; align-items: end; }
+    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 5rem 1.1fr 1.6fr 1.1fr 4rem 4rem 2.2rem; gap: .55rem; align-items: end; }
     .spell-row input { height: 2.35rem; }
+    .spell-prepared { display: flex; align-items: center; justify-content: center; gap: .3rem; min-height: 2.35rem; color: var(--muted); font-size: .72rem; }
+    .spell-prepared input { width: 1rem; height: 1rem; accent-color: var(--accent); }
     @media (max-width: 520px) {
       .spell-slot-fields { grid-template-columns: repeat(2, 1fr); }
       .spell-row { grid-template-columns: 1fr 5rem 2.2rem; }
-      .spell-row label:nth-child(3), .spell-row label:nth-child(4) { grid-column: span 2; }
+      .spell-row label:nth-child(3), .spell-row label:nth-child(4), .spell-row label:nth-child(5), .spell-row label:nth-child(6) { grid-column: span 2; }
+      .spell-row .spell-prepared { grid-column: 1; grid-row: 2; justify-content: start; }
+      .spell-row .remove-spell { grid-column: 2; grid-row: 2; }
     }
     .custom-fields { margin-top: 1rem; }
     .custom-field-list { display: grid; gap: .6rem; }
@@ -516,6 +520,9 @@
       <label><span class="field-label">Level</span><input class="spell-level" type="number" min="0" max="9" placeholder="0"></label>
       <label><span class="field-label">Components</span><input class="spell-components" placeholder="V, S, M"></label>
       <label><span class="field-label">Effects</span><input class="spell-effects" placeholder="Range, damage, duration..."></label>
+      <label><span class="field-label">Source</span><input class="spell-source" placeholder="e.g. PHB"></label>
+      <label><span class="field-label">Page</span><input class="spell-page" type="number" min="1" placeholder="123"></label>
+      <label class="spell-prepared"><input class="spell-prepared-input" type="checkbox"> Prepared</label>
       <button class="icon-button remove-spell" type="button" aria-label="Remove spell">×</button>
     </div>
   </template>
@@ -635,6 +642,9 @@
         row.querySelector(".spell-level").value = spell.level ?? "";
         row.querySelector(".spell-components").value = spell.components || "";
         row.querySelector(".spell-effects").value = spell.effects || "";
+        row.querySelector(".spell-source").value = spell.source || "";
+        row.querySelector(".spell-page").value = spell.page || "";
+        row.querySelector(".spell-prepared-input").checked = Boolean(spell.prepared);
         row.querySelector(".remove-spell").addEventListener("click", () => {
           row.remove();
           persistDraft();
@@ -646,7 +656,10 @@
         name: row.querySelector(".spell-name").value,
         level: row.querySelector(".spell-level").value,
         components: row.querySelector(".spell-components").value,
-        effects: row.querySelector(".spell-effects").value
+        effects: row.querySelector(".spell-effects").value,
+        source: row.querySelector(".spell-source").value,
+        page: row.querySelector(".spell-page").value,
+        prepared: row.querySelector(".spell-prepared-input").checked
       }));
 
       const featureEditor = document.querySelector("#feature-editor");
@@ -910,7 +923,7 @@
             `Ability: ${fields["spellcasting-ability"] || "—"}  Save DC: ${fields["spell-save-dc"] || "—"}  Attack: ${fields["spell-attack-bonus"] || "—"}`,
             `Caster progression: ${fields["caster-progression"] || "—"}`,
             `Maximum spell slots: ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => `${level}:${fields[`spell-slot-${level}`] || "0"}`).join("  ")}`,
-            ...(data.spells || []).map((spell) => `${spell.name || "Unnamed spell"} (Level ${spell.level || "0"}) · ${spell.components || "—"} · ${spell.effects || "—"}`),
+            ...(data.spells || []).map((spell) => `${spell.name || "Unnamed spell"} (Level ${spell.level || "0"})${spell.prepared ? " [Prepared]" : ""} · ${spell.components || "—"} · ${spell.effects || "—"}${spell.source || spell.page ? ` · ${spell.source || "Source"}${spell.page ? ` p. ${spell.page}` : ""}` : ""}`),
             `Notes: ${fields["spellcasting-notes"] || "—"}`,
             ""
           ] : []),
