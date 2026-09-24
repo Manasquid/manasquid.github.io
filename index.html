@@ -824,8 +824,18 @@
         return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells() };
       };
 
+      const resetCharacterFields = () => {
+        sheet.reset();
+        document.querySelectorAll("#configuration [name]").forEach((input) => {
+          if (input.type === "checkbox") input.checked = false;
+          else if (input.tagName === "SELECT") input.selectedIndex = 0;
+          else input.value = "";
+        });
+      };
+
       const applySheet = (data) => {
         if (!data || typeof data !== "object" || !data.fields || !Array.isArray(data.features)) throw new Error("Invalid character sheet");
+        resetCharacterFields();
         document.querySelectorAll("#character-sheet [name], #configuration [name]").forEach((input) => {
           if (!Object.prototype.hasOwnProperty.call(data.fields, input.name)) return;
           if (input.type === "checkbox") {
