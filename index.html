@@ -188,13 +188,13 @@
 
     .notes { min-height: 10rem; }
     .proficiency-table { display: grid; gap: .45rem; }
-    .skill-row { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 2.2rem 2.2rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
+    .skill-row { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 4.5rem 4.5rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
     .skill-row .skill-name { font-weight: 650; }
     .skill-row .skill-ability { color: var(--muted); font-size: .8rem; }
     .skill-row input[type="number"] { height: 2.2rem; }
     .skill-row input[type="checkbox"] { width: 1.1rem; height: 1.1rem; justify-self: center; accent-color: var(--accent); }
-    .proficiency-header { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 2.2rem 2.2rem 2.2rem; gap: .55rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
-    .proficiency-header span:nth-child(n+3) { text-align: center; }
+    .proficiency-header { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 4.5rem 4.5rem 2.2rem; gap: .55rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .proficiency-header span:nth-child(n+3) { text-align: center; white-space: nowrap; }
     .proficiency-actions { display: flex; justify-content: end; margin-top: .8rem; }
     .proficiency-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .background-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -223,7 +223,7 @@
       .field, .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
-      .skill-row, .proficiency-header { grid-template-columns: minmax(7rem, 1fr) 5.5rem 3.5rem 2rem 2rem 2rem; }
+      .skill-row, .proficiency-header { grid-template-columns: minmax(7rem, 1fr) 5.5rem 3.5rem 4.25rem 4.25rem 2rem; }
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
