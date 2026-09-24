@@ -14,8 +14,8 @@
       --surface-soft: #20242d;
       --line: #363b48;
       --line-strong: #4b5363;
-      --text: #ffc96b;
-      --muted: #f6d08a;
+      --text: #d9962c;
+      --muted: #e1a84d;
       --accent: #ffca6a;
       --accent-soft: #2d281e;
       --success: #93c99b;
@@ -166,7 +166,7 @@
     .field { display: grid; gap: .35rem; grid-column: span 3; }
     .field.wide { grid-column: span 6; }
     .field.full { grid-column: 1 / -1; }
-    label, .field-label { color: var(--muted); font-size: .74rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
+    label, .field-label { color: var(--text); font-size: .74rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
     input, select, textarea {
       width: 100%;
       border: 1px solid var(--line);
@@ -174,6 +174,9 @@
       outline: none;
       background: var(--surface-soft);
       color: #ffd78d;
+    }
+    [data-save-for], .skill-bonus, [name="spell-save-dc"], [name="spell-attack-bonus"], [name="initiative"], [name="proficiency-bonus"] {
+      color: #d9962c;
     }
     input, select { height: 2.55rem; padding: .45rem .65rem; }
     textarea { min-height: 6rem; padding: .6rem .65rem; resize: vertical; }
@@ -193,7 +196,7 @@
     }
     .ability input { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
     .ability-name { color: var(--muted); font-size: .72rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
-    .ability-mod { color: #d6962b; font-size: .8rem; }
+    .ability-mod { color: #d9962c; font-size: .8rem; }
     .save-check { display: flex; align-items: center; justify-content: center; gap: .3rem; color: var(--muted); font-size: .7rem; }
     .save-check input { width: 1rem; height: 1rem; accent-color: var(--accent); }
 
