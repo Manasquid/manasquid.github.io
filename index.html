@@ -94,6 +94,16 @@
     .config-option input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--accent); }
     .config-checkbox { display: flex; align-items: center; gap: .5rem; min-height: 2.55rem; color: var(--text); }
     .spellcasting-panel[hidden] { display: none; }
+    .spell-slot-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; }
+    .spell-slot-field[hidden] { display: none; }
+    .spell-list { display: grid; gap: .65rem; }
+    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 5rem 1.3fr 2fr 2.2rem; gap: .55rem; align-items: end; }
+    .spell-row input { height: 2.35rem; }
+    @media (max-width: 520px) {
+      .spell-slot-fields { grid-template-columns: repeat(2, 1fr); }
+      .spell-row { grid-template-columns: 1fr 5rem 2.2rem; }
+      .spell-row label:nth-child(3), .spell-row label:nth-child(4) { grid-column: span 2; }
+    }
     .custom-fields { margin-top: 1rem; }
     .custom-field-list { display: grid; gap: .6rem; }
     .custom-field-row { display: grid; grid-template-columns: 1.2fr 1.6fr auto; gap: .55rem; align-items: end; }
@@ -437,10 +447,21 @@
         <div class="panel-body">
           <div class="fields">
             <div class="field"><label for="spellcasting-ability">Spellcasting ability</label><select id="spellcasting-ability" name="spellcasting-ability"><option value="">Select ability</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
-            <div class="field"><label for="spell-save-dc">Spell save DC</label><input id="spell-save-dc" name="spell-save-dc" type="number" min="0" placeholder="8 + modifier + proficiency"></div>
-            <div class="field"><label for="spell-attack-bonus">Spell attack bonus</label><input id="spell-attack-bonus" name="spell-attack-bonus" placeholder="+0"></div>
-            <div class="field wide"><label for="spell-slots">Spell slots</label><input id="spell-slots" name="spell-slots" placeholder="e.g. 1st: 4 / 2nd: 2 / 3rd: 1"></div>
-            <div class="field full"><label for="known-spells">Known / prepared spells</label><textarea id="known-spells" name="known-spells" placeholder="List cantrips and spells, one per line, or group them by level."></textarea></div>
+            <div class="field"><label for="spell-save-dc">Spell save DC</label><input id="spell-save-dc" name="spell-save-dc" type="number" min="0" placeholder="8 + modifier + proficiency" readonly></div>
+            <div class="field"><label for="spell-attack-bonus">Spell attack bonus</label><input id="spell-attack-bonus" name="spell-attack-bonus" placeholder="+0" readonly></div>
+            <div class="field"><label for="caster-progression">Caster progression</label><select id="caster-progression" name="caster-progression"><option value="half">Half-caster (up to 5th)</option><option value="full">Full-caster (up to 9th)</option></select></div>
+            <div class="field full"><span class="field-label">Maximum spell slots</span><div class="spell-slot-fields">
+              <label class="spell-slot-field" data-slot-level="1"><span class="field-label">1st level</span><input name="spell-slot-1" type="number" min="0" placeholder="0"></label>
+              <label class="spell-slot-field" data-slot-level="2"><span class="field-label">2nd level</span><input name="spell-slot-2" type="number" min="0" placeholder="0"></label>
+              <label class="spell-slot-field" data-slot-level="3"><span class="field-label">3rd level</span><input name="spell-slot-3" type="number" min="0" placeholder="0"></label>
+              <label class="spell-slot-field" data-slot-level="4"><span class="field-label">4th level</span><input name="spell-slot-4" type="number" min="0" placeholder="0"></label>
+              <label class="spell-slot-field" data-slot-level="5"><span class="field-label">5th level</span><input name="spell-slot-5" type="number" min="0" placeholder="0"></label>
+              <label class="spell-slot-field" data-slot-level="6"><span class="field-label">6th level</span><input name="spell-slot-6" type="number" min="0" placeholder="0"></label>
+              <label class="spell-slot-field" data-slot-level="7"><span class="field-label">7th level</span><input name="spell-slot-7" type="number" min="0" placeholder="0"></label>
+              <label class="spell-slot-field" data-slot-level="8"><span class="field-label">8th level</span><input name="spell-slot-8" type="number" min="0" placeholder="0"></label>
+              <label class="spell-slot-field" data-slot-level="9"><span class="field-label">9th level</span><input name="spell-slot-9" type="number" min="0" placeholder="0"></label>
+            </div></div>
+            <div class="field full"><span class="field-label">Spells</span><div class="spell-list" id="spell-list"></div><button class="button" id="add-spell" type="button">+ Add spell</button></div>
             <div class="field full"><label for="spellcasting-notes">Spellcasting notes</label><textarea id="spellcasting-notes" name="spellcasting-notes" placeholder="Components, focus, ritual casting, concentration reminders, and other details."></textarea></div>
           </div>
         </div>
@@ -489,6 +510,15 @@
       <button class="icon-button remove-custom-field" type="button" aria-label="Remove custom field">×</button>
     </div>
   </template>
+  <template id="spell-template">
+    <div class="spell-row">
+      <label><span class="field-label">Spell name</span><input class="spell-name" placeholder="e.g. Magic Missile"></label>
+      <label><span class="field-label">Level</span><input class="spell-level" type="number" min="0" max="9" placeholder="0"></label>
+      <label><span class="field-label">Components</span><input class="spell-components" placeholder="V, S, M"></label>
+      <label><span class="field-label">Effects</span><input class="spell-effects" placeholder="Range, damage, duration..."></label>
+      <button class="icon-button remove-spell" type="button" aria-label="Remove spell">×</button>
+    </div>
+  </template>
 
   <script>
     (() => {
@@ -501,8 +531,10 @@
       const currencyTemplate = document.querySelector("#currency-template");
       const currencyList = document.querySelector("#currency-list");
       const customFieldTemplate = document.querySelector("#custom-field-template");
+      const spellTemplate = document.querySelector("#spell-template");
       const spellcastingPanel = document.querySelector("#spellcasting");
       const spellcasterToggle = document.querySelector('[name="spellcaster"]');
+      const spellList = document.querySelector("#spell-list");
       const saveStatus = document.querySelector("#save-status");
       const storageKey = "manasquid.character-sheets";
       const draftKey = "manasquid.character-draft";
@@ -576,7 +608,46 @@
 
       const updateSpellcastingVisibility = () => {
         spellcastingPanel.hidden = !spellcasterToggle.checked;
+        updateSpellSlots();
+        updateSpellcastingStats();
       };
+
+      const updateSpellSlots = () => {
+        const fullCaster = document.querySelector('[name="caster-progression"]').value === "full";
+        document.querySelectorAll(".spell-slot-field").forEach((field) => {
+          field.hidden = !fullCaster && Number(field.dataset.slotLevel) > 5;
+        });
+      };
+
+      const updateSpellcastingStats = () => {
+        const abilityMap = { STR: "strength", DEX: "dexterity", CON: "constitution", INT: "intelligence", WIS: "wisdom", CHA: "charisma" };
+        const ability = document.querySelector('[name="spellcasting-ability"]').value;
+        const score = abilityMap[ability] ? Number(document.querySelector(`[name="${abilityMap[ability]}"]`).value) || 0 : 0;
+        const modifier = Math.floor((score - 10) / 2);
+        const proficiency = Number(document.querySelector('[name="proficiency-bonus"]').value) || 0;
+        document.querySelector('[name="spell-save-dc"]').value = ability ? String(8 + modifier + proficiency) : "";
+        document.querySelector('[name="spell-attack-bonus"]').value = ability ? `${modifier + proficiency >= 0 ? "+" : ""}${modifier + proficiency}` : "";
+      };
+
+      const addSpell = (spell = {}) => {
+        const row = spellTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".spell-name").value = spell.name || "";
+        row.querySelector(".spell-level").value = spell.level ?? "";
+        row.querySelector(".spell-components").value = spell.components || "";
+        row.querySelector(".spell-effects").value = spell.effects || "";
+        row.querySelector(".remove-spell").addEventListener("click", () => {
+          row.remove();
+          persistDraft();
+        });
+        spellList.appendChild(row);
+      };
+
+      const collectSpells = () => [...spellList.querySelectorAll(".spell-row")].map((row) => ({
+        name: row.querySelector(".spell-name").value,
+        level: row.querySelector(".spell-level").value,
+        components: row.querySelector(".spell-components").value,
+        effects: row.querySelector(".spell-effects").value
+      }));
 
       const featureEditor = document.querySelector("#feature-editor");
       const featureName = document.querySelector("#feature-name");
@@ -737,7 +808,7 @@
           source: card.dataset.source,
           uses: card.dataset.uses
         }));
-        return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields() };
+        return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells() };
       };
 
       const applySheet = (data) => {
@@ -764,6 +835,8 @@
         ];
         currencies.forEach((currency) => addCurrency(currency.name, currency.amount));
         renderCustomFields(Array.isArray(data.customFields) ? data.customFields : []);
+        spellList.replaceChildren();
+        (Array.isArray(data.spells) ? data.spells : []).forEach(addSpell);
         syncArmorProficiencies();
         updateModifiers();
         updateSpellcastingVisibility();
@@ -835,8 +908,9 @@
           ...(fields.spellcaster === "on" ? [
             "SPELLCASTING",
             `Ability: ${fields["spellcasting-ability"] || "—"}  Save DC: ${fields["spell-save-dc"] || "—"}  Attack: ${fields["spell-attack-bonus"] || "—"}`,
-            `Slots: ${fields["spell-slots"] || "—"}`,
-            `Known / prepared spells: ${fields["known-spells"] || "—"}`,
+            `Caster progression: ${fields["caster-progression"] || "—"}`,
+            `Maximum spell slots: ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => `${level}:${fields[`spell-slot-${level}`] || "0"}`).join("  ")}`,
+            ...(data.spells || []).map((spell) => `${spell.name || "Unnamed spell"} (Level ${spell.level || "0"}) · ${spell.components || "—"} · ${spell.effects || "—"}`),
             `Notes: ${fields["spellcasting-notes"] || "—"}`,
             ""
           ] : []),
@@ -931,6 +1005,11 @@
         currencyList.lastElementChild.querySelector(".currency-name").focus();
         persistDraft();
       });
+      document.querySelector("#add-spell").addEventListener("click", () => {
+        addSpell();
+        spellList.lastElementChild.querySelector(".spell-name").focus();
+        persistDraft();
+      });
       document.querySelectorAll("[data-add-custom-field]").forEach((button) => button.addEventListener("click", () => {
         addCustomField(button.dataset.addCustomField);
         const container = document.querySelector(`[data-custom-fields-for="${button.dataset.addCustomField}"]`);
@@ -1003,6 +1082,12 @@
         updateSpellcastingVisibility();
         persistDraft();
       });
+      document.querySelector('[name="spellcasting-ability"]').addEventListener("change", updateSpellcastingStats);
+      document.querySelector('[name="caster-progression"]').addEventListener("change", () => {
+        updateSpellSlots();
+        persistDraft();
+      });
+      document.querySelectorAll(".score, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("input", updateSpellcastingStats));
       document.querySelectorAll(".save-proficient, .skill-proficient, .skill-expertise, .skill-ability, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("change", updateModifiers));
       skillList.addEventListener("change", updateModifiers);
       document.querySelectorAll(".armor-proficient").forEach((input) => input.addEventListener("change", () => {
@@ -1037,6 +1122,7 @@
         currencyList.replaceChildren();
         [["Copper (CP)", ""], ["Silver (SP)", ""], ["Electrum (EP)", ""], ["Gold (GP)", ""]].forEach(([name, amount]) => addCurrency(name, amount));
         renderCustomFields();
+        spellList.replaceChildren();
         closeFeatureEditor();
         localStorage.removeItem(draftKey);
         updateModifiers();
