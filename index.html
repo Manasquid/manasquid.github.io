@@ -97,14 +97,14 @@
     .spell-slot-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; }
     .spell-slot-field[hidden] { display: none; }
     .spell-list { display: grid; gap: .65rem; }
-    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 5rem 1.1fr 1.15fr 1.45fr 1.1fr 4rem 2.2rem; gap: .55rem; align-items: end; }
+    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 5rem 1.1fr 1.15fr 1.15fr 1.45fr 1.1fr 4rem 2.2rem; gap: .55rem; align-items: end; }
     .spell-row input { height: 2.35rem; }
     .spell-prepared { display: flex; align-items: center; justify-content: center; gap: .3rem; min-height: 2.35rem; color: var(--muted); font-size: .72rem; }
     .spell-prepared input { width: 1rem; height: 1rem; accent-color: var(--accent); }
     @media (max-width: 520px) {
       .spell-slot-fields { grid-template-columns: repeat(2, 1fr); }
       .spell-row { grid-template-columns: 1fr 5rem 2.2rem; }
-      .spell-row label:nth-child(3), .spell-row label:nth-child(4), .spell-row label:nth-child(5), .spell-row label:nth-child(6), .spell-row label:nth-child(7) { grid-column: span 2; }
+      .spell-row label:nth-child(3), .spell-row label:nth-child(4), .spell-row label:nth-child(5), .spell-row label:nth-child(6), .spell-row label:nth-child(7), .spell-row label:nth-child(8) { grid-column: span 2; }
       .spell-row .spell-prepared { grid-column: 1; grid-row: 2; justify-content: start; }
       .spell-row .remove-spell { grid-column: 2; grid-row: 2; }
     }
@@ -519,6 +519,8 @@
       <label><span class="field-label">Spell name</span><input class="spell-name" placeholder="e.g. Magic Missile"></label>
       <label><span class="field-label">Level</span><input class="spell-level" type="number" min="0" max="9" placeholder="0"></label>
       <label><span class="field-label">School</span><input class="spell-school" placeholder="Evocation"></label>
+      <label><span class="field-label">Range</span><input class="spell-range" placeholder="60 ft."></label>
+      <label><span class="field-label">Duration</span><input class="spell-duration" placeholder="Instantaneous"></label>
       <label><span class="field-label">Components</span><input class="spell-components" placeholder="V, S, M"></label>
       <label><span class="field-label">Effects</span><input class="spell-effects" placeholder="Range, damage, duration..."></label>
       <label><span class="field-label">Source / page</span><input class="spell-reference" placeholder="e.g. PHB p. 123"></label>
@@ -641,6 +643,8 @@
         row.querySelector(".spell-name").value = spell.name || "";
         row.querySelector(".spell-level").value = spell.level ?? "";
         row.querySelector(".spell-school").value = spell.school || "";
+        row.querySelector(".spell-range").value = spell.range || "";
+        row.querySelector(".spell-duration").value = spell.duration || "";
         row.querySelector(".spell-components").value = spell.components || "";
         row.querySelector(".spell-effects").value = spell.effects || "";
         row.querySelector(".spell-reference").value = spell.reference || [spell.source, spell.page ? `p. ${spell.page}` : ""].filter(Boolean).join(" ");
@@ -656,6 +660,8 @@
         name: row.querySelector(".spell-name").value,
         level: row.querySelector(".spell-level").value,
         school: row.querySelector(".spell-school").value,
+        range: row.querySelector(".spell-range").value,
+        duration: row.querySelector(".spell-duration").value,
         components: row.querySelector(".spell-components").value,
         effects: row.querySelector(".spell-effects").value,
         reference: row.querySelector(".spell-reference").value,
@@ -933,7 +939,7 @@
             `Ability: ${fields["spellcasting-ability"] || "—"}  Save DC: ${fields["spell-save-dc"] || "—"}  Attack: ${fields["spell-attack-bonus"] || "—"}`,
             `Caster progression: ${fields["caster-progression"] || "—"}`,
             `Maximum spell slots: ${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => `${level}:${fields[`spell-slot-${level}`] || "0"}`).join("  ")}`,
-            ...(data.spells || []).map((spell) => `${spell.name || "Unnamed spell"} (Level ${spell.level || "0"}${spell.school ? `, ${spell.school}` : ""})${spell.prepared ? " [Prepared]" : ""} · ${spell.components || "—"} · ${spell.effects || "—"}${spell.reference ? ` · ${spell.reference}` : spell.source || spell.page ? ` · ${spell.source || "Source"}${spell.page ? ` p. ${spell.page}` : ""}` : ""}`),
+            ...(data.spells || []).map((spell) => `${spell.name || "Unnamed spell"} (Level ${spell.level || "0"}${spell.school ? `, ${spell.school}` : ""})${spell.prepared ? " [Prepared]" : ""} · Range: ${spell.range || "—"} · Duration: ${spell.duration || "—"} · ${spell.components || "—"} · ${spell.effects || "—"}${spell.reference ? ` · ${spell.reference}` : spell.source || spell.page ? ` · ${spell.source || "Source"}${spell.page ? ` p. ${spell.page}` : ""}` : ""}`),
             `Notes: ${fields["spellcasting-notes"] || "—"}`,
             ""
           ] : []),
