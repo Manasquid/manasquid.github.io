@@ -227,40 +227,76 @@
       --bonus: #ff5ac7;
     }
     body[data-theme="sunset"] {
-      --bg: #1a1112;
-      --surface: #2c1c1c;
-      --surface-raised: #3c2827;
-      --surface-soft: #2b1b1c;
-      --line: #704d49;
-      --line-strong: #9d6d5d;
-      --text: #ffb48d;
-      --muted: #ffd6be;
-      --accent: #ff9f68;
-      --accent-soft: #3a201d;
-      --field-text: #ffe1a8;
-      --field-placeholder: #cb9a8c;
-      --button-strong-text: #26110d;
-      --button-strong-hover: #ffd6a0;
-      --topbar-bg: rgba(26, 17, 18, .94);
-      --bonus: #ff7b7b;
+      --bg: #321b2a;
+      --surface: #4d2940;
+      --surface-raised: #673650;
+      --surface-soft: #42243a;
+      --line: #8c5878;
+      --line-strong: #b77b9b;
+      --text: #ffc4a3;
+      --muted: #ffe1cb;
+      --accent: #ffb36b;
+      --accent-soft: #5a2e38;
+      --field-text: #ffe5a8;
+      --field-placeholder: #d09ba2;
+      --button-strong-text: #32151c;
+      --button-strong-hover: #ffd095;
+      --topbar-bg: rgba(50, 27, 42, .94);
+      --bonus: #ff8585;
     }
     body[data-theme="moonwalk"] {
-      --bg: #0d1220;
-      --surface: #171d2d;
-      --surface-raised: #1f2a3d;
-      --surface-soft: #141d2f;
-      --line: #4d5f84;
-      --line-strong: #7589b5;
-      --text: #dfe9ff;
-      --muted: #bfd1ff;
-      --accent: #bca2ff;
-      --accent-soft: #1e2038;
-      --field-text: #f3ebff;
-      --field-placeholder: #8a9dc5;
-      --button-strong-text: #0d1220;
-      --button-strong-hover: #d7d9ff;
-      --topbar-bg: rgba(13, 18, 32, .94);
-      --bonus: #7ad7ff;
+      --bg: #18191d;
+      --surface: #292b31;
+      --surface-raised: #373a43;
+      --surface-soft: #24262c;
+      --line: #5a5e69;
+      --line-strong: #858a98;
+      --text: #d7d9df;
+      --muted: #b4b9c5;
+      --accent: #c5cad6;
+      --accent-soft: #34323e;
+      --field-text: #f3ead2;
+      --field-placeholder: #8f96a5;
+      --button-strong-text: #18191d;
+      --button-strong-hover: #e4e7ef;
+      --topbar-bg: rgba(24, 25, 29, .94);
+      --bonus: #8fdcff;
+    }
+    body[data-theme="beeswax"] {
+      --bg: #d4a83f;
+      --surface: #17130b;
+      --surface-raised: #28200d;
+      --surface-soft: #201a0c;
+      --line: #67521e;
+      --line-strong: #a6852e;
+      --text: #f1d45f;
+      --muted: #f7e6a2;
+      --accent: #f0c83e;
+      --accent-soft: #35280b;
+      --field-text: #fff0b5;
+      --field-placeholder: #b99e55;
+      --button-strong-text: #211805;
+      --button-strong-hover: #ffe36a;
+      --topbar-bg: rgba(212, 168, 63, .94);
+      --bonus: #ffca3a;
+    }
+    body[data-theme="rosethorn"] {
+      --bg: #07140e;
+      --surface: #10251a;
+      --surface-raised: #183723;
+      --surface-soft: #0c1d14;
+      --line: #285238;
+      --line-strong: #3d754d;
+      --text: #ff5964;
+      --muted: #ff8a8d;
+      --accent: #d83f4b;
+      --accent-soft: #2b151b;
+      --field-text: #ff6b70;
+      --field-placeholder: #8d9f88;
+      --button-strong-text: #fff1dc;
+      --button-strong-hover: #ff7d82;
+      --topbar-bg: rgba(7, 20, 14, .94);
+      --bonus: #ffb347;
     }
     body[data-modifier-color="amber"] { --bonus: #ffba5c; }
     body[data-modifier-color="copper"] { --bonus: #cb7a52; }
@@ -592,7 +628,7 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option></select></label>
+        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option></select></label>
         <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
@@ -1114,7 +1150,7 @@
       };
 
       const applyTheme = (themeName) => {
-        const validThemes = new Set(["streetlamp", "ember", "depths", "starlight", "monochrome", "office", "void", "venom", "parchment", "radiation", "neontech", "sunset", "moonwalk"]);
+        const validThemes = new Set(["streetlamp", "ember", "depths", "starlight", "monochrome", "office", "void", "venom", "parchment", "radiation", "neontech", "sunset", "moonwalk", "beeswax", "rosethorn"]);
         const theme = validThemes.has(themeName) ? themeName : "streetlamp";
         document.body.dataset.theme = theme;
         const themeSelect = document.querySelector('[name="theme"]');
