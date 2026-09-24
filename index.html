@@ -316,7 +316,7 @@
               <label class="combat-card"><span class="field-label">Armor class</span><input name="armor-class" type="number" placeholder="10"></label>
               <label class="combat-card"><span class="field-label">Initiative</span><input name="initiative" placeholder="+0"></label>
               <label class="combat-card"><span class="field-label">Speed</span><input name="speed" placeholder="30 ft."></label>
-              <label class="combat-card"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual / rolled</option><option value="calculated">Calculated average</option></select></label>
+              <label class="combat-card"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Calculated average</option></select></label>
               <label class="combat-card"><span class="field-label">Max HP</span><input name="max-hp" type="number" min="0" placeholder="10"></label>
               <label class="combat-card"><span class="field-label">Current HP</span><input name="current-hp" type="number" placeholder="10"></label>
               <label class="combat-card"><span class="field-label">Hit die size</span><input name="hit-dice-size" type="number" min="1" placeholder="8"></label>
@@ -499,7 +499,7 @@
         }
         const constitutionModifier = Math.floor((constitution - 10) / 2);
         const averageAfterFirstLevel = Math.ceil((dieSize + 1) / 2);
-        maxHp.value = Math.max(0, dieSize + (level - 1) * averageAfterFirstLevel + level * constitutionModifier);
+        maxHp.value = Math.max(0, level * (averageAfterFirstLevel + constitutionModifier));
       };
 
       const featureEditor = document.querySelector("#feature-editor");
