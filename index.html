@@ -188,12 +188,12 @@
 
     .notes { min-height: 10rem; }
     .proficiency-table { display: grid; gap: .45rem; }
-    .skill-row { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 2.2rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
+    .skill-row { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 2.2rem 2.2rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
     .skill-row .skill-name { font-weight: 650; }
     .skill-row .skill-ability { color: var(--muted); font-size: .8rem; }
     .skill-row input[type="number"] { height: 2.2rem; }
     .skill-row input[type="checkbox"] { width: 1.1rem; height: 1.1rem; justify-self: center; accent-color: var(--accent); }
-    .proficiency-header { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 2.2rem 2.2rem; gap: .55rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .proficiency-header { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 2.2rem 2.2rem 2.2rem; gap: .55rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .proficiency-header span:nth-child(n+3) { text-align: center; }
     .proficiency-actions { display: flex; justify-content: end; margin-top: .8rem; }
     .proficiency-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -223,7 +223,7 @@
       .field, .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
-      .skill-row, .proficiency-header { grid-template-columns: minmax(7rem, 1fr) 5.5rem 3.5rem 2rem 2rem; }
+      .skill-row, .proficiency-header { grid-template-columns: minmax(7rem, 1fr) 5.5rem 3.5rem 2rem 2rem 2rem; }
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
@@ -379,7 +379,7 @@
           <div><h2 id="proficiencies-heading">Proficiencies</h2><p>Track standard skills and add custom skills for any setting.</p></div>
         </div>
         <div class="panel-body">
-          <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>Bonus</span><span>Proficient</span><span></span></div>
+          <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>Bonus</span><span>Proficient</span><span>Expertise</span><span></span></div>
           <div class="proficiency-table" id="skill-list"></div>
           <div class="proficiency-actions"><button class="button" id="add-skill" type="button">+ Add custom skill</button></div>
           <div class="proficiency-fields">
@@ -440,6 +440,7 @@
       </select>
       <input class="skill-bonus" type="text" aria-label="Skill bonus" placeholder="+0" readonly>
       <input class="skill-proficient" type="checkbox" aria-label="Proficient">
+      <input class="skill-expertise" type="checkbox" aria-label="Expertise">
       <button class="icon-button remove-skill" type="button" aria-label="Remove skill">×</button>
     </div>
   </template>
@@ -494,7 +495,8 @@
           const score = Number(document.querySelector(`[name="${ability}"]`).value) || 0;
           const modifier = Math.floor((score - 10) / 2);
           const proficient = row.querySelector(".skill-proficient").checked;
-          const bonus = modifier + (proficient ? proficiencyBonus : 0);
+          const expertise = row.querySelector(".skill-expertise").checked;
+          const bonus = modifier + (proficient ? proficiencyBonus * (expertise ? 2 : 1) : 0);
           row.querySelector(".skill-bonus").value = `${bonus >= 0 ? "+" : ""}${bonus}`;
         });
         updateHealth();
@@ -615,12 +617,13 @@
         }
       };
 
-      const addSkill = (name = "Custom skill", ability = "INT", bonus = "", proficient = false, removable = true) => {
+      const addSkill = (name = "Custom skill", ability = "INT", bonus = "", proficient = false, expertise = false, removable = true) => {
         const row = skillTemplate.content.cloneNode(true).firstElementChild;
         row.querySelector(".skill-name").value = name;
         row.querySelector(".skill-ability").value = ability;
         row.querySelector(".skill-bonus").value = bonus;
         row.querySelector(".skill-proficient").checked = proficient;
+        row.querySelector(".skill-expertise").checked = expertise;
         row.querySelector(".remove-skill").hidden = !removable;
         row.querySelector(".remove-skill").addEventListener("click", () => {
           row.remove();
@@ -634,6 +637,7 @@
         ability: row.querySelector(".skill-ability").value,
         bonus: row.querySelector(".skill-bonus").value,
         proficient: row.querySelector(".skill-proficient").checked,
+        expertise: row.querySelector(".skill-expertise").checked,
         removable: !row.querySelector(".remove-skill").hidden
       }));
 
@@ -680,8 +684,8 @@
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
         skillList.replaceChildren();
-        (Array.isArray(data.skills) ? data.skills : standardSkills.map(([name, ability]) => ({ name, ability, bonus: "", proficient: false, removable: false })))
-          .forEach((skill) => addSkill(skill.name, skill.ability, skill.bonus, skill.proficient, skill.removable));
+        (Array.isArray(data.skills) ? data.skills : standardSkills.map(([name, ability]) => ({ name, ability, bonus: "", proficient: false, expertise: false, removable: false })))
+          .forEach((skill) => addSkill(skill.name, skill.ability, skill.bonus, skill.proficient, skill.expertise, Object.prototype.hasOwnProperty.call(skill, "removable") ? skill.removable : true));
         currencyList.replaceChildren();
         const currencies = Array.isArray(data.currencies) ? data.currencies : [
           { name: "Copper (CP)", amount: data.fields["currency-copper"] || "" },
@@ -748,7 +752,7 @@
           "FEATURES & TRAITS",
           ...data.features.flatMap((feature) => [feature.title, `${feature.source} · ${feature.uses}`, feature.description, ""]),
           "SKILL PROFICIENCIES",
-          ...(data.skills || []).map((skill) => `${skill.name}: ${skill.ability} ${skill.bonus || "+0"}${skill.proficient ? " (Proficient)" : ""}`),
+          ...(data.skills || []).map((skill) => `${skill.name}: ${skill.ability} ${skill.bonus || "+0"}${skill.proficient ? skill.expertise ? " (Expertise)" : " (Proficient)" : ""}`),
           `Weapon proficiencies: ${fields["weapon-proficiencies"] || "—"}`,
           `Tool proficiencies: ${fields["tool-proficiencies"] || "—"}`,
           "",
@@ -909,7 +913,7 @@
         updateHitDieRules();
         persistDraft();
       });
-      document.querySelectorAll(".save-proficient, .skill-proficient, .skill-ability, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("change", updateModifiers));
+      document.querySelectorAll(".save-proficient, .skill-proficient, .skill-expertise, .skill-ability, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("change", updateModifiers));
       skillList.addEventListener("change", updateModifiers);
       document.querySelectorAll(".armor-proficient").forEach((input) => input.addEventListener("change", () => {
         if (input.name === "armor-heavy" && input.checked) {
@@ -938,7 +942,7 @@
         sheet.reset();
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         skillList.replaceChildren();
-        standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false));
+        standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
         currencyList.replaceChildren();
         [["Copper (CP)", ""], ["Silver (SP)", ""], ["Electrum (EP)", ""], ["Gold (GP)", ""]].forEach(([name, amount]) => addCurrency(name, amount));
         closeFeatureEditor();
@@ -950,7 +954,7 @@
       try {
         const draft = JSON.parse(localStorage.getItem(draftKey) || "null");
         if (draft) applySheet(draft);
-        else standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false));
+        else standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
       } catch { setStatus("Could not restore browser draft"); }
       renderSavedSheets();
       updateModifiers();
