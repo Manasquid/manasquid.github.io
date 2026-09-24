@@ -82,6 +82,24 @@
       --topbar-bg: rgba(13, 24, 34, .94);
       --bonus: #ff7d76;
     }
+    body[data-theme="starlight"] {
+      --bg: #120d1a;
+      --surface: #1e1629;
+      --surface-raised: #261d35;
+      --surface-soft: #201a2b;
+      --line: #483c5d;
+      --line-strong: #6b5a82;
+      --text: #b7d8eb;
+      --muted: #d9eefb;
+      --accent: #f4d0a0;
+      --accent-soft: #2d1f33;
+      --field-text: #f5c97d;
+      --field-placeholder: #d1b9ae;
+      --button-strong-text: #2d1b12;
+      --button-strong-hover: #f4d8a0;
+      --topbar-bg: rgba(18, 13, 26, .94);
+      --bonus: #ff8d74;
+    }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -401,7 +419,7 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="sunset">Sunset amber</option><option value="ember">Ember red</option><option value="ocean">Ocean blue</option></select></label>
+        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="sunset">Sunset amber</option><option value="ember">Ember red</option><option value="ocean">Ocean blue</option><option value="starlight">Starlight Walk</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
       </div>
@@ -922,7 +940,7 @@
       };
 
       const applyTheme = (themeName) => {
-        const validThemes = new Set(["sunset", "ember", "ocean"]);
+        const validThemes = new Set(["sunset", "ember", "ocean", "starlight"]);
         const theme = validThemes.has(themeName) ? themeName : "sunset";
         document.body.dataset.theme = theme;
         const themeSelect = document.querySelector('[name="theme"]');
