@@ -93,6 +93,12 @@
     .config-option { display: grid; gap: .35rem; }
     .config-option input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--accent); }
     .config-checkbox { display: flex; align-items: center; gap: .5rem; min-height: 2.55rem; color: var(--text); }
+    .spellcasting-panel[hidden] { display: none; }
+    .custom-fields { margin-top: 1rem; }
+    .custom-field-list { display: grid; gap: .6rem; }
+    .custom-field-row { display: grid; grid-template-columns: 1.2fr 1.6fr auto; gap: .55rem; align-items: end; }
+    .custom-field-row input { height: 2.35rem; }
+    .custom-field-empty { color: var(--muted); font-size: .82rem; }
     .saved-list { display: grid; gap: .65rem; margin-top: 1rem; }
     .saved-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .saved-item strong { display: block; font-size: .9rem; }
@@ -227,6 +233,8 @@
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
+      .custom-field-row { grid-template-columns: 1fr auto; }
+      .custom-field-row label:first-child { grid-column: 1 / -1; }
       .config-options { grid-template-columns: 1fr; }
     }
     @media print {
@@ -290,6 +298,7 @@
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
+      <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
       </div>
     </details>
 
@@ -306,6 +315,7 @@
           <div class="field"><label for="species">Species</label><input id="species" name="species" placeholder="e.g. Human"></div>
           <div class="field"><label for="background">Background</label><input id="background" name="background" placeholder="e.g. Sage"></div>
           <div class="field wide"><label for="alignment">Alignment / notes</label><input id="alignment" name="alignment" placeholder="Optional details"></div>
+          <div class="field full custom-fields"><span class="field-label">Custom identity fields</span><div class="custom-field-list" data-custom-fields-for="identity"></div><button class="button" data-add-custom-field="identity" type="button">+ Add identity field</button></div>
         </div>
       </section>
 
@@ -323,6 +333,7 @@
               <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><span class="ability-mod" data-mod-for="wisdom">+0 modifier</span><span class="save-check"><input class="save-proficient" name="wisdom-save-proficient" type="checkbox" aria-label="Wisdom saving throw proficiency"> Save <strong data-save-for="wisdom">+0</strong></span></label>
               <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><span class="ability-mod" data-mod-for="charisma">+0 modifier</span><span class="save-check"><input class="save-proficient" name="charisma-save-proficient" type="checkbox" aria-label="Charisma saving throw proficiency"> Save <strong data-save-for="charisma">+0</strong></span></label>
             </div>
+            <div class="custom-fields"><span class="field-label">Custom ability fields</span><div class="custom-field-list" data-custom-fields-for="abilities"></div><button class="button" data-add-custom-field="abilities" type="button">+ Add ability field</button></div>
           </div>
         </section>
 
@@ -345,6 +356,7 @@
                 <label class="armor-option"><input class="armor-proficient" name="armor-heavy" type="checkbox"> Heavy</label>
                 <label class="armor-option"><input class="armor-proficient" name="armor-shields" type="checkbox"> Shields</label>
               </div></div>
+              <div class="field full custom-fields"><span class="field-label">Custom combat fields</span><div class="custom-field-list" data-custom-fields-for="combat"></div><button class="button" data-add-custom-field="combat" type="button">+ Add combat field</button></div>
             </div>
           </div>
         </section>
@@ -386,6 +398,7 @@
             <div class="field"><label for="weapon-proficiencies">Weapon proficiencies</label><textarea id="weapon-proficiencies" name="weapon-proficiencies" placeholder="Simple weapons, martial weapons, hand crossbows..."></textarea></div>
             <div class="field"><label for="tool-proficiencies">Tool proficiencies</label><textarea id="tool-proficiencies" name="tool-proficiencies" placeholder="Thieves' tools, tinker's tools, vehicles..."></textarea></div>
           </div>
+          <div class="custom-fields"><span class="field-label">Custom proficiency fields</span><div class="custom-field-list" data-custom-fields-for="proficiencies"></div><button class="button" data-add-custom-field="proficiencies" type="button">+ Add proficiency field</button></div>
         </div>
       </section>
 
@@ -397,6 +410,7 @@
           <div class="field"><label for="first-impression">First impression</label><textarea id="first-impression" name="first-impression" placeholder="What do people notice first?"></textarea></div>
           <div class="field"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Describe their look, clothing, mannerisms, and distinguishing traits."></textarea></div>
           <div class="field full"><label for="background-story">Background story</label><textarea id="background-story" name="background-story" placeholder="Where did they come from? What shaped them, and what are they seeking?"></textarea></div>
+          <div class="field full custom-fields"><span class="field-label">Custom background fields</span><div class="custom-field-list" data-custom-fields-for="background"></div><button class="button" data-add-custom-field="background" type="button">+ Add background field</button></div>
         </div>
       </section>
 
@@ -411,6 +425,23 @@
               <div class="currency-heading"><span class="field-label">Currencies</span><button class="button" id="add-currency" type="button">+ Add currency</button></div>
               <div class="currency-list" id="currency-list"></div>
             </div>
+            <div class="field full custom-fields"><span class="field-label">Custom inventory fields</span><div class="custom-field-list" data-custom-fields-for="inventory"></div><button class="button" data-add-custom-field="inventory" type="button">+ Add inventory field</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel spellcasting-panel" id="spellcasting" aria-labelledby="spellcasting-heading" hidden>
+        <div class="panel-heading">
+          <div><h2 id="spellcasting-heading">Spellcasting</h2><p>Track the casting details and spells for this character.</p></div>
+        </div>
+        <div class="panel-body">
+          <div class="fields">
+            <div class="field"><label for="spellcasting-ability">Spellcasting ability</label><select id="spellcasting-ability" name="spellcasting-ability"><option value="">Select ability</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
+            <div class="field"><label for="spell-save-dc">Spell save DC</label><input id="spell-save-dc" name="spell-save-dc" type="number" min="0" placeholder="8 + modifier + proficiency"></div>
+            <div class="field"><label for="spell-attack-bonus">Spell attack bonus</label><input id="spell-attack-bonus" name="spell-attack-bonus" placeholder="+0"></div>
+            <div class="field wide"><label for="spell-slots">Spell slots</label><input id="spell-slots" name="spell-slots" placeholder="e.g. 1st: 4 / 2nd: 2 / 3rd: 1"></div>
+            <div class="field full"><label for="known-spells">Known / prepared spells</label><textarea id="known-spells" name="known-spells" placeholder="List cantrips and spells, one per line, or group them by level."></textarea></div>
+            <div class="field full"><label for="spellcasting-notes">Spellcasting notes</label><textarea id="spellcasting-notes" name="spellcasting-notes" placeholder="Components, focus, ritual casting, concentration reminders, and other details."></textarea></div>
           </div>
         </div>
       </section>
@@ -451,6 +482,13 @@
       <button class="icon-button remove-currency" type="button" aria-label="Remove currency">×</button>
     </div>
   </template>
+  <template id="custom-field-template">
+    <div class="custom-field-row">
+      <label><span class="field-label">Field name</span><input class="custom-field-name" placeholder="e.g. Deity"></label>
+      <label><span class="field-label">Value</span><input class="custom-field-value" placeholder="Enter a value"></label>
+      <button class="icon-button remove-custom-field" type="button" aria-label="Remove custom field">×</button>
+    </div>
+  </template>
 
   <script>
     (() => {
@@ -462,6 +500,9 @@
       const skillList = document.querySelector("#skill-list");
       const currencyTemplate = document.querySelector("#currency-template");
       const currencyList = document.querySelector("#currency-list");
+      const customFieldTemplate = document.querySelector("#custom-field-template");
+      const spellcastingPanel = document.querySelector("#spellcasting");
+      const spellcasterToggle = document.querySelector('[name="spellcaster"]');
       const saveStatus = document.querySelector("#save-status");
       const storageKey = "manasquid.character-sheets";
       const draftKey = "manasquid.character-draft";
@@ -531,6 +572,10 @@
           hitDie.value = String(Math.max(2, Number(hitDie.value) - 1));
         }
         updateHealth();
+      };
+
+      const updateSpellcastingVisibility = () => {
+        spellcastingPanel.hidden = !spellcasterToggle.checked;
       };
 
       const featureEditor = document.querySelector("#feature-editor");
@@ -657,6 +702,30 @@
         amount: row.querySelector(".currency-amount").value
       }));
 
+      const addCustomField = (section, name = "", value = "") => {
+        const container = document.querySelector(`[data-custom-fields-for="${section}"]`);
+        if (!container) return;
+        const row = customFieldTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".custom-field-name").value = name;
+        row.querySelector(".custom-field-value").value = value;
+        row.querySelector(".remove-custom-field").addEventListener("click", () => {
+          row.remove();
+          persistDraft();
+        });
+        container.appendChild(row);
+      };
+
+      const collectCustomFields = () => [...document.querySelectorAll("[data-custom-fields-for]")].flatMap((container) => [...container.querySelectorAll(".custom-field-row")].map((row) => ({
+        section: container.dataset.customFieldsFor,
+        name: row.querySelector(".custom-field-name").value,
+        value: row.querySelector(".custom-field-value").value
+      })));
+
+      const renderCustomFields = (customFields = []) => {
+        document.querySelectorAll("[data-custom-fields-for]").forEach((container) => container.replaceChildren());
+        customFields.forEach((field) => addCustomField(field.section, field.name, field.value));
+      };
+
       const collectSheet = () => {
         const fields = {};
         sheet.querySelectorAll("[name], #configuration [name]").forEach((input) => {
@@ -668,7 +737,7 @@
           source: card.dataset.source,
           uses: card.dataset.uses
         }));
-        return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies() };
+        return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields() };
       };
 
       const applySheet = (data) => {
@@ -694,8 +763,10 @@
           { name: "Gold (GP)", amount: data.fields["currency-gold"] || "" }
         ];
         currencies.forEach((currency) => addCurrency(currency.name, currency.amount));
+        renderCustomFields(Array.isArray(data.customFields) ? data.customFields : []);
         syncArmorProficiencies();
         updateModifiers();
+        updateSpellcastingVisibility();
         updateEmptyState();
       };
 
@@ -761,9 +832,18 @@
           `Appearance: ${fields.appearance || "—"}`,
           `Background story: ${fields["background-story"] || "—"}`,
           "",
+          ...(fields.spellcaster === "on" ? [
+            "SPELLCASTING",
+            `Ability: ${fields["spellcasting-ability"] || "—"}  Save DC: ${fields["spell-save-dc"] || "—"}  Attack: ${fields["spell-attack-bonus"] || "—"}`,
+            `Slots: ${fields["spell-slots"] || "—"}`,
+            `Known / prepared spells: ${fields["known-spells"] || "—"}`,
+            `Notes: ${fields["spellcasting-notes"] || "—"}`,
+            ""
+          ] : []),
           "INVENTORY & CURRENCY",
           `Inventory: ${fields.inventory || "—"}`,
           ...(data.currencies || []).map((currency) => `${currency.name || "Currency"}: ${currency.amount || "0"}`),
+          ...(data.customFields || []).map((field) => `${field.name || "Custom field"}: ${field.value || "—"}`),
           "",
           "NOTES",
           ...(fields.notes || "—").split(/\r?\n/)
@@ -851,6 +931,12 @@
         currencyList.lastElementChild.querySelector(".currency-name").focus();
         persistDraft();
       });
+      document.querySelectorAll("[data-add-custom-field]").forEach((button) => button.addEventListener("click", () => {
+        addCustomField(button.dataset.addCustomField);
+        const container = document.querySelector(`[data-custom-fields-for="${button.dataset.addCustomField}"]`);
+        container.lastElementChild.querySelector(".custom-field-name").focus();
+        persistDraft();
+      }));
       document.querySelector("#save-feature").addEventListener("click", () => {
         if (editingCard) {
           updateFeatureCard(editingCard);
@@ -913,6 +999,10 @@
         updateHitDieRules();
         persistDraft();
       });
+      spellcasterToggle.addEventListener("change", () => {
+        updateSpellcastingVisibility();
+        persistDraft();
+      });
       document.querySelectorAll(".save-proficient, .skill-proficient, .skill-expertise, .skill-ability, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("change", updateModifiers));
       skillList.addEventListener("change", updateModifiers);
       document.querySelectorAll(".armor-proficient").forEach((input) => input.addEventListener("change", () => {
@@ -940,14 +1030,17 @@
       document.querySelector("#clear-sheet").addEventListener("click", () => {
         if (!window.confirm("Clear all fields and remove every feature?")) return;
         sheet.reset();
+        spellcasterToggle.checked = false;
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         skillList.replaceChildren();
         standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
         currencyList.replaceChildren();
         [["Copper (CP)", ""], ["Silver (SP)", ""], ["Electrum (EP)", ""], ["Gold (GP)", ""]].forEach(([name, amount]) => addCurrency(name, amount));
+        renderCustomFields();
         closeFeatureEditor();
         localStorage.removeItem(draftKey);
         updateModifiers();
+        updateSpellcastingVisibility();
         updateEmptyState();
         setStatus("Sheet cleared");
       });
@@ -959,6 +1052,7 @@
       renderSavedSheets();
       updateModifiers();
       updateHitDieRules();
+      updateSpellcastingVisibility();
     })();
   </script>
 </body>
