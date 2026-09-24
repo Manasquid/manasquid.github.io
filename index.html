@@ -97,7 +97,7 @@
     .spell-slot-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; }
     .spell-slot-field[hidden] { display: none; }
     .spell-list { display: grid; gap: .65rem; }
-    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 5rem 1.1fr .8fr .8fr .8fr 2fr 4rem 2.2rem; gap: .55rem; align-items: end; }
+    .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 5rem .9fr .8fr .8fr .8fr 2fr 4rem 4rem 2.2rem; gap: .55rem; align-items: end; }
     .spell-row input { height: 2.35rem; }
     .spell-prepared { display: flex; align-items: center; justify-content: center; gap: .3rem; min-height: 2.35rem; color: var(--muted); font-size: .72rem; }
     .spell-prepared input { width: 1rem; height: 1rem; accent-color: var(--accent); }
@@ -105,8 +105,8 @@
       .spell-slot-fields { grid-template-columns: repeat(2, 1fr); }
       .spell-row { grid-template-columns: 1fr 5rem 2.2rem; }
       .spell-row label:nth-child(3), .spell-row label:nth-child(4), .spell-row label:nth-child(5), .spell-row label:nth-child(6), .spell-row label:nth-child(7), .spell-row label:nth-child(8) { grid-column: span 2; }
-      .spell-row .spell-prepared { grid-column: 1; grid-row: 2; justify-content: start; }
-      .spell-row .remove-spell { grid-column: 2; grid-row: 2; }
+      .spell-row .spell-prepared { grid-column: 1; grid-row: 8; justify-content: start; }
+      .spell-row .remove-spell { grid-column: 2; grid-row: 8; }
     }
     .custom-fields { margin-top: 1rem; }
     .custom-field-list { display: grid; gap: .6rem; }
