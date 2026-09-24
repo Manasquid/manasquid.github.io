@@ -21,6 +21,46 @@
       --success: #93c99b;
       --danger: #e68d8d;
       --shadow: 0 16px 45px rgba(0, 0, 0, .22);
+      --bonus: #ff5d5d;
+    }
+    body[data-theme="sunset"] {
+      --bg: #111318;
+      --surface: #1a1d24;
+      --surface-raised: #232731;
+      --surface-soft: #20242d;
+      --line: #363b48;
+      --line-strong: #4b5363;
+      --text: #d9962c;
+      --muted: #e1a84d;
+      --accent: #ffca6a;
+      --accent-soft: #2d281e;
+      --bonus: #ff5d5d;
+    }
+    body[data-theme="ember"] {
+      --bg: #1a1010;
+      --surface: #2a1717;
+      --surface-raised: #341d1d;
+      --surface-soft: #291515;
+      --line: #503333;
+      --line-strong: #6d4d4d;
+      --text: #ffaf77;
+      --muted: #ffc894;
+      --accent: #ffb15e;
+      --accent-soft: #3d1d18;
+      --bonus: #ff6b6b;
+    }
+    body[data-theme="ocean"] {
+      --bg: #0d1822;
+      --surface: #142331;
+      --surface-raised: #1d2e3e;
+      --surface-soft: #1a2a36;
+      --line: #35516e;
+      --line-strong: #5d7895;
+      --text: #8dc4ff;
+      --muted: #abd9ff;
+      --accent: #62d0ff;
+      --accent-soft: #132734;
+      --bonus: #ff7d76;
     }
 
     * { box-sizing: border-box; }
@@ -78,7 +118,7 @@
       min-width: 1.9rem;
       padding: 0;
       font-size: .85rem;
-      color: #ff5d5d;
+      color: var(--bonus);
       flex-shrink: 0;
       align-self: end;
       justify-self: center;
@@ -176,10 +216,10 @@
       color: #ffd78d;
     }
     [data-save-for], .skill-bonus, [name="spell-save-dc"], [name="spell-attack-bonus"], [name="initiative"], [name="proficiency-bonus"] {
-      color: #ff5d5d;
+      color: var(--bonus);
     }
     .ability-mod {
-      color: #ff5d5d;
+      color: var(--bonus);
     }
     input, select { height: 2.55rem; padding: .45rem .65rem; }
     textarea { min-height: 6rem; padding: .6rem .65rem; resize: vertical; }
@@ -199,8 +239,9 @@
     }
     .ability input { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
     .ability-name { color: var(--muted); font-size: .72rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
-    .ability-mod { color: #d9962c; font-size: .8rem; }
-    .save-check { display: flex; align-items: center; justify-content: center; gap: .3rem; color: var(--muted); font-size: .7rem; }
+    .ability-mod { color: var(--bonus); font-size: .8rem; }
+    .save-check { display: flex; align-items: center; justify-content: center; gap: .3rem; color: var(--bonus); font-size: .7rem; }
+    .save-check strong[data-save-for] { color: var(--bonus); }
     .save-check input { width: 1rem; height: 1rem; accent-color: var(--accent); }
 
     .combat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
@@ -226,7 +267,7 @@
     .feature-meta { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .7rem; }
     .tag { display: inline-flex; align-items: center; min-height: 1.45rem; padding: .15rem .45rem; border: 1px solid var(--line-strong); border-radius: .3rem; color: var(--muted); font-size: .7rem; }
     .feature-actions { display: flex; align-items: start; gap: .35rem; }
-    .feature-actions .remove-feature { color: #ff5d5d; }
+    .feature-actions .remove-feature { color: var(--bonus); }
     .empty-state { padding: 2rem 1rem; border: 1px dashed var(--line-strong); border-radius: .5rem; color: var(--muted); text-align: center; }
     .feature-editor { display: grid; gap: 1rem; margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--accent); border-radius: .55rem; background: var(--accent-soft); }
     .feature-editor[hidden] { display: none; }
@@ -340,6 +381,7 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
+        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="sunset">Sunset amber</option><option value="ember">Ember red</option><option value="ocean">Ocean blue</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
       </div>
@@ -859,6 +901,14 @@
         return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells() };
       };
 
+      const applyTheme = (themeName) => {
+        const validThemes = new Set(["sunset", "ember", "ocean"]);
+        const theme = validThemes.has(themeName) ? themeName : "sunset";
+        document.body.dataset.theme = theme;
+        const themeSelect = document.querySelector('[name="theme"]');
+        if (themeSelect) themeSelect.value = theme;
+      };
+
       const resetCharacterFields = () => {
         sheet.reset();
         document.querySelectorAll("#configuration [name]").forEach((input) => {
@@ -866,6 +916,7 @@
           else if (input.tagName === "SELECT") input.selectedIndex = 0;
           else input.value = "";
         });
+        applyTheme("sunset");
       };
 
       const applySheet = (data) => {
@@ -879,6 +930,7 @@
             input.value = data.fields[input.name];
           }
         });
+        applyTheme(data.fields.theme || "sunset");
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
         skillList.replaceChildren();
@@ -1158,6 +1210,10 @@
       document.querySelectorAll(".score").forEach((input) => input.addEventListener("input", updateModifiers));
       document.querySelectorAll('[name="level"], [name="hit-dice-size"]').forEach((input) => input.addEventListener("input", updateHealth));
       document.querySelector('[name="health-mode"]').addEventListener("change", updateHealth);
+      document.querySelector('[name="theme"]').addEventListener("change", () => {
+        applyTheme(document.querySelector('[name="theme"]').value);
+        persistDraft();
+      });
       document.querySelector('[name="allow-odd-hit-dice"]').addEventListener("change", () => {
         updateHitDieRules();
         persistDraft();
@@ -1203,6 +1259,7 @@
       document.querySelector("#clear-sheet").addEventListener("click", () => {
         if (!window.confirm("Clear all fields and remove every feature?")) return;
         sheet.reset();
+        applyTheme("sunset");
         spellcasterToggle.checked = false;
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         skillList.replaceChildren();
