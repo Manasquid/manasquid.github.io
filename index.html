@@ -812,7 +812,7 @@
 
       const collectSheet = () => {
         const fields = {};
-        sheet.querySelectorAll("[name], #configuration [name]").forEach((input) => {
+        document.querySelectorAll("#character-sheet [name], #configuration [name]").forEach((input) => {
           fields[input.name] = input.type === "checkbox" ? (input.checked ? "on" : "") : input.value;
         });
         const features = [...featureList.querySelectorAll(".feature-card")].map((card) => ({
