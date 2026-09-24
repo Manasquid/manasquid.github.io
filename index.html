@@ -84,6 +84,15 @@
     .storage-tools { display: flex; flex-wrap: wrap; align-items: end; gap: .65rem; }
     .storage-tools .field { min-width: min(100%, 18rem); flex: 1 1 16rem; }
     .storage-help { margin: .45rem 0 0; color: var(--muted); font-size: .78rem; }
+    .config-panel { margin-bottom: 1.25rem; }
+    .config-panel summary { cursor: pointer; list-style: none; }
+    .config-panel summary::-webkit-details-marker { display: none; }
+    .config-panel summary::after { content: "＋"; float: right; color: var(--accent); font-size: 1.1rem; }
+    .config-panel[open] summary::after { content: "−"; }
+    .config-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .config-option { display: grid; gap: .35rem; }
+    .config-option input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .config-checkbox { display: flex; align-items: center; gap: .5rem; min-height: 2.55rem; color: var(--text); }
     .saved-list { display: grid; gap: .65rem; margin-top: 1rem; }
     .saved-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .saved-item strong { display: block; font-size: .9rem; }
@@ -218,11 +227,12 @@
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
+      .config-options { grid-template-columns: 1fr; }
     }
     @media print {
       :root { color-scheme: light; }
       body { background: #fff; color: #111; }
-      .topbar, .sheet-actions, .feature-actions, .add-feature, .feature-editor, .storage-panel, footer { display: none !important; }
+      .topbar, .sheet-actions, .feature-actions, .add-feature, .feature-editor, .storage-panel, .config-panel, footer { display: none !important; }
       .shell { width: 100%; }
       main { padding: 0; }
       .panel { box-shadow: none; break-inside: avoid; }
@@ -275,6 +285,14 @@
       </div>
     </section>
 
+    <details class="panel config-panel" id="configuration">
+      <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
+      <div class="panel-body config-options">
+        <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
+        <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
+      </div>
+    </details>
+
     <form class="sheet" id="character-sheet">
       <section class="panel" aria-labelledby="identity-heading">
         <div class="panel-heading">
@@ -283,6 +301,7 @@
         <div class="panel-body fields">
           <div class="field wide"><label for="character-name">Character name</label><input id="character-name" name="character-name" placeholder="e.g. Manasquid" autocomplete="off"></div>
           <div class="field"><label for="class">Class</label><input id="class" name="class" placeholder="e.g. Wizard"></div>
+          <div class="field"><label for="subclass">Subclass</label><input id="subclass" name="subclass" placeholder="e.g. Evocation"></div>
           <div class="field"><label for="level">Level</label><input id="level" name="level" type="number" min="1" max="20" placeholder="1"></div>
           <div class="field"><label for="species">Species</label><input id="species" name="species" placeholder="e.g. Human"></div>
           <div class="field"><label for="background">Background</label><input id="background" name="background" placeholder="e.g. Sage"></div>
@@ -316,10 +335,9 @@
               <label class="combat-card"><span class="field-label">Armor class</span><input name="armor-class" type="number" placeholder="10"></label>
               <label class="combat-card"><span class="field-label">Initiative</span><input name="initiative" placeholder="+0"></label>
               <label class="combat-card"><span class="field-label">Speed</span><input name="speed" placeholder="30 ft."></label>
-              <label class="combat-card"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Calculated average</option></select></label>
               <label class="combat-card"><span class="field-label">Max HP</span><input name="max-hp" type="number" min="0" placeholder="10"></label>
               <label class="combat-card"><span class="field-label">Current HP</span><input name="current-hp" type="number" placeholder="10"></label>
-              <label class="combat-card"><span class="field-label">Hit die size</span><input name="hit-dice-size" type="number" min="1" placeholder="8"></label>
+              <label class="combat-card"><span class="field-label">Hit die size</span><input name="hit-dice-size" type="number" min="2" step="2" placeholder="8"></label>
               <label class="combat-card"><span class="field-label">Proficiency bonus</span><input name="proficiency-bonus" type="number" min="0" placeholder="2"></label>
               <div class="armor-proficiencies"><span class="field-label">Armor proficiencies</span><div class="armor-options">
                 <label class="armor-option"><input class="armor-proficient" name="armor-light" type="checkbox"> Light</label>
@@ -502,6 +520,17 @@
         maxHp.value = Math.max(0, level * (averageAfterFirstLevel + constitutionModifier));
       };
 
+      const updateHitDieRules = () => {
+        const hitDie = document.querySelector('[name="hit-dice-size"]');
+        const allowOdd = document.querySelector('[name="allow-odd-hit-dice"]');
+        if (!hitDie || !allowOdd) return;
+        hitDie.step = allowOdd.checked ? "1" : "2";
+        if (!allowOdd.checked && hitDie.value && Number(hitDie.value) % 2 !== 0) {
+          hitDie.value = String(Math.max(2, Number(hitDie.value) - 1));
+        }
+        updateHealth();
+      };
+
       const featureEditor = document.querySelector("#feature-editor");
       const featureName = document.querySelector("#feature-name");
       const featureDescription = document.querySelector("#feature-description");
@@ -626,7 +655,7 @@
 
       const collectSheet = () => {
         const fields = {};
-        sheet.querySelectorAll("[name]").forEach((input) => {
+        sheet.querySelectorAll("[name], #configuration [name]").forEach((input) => {
           fields[input.name] = input.type === "checkbox" ? (input.checked ? "on" : "") : input.value;
         });
         const features = [...featureList.querySelectorAll(".feature-card")].map((card) => ({
@@ -640,7 +669,7 @@
 
       const applySheet = (data) => {
         if (!data || typeof data !== "object" || !data.fields || !Array.isArray(data.features)) throw new Error("Invalid character sheet");
-        sheet.querySelectorAll("[name]").forEach((input) => {
+        document.querySelectorAll("#character-sheet [name], #configuration [name]").forEach((input) => {
           if (!Object.prototype.hasOwnProperty.call(data.fields, input.name)) return;
           if (input.type === "checkbox") {
             input.checked = data.fields[input.name] === true || data.fields[input.name] === "on";
@@ -703,7 +732,7 @@
         const fields = data.fields;
         const lines = [
           fields["character-name"] || "Unnamed character",
-          `${fields.class || "Class"} · Level ${fields.level || "—"} · ${fields.species || "Species"}`,
+          `${fields.class || "Class"}${fields.subclass ? ` (${fields.subclass})` : ""} · Level ${fields.level || "—"} · ${fields.species || "Species"}`,
           `Background: ${fields.background || "—"}`,
           "",
           "ABILITY SCORES",
@@ -874,8 +903,12 @@
         event.target.value = "";
       });
       document.querySelectorAll(".score").forEach((input) => input.addEventListener("input", updateModifiers));
-      document.querySelectorAll('[name="level"], [name="hit-dice-size"], [name="health-mode"]').forEach((input) => input.addEventListener("input", updateHealth));
+      document.querySelectorAll('[name="level"], [name="hit-dice-size"]').forEach((input) => input.addEventListener("input", updateHealth));
       document.querySelector('[name="health-mode"]').addEventListener("change", updateHealth);
+      document.querySelector('[name="allow-odd-hit-dice"]').addEventListener("change", () => {
+        updateHitDieRules();
+        persistDraft();
+      });
       document.querySelectorAll(".save-proficient, .skill-proficient, .skill-ability, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("change", updateModifiers));
       skillList.addEventListener("change", updateModifiers);
       document.querySelectorAll(".armor-proficient").forEach((input) => input.addEventListener("change", () => {
@@ -921,6 +954,7 @@
       } catch { setStatus("Could not restore browser draft"); }
       renderSavedSheets();
       updateModifiers();
+      updateHitDieRules();
     })();
   </script>
 </body>
