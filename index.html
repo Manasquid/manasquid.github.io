@@ -28,7 +28,7 @@
       --shadow: 0 16px 45px rgba(0, 0, 0, .22);
       --bonus: #ff5d5d;
     }
-    body[data-theme="sunset"] {
+    body[data-theme="streetlamp"] {
       --bg: #111318;
       --surface: #1a1d24;
       --surface-raised: #232731;
@@ -64,7 +64,7 @@
       --topbar-bg: rgba(41, 17, 17, .94);
       --bonus: #ff6b6b;
     }
-    body[data-theme="ocean"] {
+    body[data-theme="depths"] {
       --bg: #0d1822;
       --surface: #142331;
       --surface-raised: #1d2e3e;
@@ -154,7 +154,7 @@
       --topbar-bg: rgba(5, 7, 10, .94);
       --bonus: #ff5d5d;
     }
-    body[data-theme="verdant"] {
+    body[data-theme="venom"] {
       --bg: #071d1e;
       --surface: #0c2c2a;
       --surface-raised: #123933;
@@ -207,6 +207,24 @@
       --button-strong-hover: #e7f57d;
       --topbar-bg: rgba(4, 10, 8, .94);
       --bonus: #d9d758;
+    }
+    body[data-theme="hypertech"] {
+      --bg: #02050a;
+      --surface: #0f1220;
+      --surface-raised: #171d2f;
+      --surface-soft: #0c1320;
+      --line: #3d4f7a;
+      --line-strong: #5f7add;
+      --text: #41e5ff;
+      --muted: #ff7ae8;
+      --accent: #c56bff;
+      --accent-soft: #120d1d;
+      --field-text: #dff9ff;
+      --field-placeholder: #7fa4e8;
+      --button-strong-text: #040914;
+      --button-strong-hover: #69f0ff;
+      --topbar-bg: rgba(2, 5, 10, .94);
+      --bonus: #ff5ac7;
     }
     body[data-modifier-color="amber"] { --bonus: #ffba5c; }
     body[data-modifier-color="copper"] { --bonus: #cb7a52; }
@@ -538,7 +556,7 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="sunset">Sunset amber</option><option value="ember">Ember red</option><option value="ocean">Ocean blue</option><option value="starlight">Starlight Walk</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="verdant">Verdant</option><option value="parchment">Parchment</option><option value="radiation-poisoning">Radiation Poisoning</option></select></label>
+        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation-poisoning">Radiation Poisoning</option><option value="hypertech">Hypertech</option></select></label>
         <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
@@ -1060,8 +1078,8 @@
       };
 
       const applyTheme = (themeName) => {
-        const validThemes = new Set(["sunset", "ember", "ocean", "starlight", "monochrome", "office", "void", "verdant", "parchment", "radiation-poisoning"]);
-        const theme = validThemes.has(themeName) ? themeName : "sunset";
+        const validThemes = new Set(["streetlamp", "ember", "depths", "starlight", "monochrome", "office", "void", "venom", "parchment", "radiation-poisoning", "hypertech"]);
+        const theme = validThemes.has(themeName) ? themeName : "streetlamp";
         document.body.dataset.theme = theme;
         const themeSelect = document.querySelector('[name="theme"]');
         if (themeSelect) themeSelect.value = theme;
@@ -1082,7 +1100,7 @@
           else if (input.tagName === "SELECT") input.selectedIndex = 0;
           else input.value = "";
         });
-        applyTheme("sunset");
+        applyTheme("streetlamp");
         applyModifierColor("red");
       };
 
@@ -1097,7 +1115,7 @@
             input.value = data.fields[input.name];
           }
         });
-        applyTheme(data.fields.theme || "sunset");
+        applyTheme(data.fields.theme || "streetlamp");
         applyModifierColor(data.fields["modifier-color"] || "red");
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
