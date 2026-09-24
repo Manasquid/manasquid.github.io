@@ -100,6 +100,103 @@
       --topbar-bg: rgba(18, 13, 26, .94);
       --bonus: #ff8d74;
     }
+    body[data-theme="monochrome"] {
+      --bg: #0a0a0d;
+      --surface: #17181d;
+      --surface-raised: #20232a;
+      --surface-soft: #12141a;
+      --line: #3d4047;
+      --line-strong: #636b73;
+      --text: #f4f4f5;
+      --muted: #dfe2e6;
+      --accent: #f2f2f2;
+      --accent-soft: #1d1d20;
+      --field-text: #ffffff;
+      --field-placeholder: #a4abb3;
+      --button-strong-text: #0a0a0d;
+      --button-strong-hover: #ececec;
+      --topbar-bg: rgba(10, 10, 13, .94);
+      --bonus: #ff5d5d;
+    }
+    body[data-theme="office"] {
+      --bg: #f2f4f7;
+      --surface: #ffffff;
+      --surface-raised: #eef2f8;
+      --surface-soft: #f7f9fb;
+      --line: #d0d8e2;
+      --line-strong: #aebccf;
+      --text: #1f2430;
+      --muted: #4a5363;
+      --accent: #1b2330;
+      --accent-soft: #edf2f7;
+      --field-text: #0c1320;
+      --field-placeholder: #7d8697;
+      --button-strong-text: #ffffff;
+      --button-strong-hover: #3d495c;
+      --topbar-bg: rgba(255, 255, 255, .94);
+      --bonus: #c93a3a;
+    }
+    body[data-theme="void"] {
+      --bg: #05070a;
+      --surface: #0d1116;
+      --surface-raised: #121b22;
+      --surface-soft: #0b0f14;
+      --line: #2f3942;
+      --line-strong: #4d5b67;
+      --text: #edf4f9;
+      --muted: #dfeaf3;
+      --accent: #e7eef5;
+      --accent-soft: #101820;
+      --field-text: #ffffff;
+      --field-placeholder: #8a99a5;
+      --button-strong-text: #05070a;
+      --button-strong-hover: #edf4f9;
+      --topbar-bg: rgba(5, 7, 10, .94);
+      --bonus: #ff5d5d;
+    }
+    body[data-theme="jungle"] {
+      --bg: #071d1e;
+      --surface: #0c2c2a;
+      --surface-raised: #123933;
+      --surface-soft: #0f2b2f;
+      --line: #2b5e59;
+      --line-strong: #4c8b7e;
+      --text: #9ae2af;
+      --muted: #d3f8d9;
+      --accent: #7ef0b2;
+      --accent-soft: #123a2f;
+      --field-text: #c9ffd8;
+      --field-placeholder: #8bb8a5;
+      --button-strong-text: #0a1614;
+      --button-strong-hover: #aaf6c5;
+      --topbar-bg: rgba(7, 29, 30, .94);
+      --bonus: #f7b267;
+    }
+    body[data-theme="desert"] {
+      --bg: #d7b88d;
+      --surface: #e7d1a4;
+      --surface-raised: #f0dfbe;
+      --surface-soft: #dcc79e;
+      --line: #b58263;
+      --line-strong: #8d4d43;
+      --text: #5c2b2d;
+      --muted: #7b3c39;
+      --accent: #7a3a33;
+      --accent-soft: #ead3b5;
+      --field-text: #5c1d1f;
+      --field-placeholder: #8d6b5d;
+      --button-strong-text: #f8ead1;
+      --button-strong-hover: #c36a59;
+      --topbar-bg: rgba(215, 184, 141, .94);
+      --bonus: #8d2b2b;
+    }
+    body[data-modifier-color="amber"] { --bonus: #ffba5c; }
+    body[data-modifier-color="gold"] { --bonus: #ffd166; }
+    body[data-modifier-color="cream"] { --bonus: #f7e8c7; }
+    body[data-modifier-color="cyan"] { --bonus: #8fe3ff; }
+    body[data-modifier-color="green"] { --bonus: #8fe39d; }
+    body[data-modifier-color="maroon"] { --bonus: #b13a42; }
+    body[data-modifier-color="red"] { --bonus: #ff5d5d; }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -419,7 +516,8 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="sunset">Sunset amber</option><option value="ember">Ember red</option><option value="ocean">Ocean blue</option><option value="starlight">Starlight Walk</option></select></label>
+        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="sunset">Sunset amber</option><option value="ember">Ember red</option><option value="ocean">Ocean blue</option><option value="starlight">Starlight Walk</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="jungle">Jungle</option><option value="desert">Desert</option></select></label>
+        <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="green">Green</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
       </div>
@@ -940,11 +1038,19 @@
       };
 
       const applyTheme = (themeName) => {
-        const validThemes = new Set(["sunset", "ember", "ocean", "starlight"]);
+        const validThemes = new Set(["sunset", "ember", "ocean", "starlight", "monochrome", "office", "void", "jungle", "desert"]);
         const theme = validThemes.has(themeName) ? themeName : "sunset";
         document.body.dataset.theme = theme;
         const themeSelect = document.querySelector('[name="theme"]');
         if (themeSelect) themeSelect.value = theme;
+      };
+
+      const applyModifierColor = (modifierColor) => {
+        const validColors = new Set(["red", "amber", "gold", "cream", "cyan", "green", "maroon"]);
+        const color = validColors.has(modifierColor) ? modifierColor : "red";
+        document.body.dataset.modifierColor = color;
+        const modifierSelect = document.querySelector('[name="modifier-color"]');
+        if (modifierSelect) modifierSelect.value = color;
       };
 
       const resetCharacterFields = () => {
@@ -955,6 +1061,7 @@
           else input.value = "";
         });
         applyTheme("sunset");
+        applyModifierColor("red");
       };
 
       const applySheet = (data) => {
@@ -969,6 +1076,7 @@
           }
         });
         applyTheme(data.fields.theme || "sunset");
+        applyModifierColor(data.fields["modifier-color"] || "red");
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
         skillList.replaceChildren();
@@ -1250,6 +1358,10 @@
       document.querySelector('[name="health-mode"]').addEventListener("change", updateHealth);
       document.querySelector('[name="theme"]').addEventListener("change", () => {
         applyTheme(document.querySelector('[name="theme"]').value);
+        persistDraft();
+      });
+      document.querySelector('[name="modifier-color"]').addEventListener("change", () => {
+        applyModifierColor(document.querySelector('[name="modifier-color"]').value);
         persistDraft();
       });
       document.querySelector('[name="allow-odd-hit-dice"]').addEventListener("change", () => {
