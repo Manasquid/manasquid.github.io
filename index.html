@@ -78,7 +78,7 @@
       min-width: 1.9rem;
       padding: 0;
       font-size: .85rem;
-      color: var(--danger);
+      color: #ff5d5d;
       flex-shrink: 0;
       align-self: end;
       justify-self: center;
@@ -175,7 +175,10 @@
       background: var(--surface-soft);
       color: #ffd78d;
     }
-    [data-save-for], .skill-bonus, [name="spell-save-dc"], [name="spell-attack-bonus"], [name="initiative"], [name="proficiency-bonus"], .ability-mod {
+    [data-save-for], .skill-bonus, [name="spell-save-dc"], [name="spell-attack-bonus"], [name="initiative"], [name="proficiency-bonus"] {
+      color: #ff5d5d;
+    }
+    .ability-mod {
       color: #ff5d5d;
     }
     input, select { height: 2.55rem; padding: .45rem .65rem; }
@@ -223,7 +226,7 @@
     .feature-meta { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .7rem; }
     .tag { display: inline-flex; align-items: center; min-height: 1.45rem; padding: .15rem .45rem; border: 1px solid var(--line-strong); border-radius: .3rem; color: var(--muted); font-size: .7rem; }
     .feature-actions { display: flex; align-items: start; gap: .35rem; }
-    .feature-actions .remove-feature { color: var(--danger); }
+    .feature-actions .remove-feature { color: #ff5d5d; }
     .empty-state { padding: 2rem 1rem; border: 1px dashed var(--line-strong); border-radius: .5rem; color: var(--muted); text-align: center; }
     .feature-editor { display: grid; gap: 1rem; margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--accent); border-radius: .55rem; background: var(--accent-soft); }
     .feature-editor[hidden] { display: none; }
