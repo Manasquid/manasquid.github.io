@@ -489,15 +489,19 @@
     .maker-tabs { display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 1.25rem; }
     .maker-tab[aria-selected="true"] { border-color: var(--accent); background: var(--accent); color: var(--button-strong-text); }
     .maker-panel[hidden] { display: none; }
-    .monster-ability-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: .65rem; }
+    .monster-ability-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
     .monster-ability { display: grid; gap: .3rem; padding: .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); text-align: center; }
-    .monster-ability input { text-align: center; font-weight: 700; }
+    .monster-ability input { min-width: 0; text-align: center; font-weight: 700; }
+    .monster-ability input[type="number"], .monster-ability input[name$="-mod"] { min-width: 4.5rem; }
+    .monster-entry-groups { display: grid; gap: 1rem; }
+    .monster-entry-group { display: grid; gap: .65rem; }
+    .monster-entry-group h3 { margin: 0; color: var(--text); font-size: .9rem; }
     .monster-entry-list { display: grid; gap: .65rem; }
     .monster-entry { display: grid; grid-template-columns: minmax(10rem, .8fr) minmax(0, 2fr) auto; gap: .55rem; align-items: end; }
     .monster-entry textarea { min-height: 4rem; }
     .monster-entry .remove-monster-entry { color: var(--bonus); }
     @media (max-width: 800px) {
-      .monster-ability-grid { grid-template-columns: repeat(3, 1fr); }
+      .monster-ability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 520px) {
       .monster-entry { grid-template-columns: 1fr auto; }
@@ -725,6 +729,7 @@
           <div class="field"><label for="subclass">Subclass</label><input id="subclass" name="subclass" placeholder="e.g. Evocation"></div>
           <div class="field"><label for="level">Level</label><input id="level" name="level" type="number" min="1" max="20" placeholder="1"></div>
           <div class="field"><label for="species">Species</label><input id="species" name="species" placeholder="e.g. Human"></div>
+          <div class="field"><label for="size">Size</label><select id="size" name="size"><option>Small</option><option selected>Medium</option></select></div>
           <div class="field"><label for="creature-type">Creature type</label><input id="creature-type" name="creature-type" placeholder="e.g. Humanoid"></div>
           <div class="field"><label for="background">Background</label><input id="background" name="background" placeholder="e.g. Sage"></div>
           <div class="field wide"><label for="alignment">Alignment / notes</label><input id="alignment" name="alignment" placeholder="Optional details"></div>
@@ -822,6 +827,7 @@
         <div class="panel-body background-grid">
           <div class="field"><label for="first-impression">Initial description</label><textarea id="first-impression" name="first-impression" placeholder="What are other players first introduced to?"></textarea></div>
           <div class="field"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Describe their look, clothing, mannerisms, and distinguishing traits."></textarea></div>
+          <div class="field"><label for="languages">Languages</label><input id="languages" name="languages" placeholder="e.g. Common, Elvish"></div>
           <div class="field full"><label for="background-story">Background story</label><textarea id="background-story" name="background-story" placeholder="Where did they come from? What shaped them, and what are they seeking?"></textarea></div>
           <div class="field full custom-fields"><span class="field-label">Custom background fields</span><div class="custom-field-list" data-custom-fields-for="background"></div><button class="button" data-add-custom-field="background" type="button">+ Add background field</button></div>
         </div>
@@ -891,26 +897,36 @@
             <div class="field"><label for="monster-hp">Hit points</label><input id="monster-hp" name="monster-hp" placeholder="85 (10d10 + 30)"></div>
             <div class="field"><label for="monster-speed">Speed</label><input id="monster-speed" name="monster-speed" placeholder="30 ft., swim 40 ft."></div>
             <div class="field"><label for="monster-save-dc">Save DC</label><input id="monster-save-dc" name="monster-save-dc" placeholder="15"></div>
-            <div class="field full"><label for="monster-immunities">Resistances, immunities &amp; vulnerabilities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Damage resistances, condition immunities, senses, and languages."></textarea></div>
+            <div class="field"><label for="monster-skills">Skills</label><textarea id="monster-skills" name="monster-skills" placeholder="Perception +6, Stealth +5"></textarea></div>
+            <div class="field"><label for="monster-resistances">Resistances</label><textarea id="monster-resistances" name="monster-resistances" placeholder="Cold; bludgeoning from nonmagical attacks"></textarea></div>
+            <div class="field"><label for="monster-immunities">Immunities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Poison; poisoned condition"></textarea></div>
+            <div class="field"><label for="monster-gear">Gear</label><textarea id="monster-gear" name="monster-gear" placeholder="Weapons, armor, carried items"></textarea></div>
+            <div class="field"><label for="monster-senses">Senses</label><textarea id="monster-senses" name="monster-senses" placeholder="Darkvision 60 ft., passive Perception 16"></textarea></div>
+            <div class="field"><label for="monster-languages">Languages</label><textarea id="monster-languages" name="monster-languages" placeholder="Common, Aquan"></textarea></div>
           </div>
         </section>
         <section class="panel" aria-labelledby="monster-abilities-heading">
           <div class="panel-heading"><div><h2 id="monster-abilities-heading">Ability scores</h2><p>Enter scores and modifiers in one place.</p></div></div>
           <div class="panel-body"><div class="monster-ability-grid">
-            <label class="monster-ability"><span class="ability-name">STR</span><input name="monster-str" placeholder="10"><input name="monster-str-mod" placeholder="+0" aria-label="Strength modifier"></label>
-            <label class="monster-ability"><span class="ability-name">DEX</span><input name="monster-dex" placeholder="10"><input name="monster-dex-mod" placeholder="+0" aria-label="Dexterity modifier"></label>
-            <label class="monster-ability"><span class="ability-name">CON</span><input name="monster-con" placeholder="10"><input name="monster-con-mod" placeholder="+0" aria-label="Constitution modifier"></label>
-            <label class="monster-ability"><span class="ability-name">INT</span><input name="monster-int" placeholder="10"><input name="monster-int-mod" placeholder="+0" aria-label="Intelligence modifier"></label>
-            <label class="monster-ability"><span class="ability-name">WIS</span><input name="monster-wis" placeholder="10"><input name="monster-wis-mod" placeholder="+0" aria-label="Wisdom modifier"></label>
-            <label class="monster-ability"><span class="ability-name">CHA</span><input name="monster-cha" placeholder="10"><input name="monster-cha-mod" placeholder="+0" aria-label="Charisma modifier"></label>
+            <label class="monster-ability"><span class="ability-name">STR</span><input name="monster-str" type="number" min="1" max="40" placeholder="10"><input name="monster-str-mod" placeholder="+0" aria-label="Strength modifier" readonly></label>
+            <label class="monster-ability"><span class="ability-name">DEX</span><input name="monster-dex" type="number" min="1" max="40" placeholder="10"><input name="monster-dex-mod" placeholder="+0" aria-label="Dexterity modifier" readonly></label>
+            <label class="monster-ability"><span class="ability-name">CON</span><input name="monster-con" type="number" min="1" max="40" placeholder="10"><input name="monster-con-mod" placeholder="+0" aria-label="Constitution modifier" readonly></label>
+            <label class="monster-ability"><span class="ability-name">INT</span><input name="monster-int" type="number" min="1" max="40" placeholder="10"><input name="monster-int-mod" placeholder="+0" aria-label="Intelligence modifier" readonly></label>
+            <label class="monster-ability"><span class="ability-name">WIS</span><input name="monster-wis" type="number" min="1" max="40" placeholder="10"><input name="monster-wis-mod" placeholder="+0" aria-label="Wisdom modifier" readonly></label>
+            <label class="monster-ability"><span class="ability-name">CHA</span><input name="monster-cha" type="number" min="1" max="40" placeholder="10"><input name="monster-cha-mod" placeholder="+0" aria-label="Charisma modifier" readonly></label>
           </div></div>
         </section>
       </div>
       <section class="panel" aria-labelledby="monster-features-heading">
         <div class="panel-heading"><div><h2 id="monster-features-heading">Traits, actions &amp; reactions</h2><p>Add the rules text that makes this creature unique.</p></div></div>
         <div class="panel-body">
-          <div class="monster-entry-list" id="monster-entry-list"></div>
-          <button class="button" id="add-monster-entry" type="button">+ Add trait or action</button>
+          <div class="monster-entry-groups">
+            <div class="monster-entry-group"><h3>Traits</h3><div class="monster-entry-list" data-monster-group="traits"></div><button class="button add-monster-entry" data-monster-group="traits" type="button">+ Add trait</button></div>
+            <div class="monster-entry-group"><h3>Actions</h3><div class="monster-entry-list" data-monster-group="actions"></div><button class="button add-monster-entry" data-monster-group="actions" type="button">+ Add action</button></div>
+            <div class="monster-entry-group"><h3>Bonus actions</h3><div class="monster-entry-list" data-monster-group="bonus-actions"></div><button class="button add-monster-entry" data-monster-group="bonus-actions" type="button">+ Add bonus action</button></div>
+            <div class="monster-entry-group"><h3>Reactions</h3><div class="monster-entry-list" data-monster-group="reactions"></div><button class="button add-monster-entry" data-monster-group="reactions" type="button">+ Add reaction</button></div>
+            <div class="monster-entry-group"><h3>Legendary actions</h3><div class="monster-entry-list" data-monster-group="legendary-actions"></div><button class="button add-monster-entry" data-monster-group="legendary-actions" type="button">+ Add legendary action</button></div>
+          </div>
         </div>
       </section>
       <section class="panel" aria-labelledby="monster-notes-heading">
@@ -982,7 +998,7 @@
       const monsterSheet = document.querySelector("#monster-sheet");
       const characterTab = document.querySelector("#character-tab");
       const monsterTab = document.querySelector("#monster-tab");
-      const monsterEntryList = document.querySelector("#monster-entry-list");
+      const monsterEntryLists = [...document.querySelectorAll("[data-monster-group]")];
       const featureList = document.querySelector("#feature-list");
       const emptyState = document.querySelector("#empty-state");
       const template = document.querySelector("#feature-template");
@@ -1013,24 +1029,38 @@
       const collectMonster = () => ({
         version: 1,
         fields: Object.fromEntries([...monsterSheet.querySelectorAll("[name]")].map((input) => [input.name, input.value])),
-        entries: [...monsterEntryList.querySelectorAll(".monster-entry")].map((row) => ({
+        entries: monsterEntryLists.flatMap((list) => [...list.querySelectorAll(".monster-entry")].map((row) => ({
+          group: list.dataset.monsterGroup,
           name: row.querySelector(".monster-entry-name").value,
           description: row.querySelector(".monster-entry-description").value
-        }))
+        })))
       });
 
       const persistMonsterDraft = () => {
         try { localStorage.setItem(monsterDraftKey, JSON.stringify(collectMonster())); } catch { setStatus("Browser storage unavailable"); }
       };
 
-      const addMonsterEntry = (entry = {}) => {
+      const addMonsterEntry = (group = "traits", entry = {}) => {
         const row = document.createElement("div");
         row.className = "monster-entry";
         row.innerHTML = `<label class="monster-entry-name"><span class="field-label">Name</span><input placeholder="e.g. Amphibious"></label><label class="monster-entry-description"><span class="field-label">Rules text</span><textarea rows="2" placeholder="Describe the trait, action, or reaction."></textarea></label><button class="icon-button remove-monster-entry" type="button" aria-label="Remove trait or action">×</button>`;
         row.querySelector(".monster-entry-name input").value = entry.name || "";
         row.querySelector(".monster-entry-description textarea").value = entry.description || "";
         row.querySelector(".remove-monster-entry").addEventListener("click", () => { row.remove(); persistMonsterDraft(); });
-        monsterEntryList.appendChild(row);
+        const list = document.querySelector(`[data-monster-group="${group}"]`);
+        if (list) list.appendChild(row);
+      };
+
+      const updateMonsterModifiers = () => {
+        ["str", "dex", "con", "int", "wis", "cha"].forEach((ability) => {
+          const scoreInput = monsterSheet.querySelector(`[name="monster-${ability}"]`);
+          const modifierInput = monsterSheet.querySelector(`[name="monster-${ability}-mod"]`);
+          const score = Number(scoreInput.value);
+          if (modifierInput && Number.isFinite(score)) {
+            const modifier = Math.floor((score - 10) / 2);
+            modifierInput.value = `${modifier >= 0 ? "+" : ""}${modifier}`;
+          }
+        });
       };
 
       const applyMonster = (data) => {
@@ -1039,8 +1069,9 @@
         monsterSheet.querySelectorAll("[name]").forEach((input) => {
           if (Object.prototype.hasOwnProperty.call(data.fields, input.name)) input.value = data.fields[input.name];
         });
-        monsterEntryList.replaceChildren();
-        (Array.isArray(data.entries) ? data.entries : []).forEach(addMonsterEntry);
+        monsterEntryLists.forEach((list) => list.replaceChildren());
+        (Array.isArray(data.entries) ? data.entries : []).forEach((entry) => addMonsterEntry(entry.group || "traits", entry));
+        updateMonsterModifiers();
       };
 
       const setMakerTab = (tab) => {
@@ -1466,6 +1497,7 @@
           pdfValue(fields["character-name"]),
           `${pdfValue(fields.class)}${fields.subclass ? ` (${fields.subclass})` : ""} · Level ${pdfValue(fields.level)} · ${pdfValue(fields.species)}`,
           `Background: ${pdfValue(fields.background)}`,
+          `Size: ${pdfValue(fields.size)}  Creature type: ${pdfValue(fields["creature-type"])}`,
           ...section("ABILITY SCORES"),
           ...["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"].map((name) => `${name[0].toUpperCase()}${name.slice(1)}: ${pdfValue(fields[name])}`),
           ...section("COMBAT"),
@@ -1483,6 +1515,7 @@
           ...section("CHARACTER BACKGROUND"),
           `First impression: ${pdfValue(fields["first-impression"])}`,
           `Appearance: ${pdfValue(fields.appearance)}`,
+          `Languages: ${pdfValue(fields.languages)}`,
           `Background story: ${pdfValue(fields["background-story"])}`,
           ...(fields.spellcaster === "on" ? [
             ...section("SPELLCASTING"),
@@ -1716,11 +1749,17 @@
       skillList.addEventListener("change", updateModifiers);
       characterTab.addEventListener("click", () => setMakerTab("character"));
       monsterTab.addEventListener("click", () => setMakerTab("monster"));
-      document.querySelector("#add-monster-entry").addEventListener("click", () => {
-        addMonsterEntry();
-        monsterEntryList.lastElementChild.querySelector(".monster-entry-name input").focus();
+      document.querySelectorAll(".add-monster-entry").forEach((button) => button.addEventListener("click", () => {
+        const group = button.dataset.monsterGroup;
+        addMonsterEntry(group);
+        const list = document.querySelector(`[data-monster-group="${group}"]`);
+        list.lastElementChild.querySelector(".monster-entry-name input").focus();
         persistMonsterDraft();
-      });
+      }));
+      monsterSheet.querySelectorAll('[name^="monster-"]').forEach((input) => input.addEventListener("input", () => {
+        if (input.name.match(/^monster-(str|dex|con|int|wis|cha)$/)) updateMonsterModifiers();
+        persistMonsterDraft();
+      }));
       monsterSheet.addEventListener("input", persistMonsterDraft);
       document.querySelectorAll(".armor-proficient").forEach((input) => input.addEventListener("change", () => {
         if (input.name === "armor-heavy" && input.checked) {
@@ -1774,6 +1813,7 @@
         if (monsterDraft) applyMonster(monsterDraft);
       } catch { setStatus("Could not restore monster draft"); }
       setMakerTab("character");
+      updateMonsterModifiers();
       renderSavedSheets();
       updateModifiers();
       syncManualOverrides();
