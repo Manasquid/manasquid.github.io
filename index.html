@@ -298,6 +298,60 @@
       --topbar-bg: rgba(7, 20, 14, .94);
       --bonus: #ffb347;
     }
+    body[data-theme="teapot"] {
+      --bg: #d9e0df;
+      --surface: #fffdf5;
+      --surface-raised: #f4f1e8;
+      --surface-soft: #f9f7ef;
+      --line: #b7c1c2;
+      --line-strong: #899899;
+      --text: #536d75;
+      --muted: #789097;
+      --accent: #c88f9e;
+      --accent-soft: #f2e3e6;
+      --field-text: #6f4f58;
+      --field-placeholder: #99a9aa;
+      --button-strong-text: #fffaf0;
+      --button-strong-hover: #dda9b5;
+      --topbar-bg: rgba(217, 224, 223, .94);
+      --bonus: #ba5368;
+    }
+    body[data-theme="forge"] {
+      --bg: #17191b;
+      --surface: #292b2e;
+      --surface-raised: #373a3e;
+      --surface-soft: #222528;
+      --line: #50545a;
+      --line-strong: #777d84;
+      --text: #f19a3e;
+      --muted: #ffc078;
+      --accent: #e87525;
+      --accent-soft: #3a2416;
+      --field-text: #ffd18a;
+      --field-placeholder: #9c8a78;
+      --button-strong-text: #21150e;
+      --button-strong-hover: #ffb45d;
+      --topbar-bg: rgba(23, 25, 27, .94);
+      --bonus: #ff7161;
+    }
+    body[data-theme="sharp"] {
+      --bg: #08090b;
+      --surface: #17191d;
+      --surface-raised: #24272d;
+      --surface-soft: #111317;
+      --line: #4a4d54;
+      --line-strong: #777b84;
+      --text: #f4f4f4;
+      --muted: #d6d6d6;
+      --accent: #e2343f;
+      --accent-soft: #321318;
+      --field-text: #ffffff;
+      --field-placeholder: #8c9098;
+      --button-strong-text: #ffffff;
+      --button-strong-hover: #ff5058;
+      --topbar-bg: rgba(8, 9, 11, .94);
+      --bonus: #ff4b55;
+    }
     body[data-modifier-color="amber"] { --bonus: #ffba5c; }
     body[data-modifier-color="copper"] { --bonus: #cb7a52; }
     body[data-modifier-color="gold"] { --bonus: #ffd166; }
@@ -628,7 +682,7 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option></select></label>
+        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
         <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
@@ -740,7 +794,7 @@
           <div><h2 id="background-heading">Character background</h2><p>Capture the story, look, and details that make this character yours.</p></div>
         </div>
         <div class="panel-body background-grid">
-          <div class="field"><label for="first-impression">First impression</label><textarea id="first-impression" name="first-impression" placeholder="What do people notice first?"></textarea></div>
+          <div class="field"><label for="first-impression">Initial description</label><textarea id="first-impression" name="first-impression" placeholder="What are other players first introduced to?"></textarea></div>
           <div class="field"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Describe their look, clothing, mannerisms, and distinguishing traits."></textarea></div>
           <div class="field full"><label for="background-story">Background story</label><textarea id="background-story" name="background-story" placeholder="Where did they come from? What shaped them, and what are they seeking?"></textarea></div>
           <div class="field full custom-fields"><span class="field-label">Custom background fields</span><div class="custom-field-list" data-custom-fields-for="background"></div><button class="button" data-add-custom-field="background" type="button">+ Add background field</button></div>
@@ -1150,7 +1204,7 @@
       };
 
       const applyTheme = (themeName) => {
-        const validThemes = new Set(["streetlamp", "ember", "depths", "starlight", "monochrome", "office", "void", "venom", "parchment", "radiation", "neontech", "sunset", "moonwalk", "beeswax", "rosethorn"]);
+        const validThemes = new Set(["streetlamp", "ember", "depths", "starlight", "monochrome", "office", "void", "venom", "parchment", "radiation", "neontech", "sunset", "moonwalk", "beeswax", "rosethorn", "teapot", "forge", "sharp"]);
         const theme = validThemes.has(themeName) ? themeName : "streetlamp";
         document.body.dataset.theme = theme;
         const themeSelect = document.querySelector('[name="theme"]');
