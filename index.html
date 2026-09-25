@@ -714,7 +714,8 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
+        <label class="config-option"><span class="field-label">Character theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
+        <label class="config-option"><span class="field-label">Monster theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
         <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
@@ -1045,6 +1046,7 @@
 
       const collectMonster = () => ({
         version: 1,
+        theme: document.querySelector('[name="monster-theme"]').value,
         fields: Object.fromEntries([...monsterSheet.querySelectorAll("[name]")].map((input) => [input.name, input.value])),
         entries: monsterEntryLists.flatMap((list) => [...list.querySelectorAll(".monster-entry")].map((row) => ({
           group: list.dataset.monsterGroup,
@@ -1088,6 +1090,8 @@
         });
         monsterEntryLists.forEach((list) => list.replaceChildren());
         (Array.isArray(data.entries) ? data.entries : []).forEach((entry) => addMonsterEntry(entry.group || "traits", entry));
+        applyTheme(data.theme || document.querySelector('[name="monster-theme"]').value || "streetlamp");
+        document.querySelector('[name="monster-theme"]').value = data.theme || "streetlamp";
         updateMonsterModifiers();
       };
 
@@ -1096,6 +1100,7 @@
         sheet.hidden = monsterActive;
         monsterSheet.hidden = !monsterActive;
         characterOnly.forEach((element) => { element.hidden = monsterActive; });
+        applyTheme(document.querySelector(`[name="${monsterActive ? "monster-theme" : "theme"}"]`).value);
         characterTab.setAttribute("aria-selected", String(!monsterActive));
         monsterTab.setAttribute("aria-selected", String(monsterActive));
         document.querySelector("h1").textContent = monsterActive ? "Monster stat block maker" : "Character sheet";
@@ -1384,7 +1389,7 @@
 
       const collectSheet = () => {
         const fields = {};
-        document.querySelectorAll("#character-sheet [name], #configuration [name]").forEach((input) => {
+        document.querySelectorAll('#character-sheet [name], #configuration [name]:not([name="monster-theme"])').forEach((input) => {
           fields[input.name] = input.type === "checkbox" ? (input.checked ? "on" : "") : input.value;
         });
         const features = [...featureList.querySelectorAll(".feature-card")].map((card) => ({
@@ -1427,7 +1432,7 @@
 
       const resetCharacterFields = () => {
         sheet.reset();
-        document.querySelectorAll("#configuration [name]").forEach((input) => {
+        document.querySelectorAll('#configuration [name]:not([name="monster-theme"])').forEach((input) => {
           if (input.type === "checkbox") input.checked = ["auto-health", "auto-modifiers", "auto-spellcasting"].includes(input.name);
           else if (input.tagName === "SELECT") input.selectedIndex = 0;
           else input.value = "";
@@ -1440,7 +1445,7 @@
       const applySheet = (data) => {
         if (!data || typeof data !== "object" || !data.fields || !Array.isArray(data.features)) throw new Error("Invalid character sheet");
         resetCharacterFields();
-        document.querySelectorAll("#character-sheet [name], #configuration [name]").forEach((input) => {
+        document.querySelectorAll('#character-sheet [name], #configuration [name]:not([name="monster-theme"])').forEach((input) => {
           if (!Object.prototype.hasOwnProperty.call(data.fields, input.name)) return;
           if (input.type === "checkbox") {
             input.checked = data.fields[input.name] === true || data.fields[input.name] === "on";
@@ -1819,8 +1824,14 @@
         persistDraft();
       }));
       document.querySelector('[name="theme"]').addEventListener("change", () => {
+        if (!monsterSheet.hidden) return;
         applyTheme(document.querySelector('[name="theme"]').value);
         persistDraft();
+      });
+      document.querySelector('[name="monster-theme"]').addEventListener("change", () => {
+        if (monsterSheet.hidden) return;
+        applyTheme(document.querySelector('[name="monster-theme"]').value);
+        persistMonsterDraft();
       });
       document.querySelector('[name="modifier-color"]').addEventListener("change", () => {
         applyModifierColor(document.querySelector('[name="modifier-color"]').value);
