@@ -501,10 +501,10 @@
     .monster-entry textarea { min-height: 4rem; }
     .monster-entry .remove-monster-entry { color: var(--bonus); }
     .monster-entry .remove-monster-entry { margin-top: 1.35rem; }
+    .field.monster-defense-wide { grid-column: 1 / -1; }
     @media (max-width: 800px) {
       .monster-ability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 520px) {
+    }    @media (max-width: 520px) {
       .monster-entry { grid-template-columns: 1fr auto; }
       .monster-entry .monster-entry-description { grid-column: 1 / -1; }
     }
@@ -907,12 +907,15 @@
           <div class="panel-heading"><div><h2 id="monster-defense-heading">Defenses &amp; movement</h2><p>Core numbers for encounters.</p></div></div>
           <div class="panel-body fields">
             <div class="field"><label for="monster-ac">Armor class</label><input id="monster-ac" name="monster-ac" type="number" placeholder="15"></div>
-            <div class="field"><label for="monster-hp">Hit points</label><input id="monster-hp" name="monster-hp" placeholder="85 (10d10 + 30)"></div>
+            <div class="field"><label for="monster-hp">Hit points</label><input id="monster-hp" name="monster-hp" type="number" readonly aria-readonly="true" placeholder="85"></div>
+            <div class="field"><label for="monster-hit-dice">Hit dice amount</label><input id="monster-hit-dice" name="monster-hit-dice" type="number" min="1" placeholder="10"></div>
+            <div class="field"><label for="monster-hit-die-size">Hit die size</label><input id="monster-hit-die-size" name="monster-hit-die-size" type="number" min="1" placeholder="10"></div>
+            <div class="field"><label for="monster-hp-bonus">Hit point bonus</label><input id="monster-hp-bonus" name="monster-hp-bonus" type="number" placeholder="30"></div>
             <div class="field"><label for="monster-speed">Speed</label><input id="monster-speed" name="monster-speed" placeholder="30 ft., swim 40 ft."></div>
             <div class="field"><label for="monster-save-dc">Save DC</label><input id="monster-save-dc" name="monster-save-dc" placeholder="15"></div>
-            <div class="field"><label for="monster-resistances">Resistances</label><textarea id="monster-resistances" name="monster-resistances" placeholder="Cold; bludgeoning from nonmagical attacks"></textarea></div>
-            <div class="field"><label for="monster-immunities">Immunities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Poison; poisoned condition"></textarea></div>
-            <div class="field"><label for="monster-vulnerabilities">Vulnerabilities</label><textarea id="monster-vulnerabilities" name="monster-vulnerabilities" placeholder="Fire; radiant"></textarea></div>
+            <div class="field monster-defense-wide"><label for="monster-resistances">Resistances</label><textarea id="monster-resistances" name="monster-resistances" placeholder="Cold; bludgeoning from nonmagical attacks"></textarea></div>
+            <div class="field monster-defense-wide"><label for="monster-immunities">Immunities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Poison; poisoned condition"></textarea></div>
+            <div class="field monster-defense-wide"><label for="monster-vulnerabilities">Vulnerabilities</label><textarea id="monster-vulnerabilities" name="monster-vulnerabilities" placeholder="Fire; radiant"></textarea></div>
           </div>
         </section>
         <section class="panel" aria-labelledby="monster-abilities-heading">
@@ -1072,6 +1075,17 @@
         if (list) list.appendChild(row);
       };
 
+      const updateMonsterHp = () => {
+        const hpInput = monsterSheet.querySelector('[name="monster-hp"]');
+        if (!hpInput) return;
+        const amount = Number(monsterSheet.querySelector('[name="monster-hit-dice"]').value);
+        const size = Number(monsterSheet.querySelector('[name="monster-hit-die-size"]').value);
+        const bonus = Number(monsterSheet.querySelector('[name="monster-hp-bonus"]').value) || 0;
+        hpInput.value = Number.isFinite(amount) && amount > 0 && Number.isFinite(size) && size > 0
+          ? String(Math.floor((amount * (size + 1)) / 2) + bonus)
+          : "";
+      };
+
       const updateMonsterModifiers = () => {
         ["str", "dex", "con", "int", "wis", "cha"].forEach((ability) => {
           const scoreInput = monsterSheet.querySelector(`[name="monster-${ability}"]`);
@@ -1082,6 +1096,7 @@
             modifierInput.value = `${modifier >= 0 ? "+" : ""}${modifier}`;
           }
         });
+        updateMonsterHp();
       };
 
       const applyMonster = (data) => {
@@ -1862,6 +1877,7 @@
       }));
       monsterSheet.querySelectorAll('[name^="monster-"]').forEach((input) => input.addEventListener("input", () => {
         if (input.name.match(/^monster-(str|dex|con|int|wis|cha)$/)) updateMonsterModifiers();
+        if (input.name.match(/^monster-(hit-dice|hit-die-size|hp-bonus)$/)) updateMonsterHp();
         persistMonsterDraft();
       }));
       monsterSheet.addEventListener("input", persistMonsterDraft);
