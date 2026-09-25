@@ -910,12 +910,6 @@
             <div class="field"><label for="monster-hp">Hit points</label><input id="monster-hp" name="monster-hp" placeholder="85 (10d10 + 30)"></div>
             <div class="field"><label for="monster-speed">Speed</label><input id="monster-speed" name="monster-speed" placeholder="30 ft., swim 40 ft."></div>
             <div class="field"><label for="monster-save-dc">Save DC</label><input id="monster-save-dc" name="monster-save-dc" placeholder="15"></div>
-            <div class="field"><label for="monster-skills">Skills</label><textarea id="monster-skills" name="monster-skills" placeholder="Perception +6, Stealth +5"></textarea></div>
-            <div class="field"><label for="monster-resistances">Resistances</label><textarea id="monster-resistances" name="monster-resistances" placeholder="Cold; bludgeoning from nonmagical attacks"></textarea></div>
-            <div class="field"><label for="monster-immunities">Immunities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Poison; poisoned condition"></textarea></div>
-            <div class="field"><label for="monster-gear">Gear</label><textarea id="monster-gear" name="monster-gear" placeholder="Weapons, armor, carried items"></textarea></div>
-            <div class="field"><label for="monster-senses">Senses</label><textarea id="monster-senses" name="monster-senses" placeholder="Darkvision 60 ft., passive Perception 16"></textarea></div>
-            <div class="field"><label for="monster-languages">Languages</label><textarea id="monster-languages" name="monster-languages" placeholder="Common, Aquan"></textarea></div>
           </div>
         </section>
         <section class="panel" aria-labelledby="monster-abilities-heading">
@@ -930,6 +924,17 @@
           </div></div>
         </section>
       </div>
+      <section class="panel" aria-labelledby="monster-details-heading">
+        <div class="panel-heading"><div><h2 id="monster-details-heading">Skills &amp; special defenses</h2><p>Track proficiencies, protections, senses, and equipment separately from core combat numbers.</p></div></div>
+        <div class="panel-body fields">
+          <div class="field"><label for="monster-skills">Skills</label><textarea id="monster-skills" name="monster-skills" placeholder="Perception +6, Stealth +5"></textarea></div>
+          <div class="field"><label for="monster-resistances">Resistances</label><textarea id="monster-resistances" name="monster-resistances" placeholder="Cold; bludgeoning from nonmagical attacks"></textarea></div>
+          <div class="field"><label for="monster-immunities">Immunities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Poison; poisoned condition"></textarea></div>
+          <div class="field"><label for="monster-senses">Senses</label><textarea id="monster-senses" name="monster-senses" placeholder="Darkvision 60 ft., passive Perception 16"></textarea></div>
+          <div class="field"><label for="monster-languages">Languages</label><textarea id="monster-languages" name="monster-languages" placeholder="Common, Aquan"></textarea></div>
+          <div class="field"><label for="monster-gear">Gear</label><textarea id="monster-gear" name="monster-gear" placeholder="Weapons, armor, carried items"></textarea></div>
+        </div>
+      </section>
       <section class="panel" aria-labelledby="monster-features-heading">
         <div class="panel-heading"><div><h2 id="monster-features-heading">Traits, actions &amp; reactions</h2><p>Add the rules text that makes this creature unique.</p></div></div>
         <div class="panel-body">
@@ -1083,6 +1088,10 @@
         monsterSheet.reset();
         monsterSheet.querySelectorAll("[name]").forEach((input) => {
           if (Object.prototype.hasOwnProperty.call(data.fields, input.name)) input.value = data.fields[input.name];
+        });
+        ["str", "dex", "con", "int", "wis", "cha"].forEach((ability) => {
+          const scoreInput = monsterSheet.querySelector(`[name="monster-${ability}"]`);
+          if (scoreInput && scoreInput.value === "") scoreInput.value = "10";
         });
         monsterEntryLists.forEach((list) => list.replaceChildren());
         (Array.isArray(data.entries) ? data.entries : []).forEach((entry) => addMonsterEntry(entry.group || "traits", entry));
