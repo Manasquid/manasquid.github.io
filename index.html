@@ -363,9 +363,9 @@
     body[data-modifier-color="purple"] { --bonus: #8038b8; }
     body[data-modifier-color="rose"] { --bonus: #ff8a9a; }
     body[data-modifier-color="maroon"] { --bonus: #b13a42; }
-    body[data-modifier-color="red"] { --bonus: #ff5d5d; }
 
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
@@ -444,7 +444,7 @@
     .config-panel summary::after { content: "＋"; float: right; color: var(--accent); font-size: 1.1rem; }
     .config-panel[open] summary::after { content: "−"; }
     .config-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-    .config-option { display: grid; gap: .35rem; }
+    .config-option { display: grid; gap: .35rem; align-content: start; }
     .config-option input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--accent); }
     .config-checkbox { display: flex; align-items: center; gap: .5rem; min-height: 2.55rem; color: var(--text); }
     .spellcasting-panel[hidden] { display: none; }
@@ -485,7 +485,7 @@
     .saved-actions { display: flex; flex-wrap: wrap; gap: .4rem; }
     .saved-empty { color: var(--muted); font-size: .85rem; }
 
-    .sheet { display: grid; gap: 1.25rem; }
+    .sheet { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1fr); }
     .maker-tabs { display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 1.25rem; }
     .maker-tab[aria-selected="true"] { border-color: var(--accent); background: var(--accent); color: var(--button-strong-text); }
     .sheet[hidden], .maker-panel[hidden] { display: none; }
@@ -493,6 +493,7 @@
     .monster-ability { display: grid; gap: .3rem; padding: .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); text-align: center; }
     .monster-ability input { min-width: 0; text-align: center; font-weight: 700; }
     .monster-ability input[type="number"], .monster-ability input[name$="-mod"] { min-width: 3.375rem; }
+    .monster-ability input[name$="-mod"], .monster-attack-bonus, .monster-attack-damage-bonus, [name="monster-initiative"], [name="monster-proficiency-bonus"] { color: var(--bonus); }
     .monster-entry-groups { display: grid; gap: 1rem; }
     .monster-entry-group { display: grid; gap: .65rem; }
     .monster-entry-group h3 { margin: 0; color: var(--text); font-size: .9rem; }
@@ -501,18 +502,52 @@
     .monster-entry textarea { min-height: 4rem; }
     .monster-entry .remove-monster-entry { color: var(--bonus); }
     .monster-entry .remove-monster-entry { margin-top: 1.35rem; }
+    .monster-entry-name-cell { display: grid; gap: .3rem; align-content: start; }
+    .monster-entry-attack-toggle { display: flex; align-items: center; gap: .4rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; white-space: nowrap; }
+    .monster-entry-attack-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .monster-xp-label-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    .fields > .field.monster-defense-wide { grid-column: 1 / -1; }
+    .monster-lair-toggle { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; }
+    .monster-lair-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .attack-list { display: grid; gap: .45rem; }
+    .attack-row, .attack-header { display: grid; grid-template-columns: minmax(7.5rem, 1.2fr) 4.25rem 4.5rem minmax(4.25rem, .8fr) 4.5rem minmax(5rem, .7fr) minmax(5.5rem, .8fr) minmax(6rem, 1fr) 2.2rem; gap: .55rem; }
+    .attack-row { align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
+    .attack-row input, .attack-row select { height: 2.3rem; padding: .4rem .5rem; }
+    .attack-header { padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .monster-attack-list { display: grid; gap: .6rem; }
+    .monster-attack-item { display: grid; gap: .35rem; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
+    .monster-attack-item-head { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+    .monster-attack-item-head strong { color: var(--text); }
+    .monster-attack-item p { margin: 0; color: var(--field-text); font-size: .85rem; white-space: pre-wrap; }
+    .monster-attack-empty { margin: 0; color: var(--muted); font-size: .82rem; }
+    .monster-attack-item-details { margin: 0; color: var(--bonus); font-size: .8rem; font-weight: 700; }
+    .monster-entry-attack-fields { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .55rem; padding: .65rem; border: 1px dashed var(--line-strong); border-radius: .45rem; background: var(--accent-soft); }
+    .monster-entry-attack-fields[hidden] { display: none; }
+    .monster-entry-attack-fields label { display: grid; gap: .3rem; }
+    .monster-entry-attack-fields input, .monster-entry-attack-fields select { height: 2.35rem; padding: .4rem .55rem; }
     @media (max-width: 800px) {
       .monster-ability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }    @media (max-width: 520px) {
+      .attack-header { display: none; }
+      .attack-row { grid-template-columns: minmax(7rem, 1.4fr) 3.9rem 3.9rem 2rem; }
+      .attack-row .attack-damage { grid-column: 1; grid-row: 2; }
+      .attack-row .attack-damage-bonus { grid-column: 2; grid-row: 2; }
+      .attack-row .attack-type { grid-column: 3; grid-row: 2; }
+      .attack-row .attack-range { grid-column: 1; grid-row: 3; }
+      .attack-row .attack-notes { grid-column: 2 / 5; grid-row: 3; }
+      .attack-row .remove-attack { grid-column: 4; grid-row: 1; }
     }
     @media (max-width: 520px) {
       .monster-entry { grid-template-columns: 1fr auto; }
       .monster-entry .monster-entry-description { grid-column: 1 / -1; }
+      .monster-entry-attack-fields { grid-template-columns: 1fr 1fr; }
     }
     .panel {
       border: 1px solid var(--line);
       border-radius: .75rem;
       background: var(--surface);
       box-shadow: var(--shadow);
+      min-width: 0;
     }
     .panel-heading {
       display: flex;
@@ -526,9 +561,10 @@
     .panel-heading p { margin: .25rem 0 0; color: var(--text); font-size: .82rem; opacity: .9; }
     .panel-body { padding: 1.25rem; }
 
-    .fields { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
-    .field { display: grid; gap: .35rem; grid-column: span 3; }
-    .field.wide { grid-column: span 6; }
+    .fields { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+    .field { display: grid; grid-template-columns: minmax(0, 1fr); gap: .35rem; min-width: 0; align-content: start; }
+    .fields > .field { grid-column: span 3; }
+    .fields > .field.wide { grid-column: span 6; }
     .field.full { grid-column: 1 / -1; }
     label, .field-label { color: var(--text); font-size: .74rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
     input, select, textarea {
@@ -546,7 +582,7 @@
       color: var(--bonus);
     }
     input, select { height: 2.55rem; padding: .45rem .65rem; }
-    textarea { min-height: 6rem; padding: .6rem .65rem; resize: vertical; }
+    textarea { min-height: 6rem; max-width: 100%; padding: .6rem .65rem; resize: both; }
     input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(216, 174, 98, .14); }
     input::placeholder, textarea::placeholder { color: var(--field-placeholder); }
 
@@ -561,7 +597,7 @@
       background: var(--surface-soft);
       text-align: center;
     }
-    .ability input { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
+    .ability input.score { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
     .ability-name { color: var(--muted); font-size: .72rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .ability-mod { color: var(--bonus); font-size: .8rem; }
     [contenteditable="true"] { cursor: text; }
@@ -597,7 +633,7 @@
     .empty-state { padding: 2rem 1rem; border: 1px dashed var(--line-strong); border-radius: .5rem; color: var(--muted); text-align: center; }
     .feature-editor { display: grid; gap: 1rem; margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--accent); border-radius: .55rem; background: var(--accent-soft); }
     .feature-editor[hidden] { display: none; }
-    .feature-editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+    .feature-editor-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .8rem; }
     .feature-editor .field { grid-column: auto; }
     .feature-editor .field.full { grid-column: 1 / -1; }
     .feature-editor-actions { display: flex; justify-content: end; gap: .55rem; }
@@ -612,10 +648,10 @@
     .proficiency-header { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 4.5rem 4.5rem 2.2rem; gap: .55rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .proficiency-header span:nth-child(n+3) { text-align: center; white-space: nowrap; }
     .proficiency-actions { display: flex; justify-content: end; margin-top: .8rem; }
-    .proficiency-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .background-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .proficiency-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+    .background-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
     .background-grid .field.full { grid-column: 1 / -1; }
-    .inventory-grid { display: grid; grid-template-columns: 1.3fr .7fr; gap: 1rem; }
+    .inventory-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 1rem; }
     .currency-list { display: grid; gap: .5rem; margin-top: .65rem; }
     .currency-row { display: grid; grid-template-columns: 1fr .6fr 2.2rem; gap: .45rem; }
     .currency-row input { height: 2.3rem; }
@@ -628,7 +664,7 @@
     @media (max-width: 800px) {
       .page-heading { align-items: start; flex-direction: column; }
       .sheet-grid { grid-template-columns: 1fr; }
-      .field, .field.wide { grid-column: span 6; }
+      .fields > .field, .fields > .field.wide { grid-column: span 6; }
     }
     @media (max-width: 520px) {
       .shell { width: min(100% - 1.25rem, 440px); }
@@ -636,7 +672,7 @@
       .top-actions { width: 100%; justify-content: space-between; }
       main { padding-top: 2rem; }
       .fields, .ability-grid, .combat-grid { grid-template-columns: 1fr 1fr; }
-      .field, .field.wide { grid-column: span 2; }
+      .fields > .field, .fields > .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
       .skill-row, .proficiency-header { grid-template-columns: minmax(6.25rem, 1fr) 5.25rem 3.5rem 4.25rem 4.25rem 2rem; }
@@ -691,9 +727,10 @@
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Character theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
-        <label class="config-option"><span class="field-label">Monster theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
-        <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
+        <label class="config-option character-only"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
+        <label class="config-option monster-only"><span class="field-label">Theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
+        <label class="config-option character-only"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
+        <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
@@ -733,8 +770,8 @@
           <div class="field"><label for="species">Species</label><input id="species" name="species" placeholder="e.g. Human"></div>
           <div class="field"><label for="size">Size</label><select id="size" name="size"><option>Small</option><option selected>Medium</option></select></div>
           <div class="field"><label for="creature-type">Creature type</label><input id="creature-type" name="creature-type" placeholder="e.g. Humanoid"></div>
-          <div class="field"><label for="background">Background</label><input id="background" name="background" placeholder="e.g. Sage"></div>
-          <div class="field wide"><label for="alignment">Alignment / notes</label><input id="alignment" name="alignment" placeholder="Optional details"></div>
+          <div class="field wide"><label for="background">Background</label><input id="background" name="background" placeholder="e.g. Sage"></div>
+          <div class="field wide"><label for="alignment">Alignment / notes</label><textarea id="alignment" name="alignment" placeholder="Optional details"></textarea></div>
           <div class="field full custom-fields"><span class="field-label">Custom identity fields</span><div class="custom-field-list" data-custom-fields-for="identity"></div><button class="button" data-add-custom-field="identity" type="button">+ Add identity field</button></div>
         </div>
       </section>
@@ -746,12 +783,12 @@
           </div>
           <div class="panel-body">
             <div class="ability-grid">
-              <label class="ability"><span class="ability-name">Strength</span><input class="score" name="strength" type="number" min="1" max="30" value="10" aria-label="Strength score"><span class="ability-mod" data-mod-for="strength" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="strength-save-proficient" type="checkbox" aria-label="Strength saving throw proficiency"> Save <strong data-save-for="strength" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Dexterity</span><input class="score" name="dexterity" type="number" min="1" max="30" value="10" aria-label="Dexterity score"><span class="ability-mod" data-mod-for="dexterity" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="dexterity-save-proficient" type="checkbox" aria-label="Dexterity saving throw proficiency"> Save <strong data-save-for="dexterity" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Constitution</span><input class="score" name="constitution" type="number" min="1" max="30" value="10" aria-label="Constitution score"><span class="ability-mod" data-mod-for="constitution" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="constitution-save-proficient" type="checkbox" aria-label="Constitution saving throw proficiency"> Save <strong data-save-for="constitution" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Intelligence</span><input class="score" name="intelligence" type="number" min="1" max="30" value="10" aria-label="Intelligence score"><span class="ability-mod" data-mod-for="intelligence" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="intelligence-save-proficient" type="checkbox" aria-label="Intelligence saving throw proficiency"> Save <strong data-save-for="intelligence" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><span class="ability-mod" data-mod-for="wisdom" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="wisdom-save-proficient" type="checkbox" aria-label="Wisdom saving throw proficiency"> Save <strong data-save-for="wisdom" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><span class="ability-mod" data-mod-for="charisma" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="charisma-save-proficient" type="checkbox" aria-label="Charisma saving throw proficiency"> Save <strong data-save-for="charisma" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Strength</span><input class="score" name="strength" type="number" min="1" max="30" value="10" aria-label="Strength score"><input class="ability-mod" name="strength-mod" data-mod-for="strength" placeholder="+0" aria-label="Strength modifier" readonly><span class="save-check"><input class="save-proficient" name="strength-save-proficient" type="checkbox" aria-label="Strength saving throw proficiency"> Save <strong data-save-for="strength" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Dexterity</span><input class="score" name="dexterity" type="number" min="1" max="30" value="10" aria-label="Dexterity score"><input class="ability-mod" name="dexterity-mod" data-mod-for="dexterity" placeholder="+0" aria-label="Dexterity modifier" readonly><span class="save-check"><input class="save-proficient" name="dexterity-save-proficient" type="checkbox" aria-label="Dexterity saving throw proficiency"> Save <strong data-save-for="dexterity" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Constitution</span><input class="score" name="constitution" type="number" min="1" max="30" value="10" aria-label="Constitution score"><input class="ability-mod" name="constitution-mod" data-mod-for="constitution" placeholder="+0" aria-label="Constitution modifier" readonly><span class="save-check"><input class="save-proficient" name="constitution-save-proficient" type="checkbox" aria-label="Constitution saving throw proficiency"> Save <strong data-save-for="constitution" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Intelligence</span><input class="score" name="intelligence" type="number" min="1" max="30" value="10" aria-label="Intelligence score"><input class="ability-mod" name="intelligence-mod" data-mod-for="intelligence" placeholder="+0" aria-label="Intelligence modifier" readonly><span class="save-check"><input class="save-proficient" name="intelligence-save-proficient" type="checkbox" aria-label="Intelligence saving throw proficiency"> Save <strong data-save-for="intelligence" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><input class="ability-mod" name="wisdom-mod" data-mod-for="wisdom" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="save-check"><input class="save-proficient" name="wisdom-save-proficient" type="checkbox" aria-label="Wisdom saving throw proficiency"> Save <strong data-save-for="wisdom" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><input class="ability-mod" name="charisma-mod" data-mod-for="charisma" placeholder="+0" aria-label="Charisma modifier" readonly><span class="save-check"><input class="save-proficient" name="charisma-save-proficient" type="checkbox" aria-label="Charisma saving throw proficiency"> Save <strong data-save-for="charisma" contenteditable="false">+0</strong></span></label>
             </div>
             <div class="custom-fields"><span class="field-label">Custom ability fields</span><div class="custom-field-list" data-custom-fields-for="abilities"></div><button class="button" data-add-custom-field="abilities" type="button">+ Add ability field</button></div>
           </div>
@@ -781,6 +818,17 @@
           </div>
         </section>
       </div>
+
+      <section class="panel" aria-labelledby="attacks-heading">
+        <div class="panel-heading">
+          <div><h2 id="attacks-heading">Attack reference</h2><p>Keep weapon and spell attacks handy for quick access in combat.</p></div>
+          <button class="button primary" id="add-attack" type="button">+ Add attack</button>
+        </div>
+        <div class="panel-body">
+          <div class="attack-header" aria-hidden="true"><span>Attack</span><span>Ability</span><span>Bonus</span><span>Damage dice</span><span>Dmg bonus</span><span>Type</span><span>Range</span><span>Notes</span><span></span></div>
+          <div class="attack-list" id="attack-list"></div>
+        </div>
+      </section>
 
       <section class="panel" id="features" aria-labelledby="features-heading">
         <div class="panel-heading">
@@ -827,9 +875,9 @@
           <div><h2 id="background-heading">Character background</h2><p>Capture the story, look, and details that make this character yours.</p></div>
         </div>
         <div class="panel-body background-grid">
-          <div class="field"><label for="first-impression">Initial description</label><textarea id="first-impression" name="first-impression" placeholder="What are other players first introduced to?"></textarea></div>
-          <div class="field"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Describe their look, clothing, mannerisms, and distinguishing traits."></textarea></div>
-          <div class="field"><label for="languages">Languages</label><input id="languages" name="languages" placeholder="e.g. Common, Elvish"></div>
+          <div class="field full"><label for="first-impression">Initial description</label><textarea id="first-impression" name="first-impression" placeholder="What are other players first introduced to?"></textarea></div>
+          <div class="field full"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Describe their look, clothing, mannerisms, and distinguishing traits."></textarea></div>
+          <div class="field full"><label for="languages">Languages</label><textarea id="languages" name="languages" placeholder="e.g. Common, Elvish"></textarea></div>
           <div class="field full"><label for="background-story">Background story</label><textarea id="background-story" name="background-story" placeholder="Where did they come from? What shaped them, and what are they seeking?"></textarea></div>
           <div class="field full custom-fields"><span class="field-label">Custom background fields</span><div class="custom-field-list" data-custom-fields-for="background"></div><button class="button" data-add-custom-field="background" type="button">+ Add background field</button></div>
         </div>
@@ -898,7 +946,9 @@
           <div class="field"><label for="monster-size">Size</label><select id="monster-size" name="monster-size"><option>Small</option><option selected>Medium</option><option>Large</option><option>Huge</option><option>Gargantuan</option></select></div>
           <div class="field"><label for="monster-type">Creature type</label><input id="monster-type" name="monster-type" placeholder="e.g. Aberration"></div>
           <div class="field"><label for="monster-alignment">Alignment</label><input id="monster-alignment" name="monster-alignment" placeholder="e.g. Unaligned"></div>
-          <div class="field"><label for="monster-cr">Challenge rating</label><input id="monster-cr" name="monster-cr" placeholder="e.g. 5 (1,800 XP)"></div>
+          <div class="field"><label for="monster-cr">Challenge rating</label><select id="monster-cr" name="monster-cr"><option value="">Select CR</option></select></div>
+          <div class="field"><label for="monster-proficiency-bonus">Proficiency bonus</label><input id="monster-proficiency-bonus" name="monster-proficiency-bonus" type="text" readonly aria-readonly="true" placeholder="+2"></div>
+          <div class="field"><span class="monster-xp-label-row"><label for="monster-xp-reward">XP reward</label><label class="monster-lair-toggle"><input name="monster-lair" type="checkbox"> In lair (+1 CR)</label></span><input id="monster-xp-reward" name="monster-xp-reward" readonly aria-readonly="true" placeholder="e.g. 1,800 XP"></div>
           <div class="field full"><label for="monster-description">Description</label><textarea id="monster-description" name="monster-description" placeholder="Describe the creature's role, habitat, or first impression."></textarea></div>
         </div>
       </section>
@@ -907,33 +957,40 @@
           <div class="panel-heading"><div><h2 id="monster-defense-heading">Defenses &amp; movement</h2><p>Core numbers for encounters.</p></div></div>
           <div class="panel-body fields">
             <div class="field"><label for="monster-ac">Armor class</label><input id="monster-ac" name="monster-ac" type="number" placeholder="15"></div>
-            <div class="field"><label for="monster-hp">Hit points</label><input id="monster-hp" name="monster-hp" placeholder="85 (10d10 + 30)"></div>
-            <div class="field"><label for="monster-speed">Speed</label><input id="monster-speed" name="monster-speed" placeholder="30 ft., swim 40 ft."></div>
-            <div class="field"><label for="monster-save-dc">Save DC</label><input id="monster-save-dc" name="monster-save-dc" placeholder="15"></div>
-            <div class="field"><label for="monster-resistances">Resistances</label><textarea id="monster-resistances" name="monster-resistances" placeholder="Cold; bludgeoning from nonmagical attacks"></textarea></div>
-            <div class="field"><label for="monster-immunities">Immunities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Poison; poisoned condition"></textarea></div>
-            <div class="field"><label for="monster-vulnerabilities">Vulnerabilities</label><textarea id="monster-vulnerabilities" name="monster-vulnerabilities" placeholder="Fire; radiant"></textarea></div>
+            <div class="field"><label for="monster-hp">Hit points</label><input id="monster-hp" name="monster-hp" type="number" readonly aria-readonly="true" placeholder="85"></div>
+            <div class="field"><label for="monster-hit-dice">Hit dice amount</label><input id="monster-hit-dice" name="monster-hit-dice" type="number" min="1" placeholder="10"></div>
+            <div class="field"><label for="monster-hit-die-size">Hit die size</label><select id="monster-hit-die-size" name="monster-hit-die-size"><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10" selected>10</option><option value="12">12</option><option value="20">20</option></select></div>
+            <div class="field"><label for="monster-hp-bonus">Hit point bonus</label><input id="monster-hp-bonus" name="monster-hp-bonus" type="number" placeholder="30"></div>
+            <div class="field"><label for="monster-initiative">Initiative</label><input id="monster-initiative" name="monster-initiative" readonly aria-readonly="true" placeholder="+0"></div>
+            <div class="field wide"><label for="monster-speed">Speed</label><input id="monster-speed" name="monster-speed" placeholder="30 ft., swim 40 ft."></div>
+            <div class="field monster-defense-wide"><label for="monster-resistances">Resistances</label><textarea id="monster-resistances" name="monster-resistances" placeholder="Cold; bludgeoning from nonmagical attacks"></textarea></div>
+            <div class="field monster-defense-wide"><label for="monster-immunities">Immunities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Poison; poisoned condition"></textarea></div>
+            <div class="field monster-defense-wide"><label for="monster-vulnerabilities">Vulnerabilities</label><textarea id="monster-vulnerabilities" name="monster-vulnerabilities" placeholder="Fire; radiant"></textarea></div>
           </div>
         </section>
         <section class="panel" aria-labelledby="monster-abilities-heading">
           <div class="panel-heading"><div><h2 id="monster-abilities-heading">Ability scores</h2><p>Enter scores and modifiers in one place.</p></div></div>
           <div class="panel-body"><div class="monster-ability-grid">
-            <label class="monster-ability"><span class="ability-name">STR</span><input name="monster-str" type="number" min="1" max="40" value="10" aria-label="Strength score"><input name="monster-str-mod" placeholder="+0" aria-label="Strength modifier" readonly></label>
-            <label class="monster-ability"><span class="ability-name">DEX</span><input name="monster-dex" type="number" min="1" max="40" value="10" aria-label="Dexterity score"><input name="monster-dex-mod" placeholder="+0" aria-label="Dexterity modifier" readonly></label>
-            <label class="monster-ability"><span class="ability-name">CON</span><input name="monster-con" type="number" min="1" max="40" value="10" aria-label="Constitution score"><input name="monster-con-mod" placeholder="+0" aria-label="Constitution modifier" readonly></label>
-            <label class="monster-ability"><span class="ability-name">INT</span><input name="monster-int" type="number" min="1" max="40" value="10" aria-label="Intelligence score"><input name="monster-int-mod" placeholder="+0" aria-label="Intelligence modifier" readonly></label>
-            <label class="monster-ability"><span class="ability-name">WIS</span><input name="monster-wis" type="number" min="1" max="40" value="10" aria-label="Wisdom score"><input name="monster-wis-mod" placeholder="+0" aria-label="Wisdom modifier" readonly></label>
-            <label class="monster-ability"><span class="ability-name">CHA</span><input name="monster-cha" type="number" min="1" max="40" value="10" aria-label="Charisma score"><input name="monster-cha-mod" placeholder="+0" aria-label="Charisma modifier" readonly></label>
+            <label class="monster-ability"><span class="ability-name">STR</span><input name="monster-str" type="number" min="1" max="40" value="10" aria-label="Strength score"><input name="monster-str-mod" placeholder="+0" aria-label="Strength modifier" readonly><span class="save-check"><input name="monster-str-save-proficient" type="checkbox" aria-label="Strength save proficiency"> Save <strong data-msave-for="str">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">DEX</span><input name="monster-dex" type="number" min="1" max="40" value="10" aria-label="Dexterity score"><input name="monster-dex-mod" placeholder="+0" aria-label="Dexterity modifier" readonly><span class="save-check"><input name="monster-dex-save-proficient" type="checkbox" aria-label="Dexterity save proficiency"> Save <strong data-msave-for="dex">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">CON</span><input name="monster-con" type="number" min="1" max="40" value="10" aria-label="Constitution score"><input name="monster-con-mod" placeholder="+0" aria-label="Constitution modifier" readonly><span class="save-check"><input name="monster-con-save-proficient" type="checkbox" aria-label="Constitution save proficiency"> Save <strong data-msave-for="con">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">INT</span><input name="monster-int" type="number" min="1" max="40" value="10" aria-label="Intelligence score"><input name="monster-int-mod" placeholder="+0" aria-label="Intelligence modifier" readonly><span class="save-check"><input name="monster-int-save-proficient" type="checkbox" aria-label="Intelligence save proficiency"> Save <strong data-msave-for="int">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">WIS</span><input name="monster-wis" type="number" min="1" max="40" value="10" aria-label="Wisdom score"><input name="monster-wis-mod" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="save-check"><input name="monster-wis-save-proficient" type="checkbox" aria-label="Wisdom save proficiency"> Save <strong data-msave-for="wis">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">CHA</span><input name="monster-cha" type="number" min="1" max="40" value="10" aria-label="Charisma score"><input name="monster-cha-mod" placeholder="+0" aria-label="Charisma modifier" readonly><span class="save-check"><input name="monster-cha-save-proficient" type="checkbox" aria-label="Charisma save proficiency"> Save <strong data-msave-for="cha">+0</strong></span></label>
           </div></div>
         </section>
       </div>
+      <section class="panel" aria-labelledby="monster-attacks-heading">
+        <div class="panel-heading"><div><h2 id="monster-attacks-heading">Attack reference</h2><p>Actions flagged as attacks, gathered for quick access in combat.</p></div></div>
+        <div class="panel-body"><div class="monster-attack-list" id="monster-attack-reference"></div></div>
+      </section>
       <section class="panel" aria-labelledby="monster-details-heading">
         <div class="panel-heading"><div><h2 id="monster-details-heading">Skills, senses &amp; equipment</h2><p>Track proficiencies, senses, languages, and carried equipment separately from core combat numbers.</p></div></div>
         <div class="panel-body fields">
-          <div class="field"><label for="monster-skills">Skills</label><textarea id="monster-skills" name="monster-skills" placeholder="Perception +6, Stealth +5"></textarea></div>
-          <div class="field"><label for="monster-senses">Senses</label><textarea id="monster-senses" name="monster-senses" placeholder="Darkvision 60 ft., passive Perception 16"></textarea></div>
-          <div class="field"><label for="monster-languages">Languages</label><textarea id="monster-languages" name="monster-languages" placeholder="Common, Aquan"></textarea></div>
-          <div class="field"><label for="monster-gear">Gear</label><textarea id="monster-gear" name="monster-gear" placeholder="Weapons, armor, carried items"></textarea></div>
+          <div class="field wide"><label for="monster-skills">Skills</label><textarea id="monster-skills" name="monster-skills" placeholder="Perception +6, Stealth +5"></textarea></div>
+          <div class="field wide"><label for="monster-senses">Senses</label><textarea id="monster-senses" name="monster-senses" placeholder="Darkvision 60 ft., passive Perception 16"></textarea></div>
+          <div class="field wide"><label for="monster-languages">Languages</label><textarea id="monster-languages" name="monster-languages" placeholder="Common, Aquan"></textarea></div>
+          <div class="field wide"><label for="monster-gear">Gear</label><textarea id="monster-gear" name="monster-gear" placeholder="Weapons, armor, carried items"></textarea></div>
         </div>
       </section>
       <section class="panel" aria-labelledby="monster-features-heading">
@@ -969,6 +1026,19 @@
         <button class="icon-button remove-feature" type="button" aria-label="Remove feature">×</button>
       </div>
     </article>
+  </template>
+  <template id="attack-template">
+    <div class="attack-row">
+      <input class="attack-name" aria-label="Attack name" placeholder="e.g. Longsword">
+      <select class="attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select>
+      <input class="attack-bonus" readonly aria-readonly="true" placeholder="+5">
+      <input class="attack-damage" aria-label="Damage dice" placeholder="1d8">
+      <input class="attack-damage-bonus" readonly aria-readonly="true" placeholder="+3">
+      <input class="attack-type" aria-label="Damage type" placeholder="Slashing">
+      <input class="attack-range" aria-label="Range" placeholder="5 ft.">
+      <input class="attack-notes" aria-label="Notes" placeholder="Versatile (1d10)">
+      <button class="icon-button remove-attack" type="button" aria-label="Remove attack">×</button>
+    </div>
   </template>
   <template id="skill-template">
     <div class="skill-row">
@@ -1027,6 +1097,8 @@
       const currencyTemplate = document.querySelector("#currency-template");
       const currencyList = document.querySelector("#currency-list");
       const customFieldTemplate = document.querySelector("#custom-field-template");
+      const attackTemplate = document.querySelector("#attack-template");
+      const attackList = document.querySelector("#attack-list");
       const spellTemplate = document.querySelector("#spell-template");
       const spellcastingPanel = document.querySelector("#spellcasting");
       const spellcasterToggle = document.querySelector('[name="spellcaster"]');
@@ -1049,27 +1121,235 @@
       const collectMonster = () => ({
         version: 1,
         theme: document.querySelector('[name="monster-theme"]').value,
-        fields: Object.fromEntries([...monsterSheet.querySelectorAll("[name]")].map((input) => [input.name, input.value])),
-        entries: monsterEntryLists.flatMap((list) => [...list.querySelectorAll(".monster-entry")].map((row) => ({
-          group: list.dataset.monsterGroup,
-          name: row.querySelector(".monster-entry-name").value,
-          description: row.querySelector(".monster-entry-description").value
-        })))
+        modifierColor: document.querySelector('[name="monster-modifier-color"]').value,
+        fields: Object.fromEntries([...monsterSheet.querySelectorAll("[name]")].map((input) => [input.name, input.type === "checkbox" ? (input.checked ? "on" : "") : input.value])),
+        entries: monsterEntryLists.flatMap((list) => [...list.querySelectorAll(".monster-entry")].map((row) => {
+          const fields = row.querySelector(".monster-entry-attack-fields");
+          return {
+            group: list.dataset.monsterGroup,
+            name: row.querySelector(".monster-entry-name input").value,
+            description: row.querySelector(".monster-entry-description textarea").value,
+            attack: Boolean(row.querySelector(".monster-entry-attack")?.checked),
+            attackAbility: fields?.querySelector(".monster-attack-ability")?.value || "",
+            attackBonus: fields?.querySelector(".monster-attack-bonus")?.value || "",
+            attackDamage: fields?.querySelector(".monster-attack-damage")?.value || "",
+            attackDamageBonus: fields?.querySelector(".monster-attack-damage-bonus")?.value || "",
+            attackDamageType: fields?.querySelector(".monster-attack-damage-type")?.value || "",
+            attackRange: fields?.querySelector(".monster-attack-range")?.value || ""
+          };
+        }))
       });
 
       const persistMonsterDraft = () => {
         try { localStorage.setItem(monsterDraftKey, JSON.stringify(collectMonster())); } catch { setStatus("Browser storage unavailable"); }
       };
 
+      const monsterCrData = [
+        ["0", "0 or 10"], ["1/8", "25"], ["1/4", "50"], ["1/2", "100"],
+        ["1", "200"], ["2", "450"], ["3", "700"], ["4", "1,100"], ["5", "1,800"],
+        ["6", "2,300"], ["7", "2,900"], ["8", "3,900"], ["9", "5,000"], ["10", "5,900"],
+        ["11", "7,200"], ["12", "8,400"], ["13", "10,000"], ["14", "11,500"], ["15", "13,000"],
+        ["16", "15,000"], ["17", "18,000"], ["18", "20,000"], ["19", "22,000"], ["20", "25,000"],
+        ["21", "33,000"], ["22", "41,000"], ["23", "50,000"], ["24", "62,000"], ["25", "75,000"],
+        ["26", "90,000"], ["27", "105,000"], ["28", "120,000"], ["29", "135,000"], ["30", "155,000"]
+      ];
+      const monsterCrSelect = document.querySelector('[name="monster-cr"]');
+      monsterCrData.forEach(([cr]) => {
+        const option = document.createElement("option");
+        option.value = cr;
+        option.textContent = `CR ${cr}`;
+        monsterCrSelect.appendChild(option);
+      });
+
       const addMonsterEntry = (group = "traits", entry = {}) => {
         const row = document.createElement("div");
         row.className = "monster-entry";
-        row.innerHTML = `<label class="monster-entry-name"><span class="field-label">Name</span><input placeholder="e.g. Amphibious"></label><label class="monster-entry-description"><span class="field-label">Rules text</span><textarea rows="2" placeholder="Describe the trait, action, or reaction."></textarea></label><button class="icon-button remove-monster-entry" type="button" aria-label="Remove trait or action">×</button>`;
+        const attackToggle = group === "traits" ? "" : `<label class="monster-entry-attack-toggle"><input class="monster-entry-attack" type="checkbox" aria-label="Flag as attack"> Attack</label>`;
+        const attackFields = group === "traits" ? "" : `<div class="monster-entry-attack-fields" hidden><label><span class="field-label">Ability</span><select class="monster-attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label><label><span class="field-label">Attack bonus (auto)</span><input class="monster-attack-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage dice</span><input class="monster-attack-damage" placeholder="2d10"></label><label><span class="field-label">Dmg bonus (auto)</span><input class="monster-attack-damage-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage type</span><input class="monster-attack-damage-type" placeholder="Piercing"></label><label><span class="field-label">Range / reach</span><input class="monster-attack-range" placeholder="Melee 10 ft."></label></div>`;
+        row.innerHTML = `<div class="monster-entry-name-cell"><label class="monster-entry-name"><span class="field-label">Name</span><input placeholder="e.g. Amphibious"></label>${attackToggle}</div><label class="monster-entry-description"><span class="field-label">Rules text</span><textarea rows="2" placeholder="Describe the trait, action, or reaction."></textarea></label>${attackFields}<button class="icon-button remove-monster-entry" type="button" aria-label="Remove trait or action">×</button>`;
         row.querySelector(".monster-entry-name input").value = entry.name || "";
         row.querySelector(".monster-entry-description textarea").value = entry.description || "";
-        row.querySelector(".remove-monster-entry").addEventListener("click", () => { row.remove(); persistMonsterDraft(); });
+        const attackInput = row.querySelector(".monster-entry-attack");
+        const fields = row.querySelector(".monster-entry-attack-fields");
+        if (attackInput && fields) {
+          fields.querySelector(".monster-attack-ability").value = entry.attackAbility || "STR";
+          fields.querySelector(".monster-attack-damage").value = entry.attackDamage || "";
+          fields.querySelector(".monster-attack-damage-type").value = entry.attackDamageType || "";
+          fields.querySelector(".monster-attack-range").value = entry.attackRange || "";
+          attackInput.checked = Boolean(entry.attack);
+          fields.hidden = !attackInput.checked;
+          attackInput.addEventListener("change", () => {
+            fields.hidden = !attackInput.checked;
+            updateMonsterAttackBonuses();
+          });
+          fields.querySelector(".monster-attack-ability").addEventListener("change", updateMonsterAttackBonuses);
+        }
+        row.querySelector(".remove-monster-entry").addEventListener("click", () => { row.remove(); persistMonsterDraft(); updateMonsterAttackReference(); });
         const list = document.querySelector(`[data-monster-group="${group}"]`);
         if (list) list.appendChild(row);
+      };
+
+      const monsterAttackGroupLabels = { "actions": "Action", "bonus-actions": "Bonus action", "reactions": "Reaction", "legendary-actions": "Legendary action" };
+
+      const updateMonsterAttackReference = () => {
+        const reference = document.querySelector("#monster-attack-reference");
+        if (!reference) return;
+        const attacks = [];
+        monsterEntryLists.forEach((list) => {
+          if (list.dataset.monsterGroup === "traits") return;
+          list.querySelectorAll(".monster-entry").forEach((row) => {
+            const toggle = row.querySelector(".monster-entry-attack");
+            if (!toggle || !toggle.checked) return;
+            const fields = row.querySelector(".monster-entry-attack-fields");
+            const details = [];
+            if (fields) {
+              const bonus = fields.querySelector(".monster-attack-bonus").value.trim();
+              if (bonus) details.push(`${bonus} to hit`);
+              const damage = composeDamage(fields.querySelector(".monster-attack-damage").value, fields.querySelector(".monster-attack-damage-bonus").value).trim();
+              const damageType = fields.querySelector(".monster-attack-damage-type").value.trim();
+              if (damage) details.push(damageType ? `${damage} ${damageType}` : damage);
+              const range = fields.querySelector(".monster-attack-range").value.trim();
+              if (range) details.push(range);
+            }
+            attacks.push({
+              group: list.dataset.monsterGroup,
+              name: row.querySelector(".monster-entry-name input").value.trim() || "Untitled attack",
+              description: row.querySelector(".monster-entry-description textarea").value.trim(),
+              details: details.join(" · ")
+            });
+          });
+        });
+        reference.replaceChildren();
+        if (!attacks.length) {
+          const empty = document.createElement("p");
+          empty.className = "monster-attack-empty";
+          empty.textContent = "No attacks flagged yet. Mark an action, bonus action, reaction, or legendary action as an attack to pin it here.";
+          reference.appendChild(empty);
+          return;
+        }
+        attacks.forEach((attack) => {
+          const item = document.createElement("div");
+          item.className = "monster-attack-item";
+          const head = document.createElement("div");
+          head.className = "monster-attack-item-head";
+          const name = document.createElement("strong");
+          name.textContent = attack.name;
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = monsterAttackGroupLabels[attack.group] || attack.group;
+          head.append(name, tag);
+          item.append(head);
+          if (attack.details) {
+            const detailLine = document.createElement("p");
+            detailLine.className = "monster-attack-item-details";
+            detailLine.textContent = attack.details;
+            item.append(detailLine);
+          }
+          const text = document.createElement("p");
+          text.textContent = attack.description || "No description added.";
+          item.append(text);
+          reference.appendChild(item);
+        });
+      };
+
+      const updateMonsterHp = () => {
+        const hpInput = monsterSheet.querySelector('[name="monster-hp"]');
+        if (!hpInput) return;
+        const amount = Number(monsterSheet.querySelector('[name="monster-hit-dice"]').value);
+        const size = Number(monsterSheet.querySelector('[name="monster-hit-die-size"]').value);
+        const bonus = Number(monsterSheet.querySelector('[name="monster-hp-bonus"]').value) || 0;
+        hpInput.value = Number.isFinite(amount) && amount > 0 && Number.isFinite(size) && size > 0
+          ? String(Math.floor((amount * (size + 1)) / 2) + bonus)
+          : "";
+      };
+
+      const monsterCrNumber = (cr) => (String(cr).includes("/") ? Number(String(cr).split("/")[0]) / Number(String(cr).split("/")[1]) : Number(cr));
+
+      const getMonsterProficiency = () => {
+        const cr = String(monsterCrSelect.value).trim();
+        if (!cr) return null;
+        const crNumber = monsterCrNumber(cr);
+        if (!Number.isFinite(crNumber)) return null;
+        return crNumber >= 1 ? Math.min(9, 2 + Math.floor((crNumber - 1) / 4)) : 2;
+      };
+
+      const monsterAbilityModifier = (ability) => {
+        const scoreInput = monsterSheet.querySelector(`[name="monster-${String(ability).toLowerCase()}"]`);
+        const score = Number(scoreInput?.value);
+        return Number.isFinite(score) ? Math.floor((score - 10) / 2) : null;
+      };
+
+      const updateMonsterAttackBonuses = () => {
+        const proficiency = getMonsterProficiency();
+        monsterEntryLists.forEach((list) => {
+          if (list.dataset.monsterGroup === "traits") return;
+          list.querySelectorAll(".monster-entry").forEach((row) => {
+            const toggle = row.querySelector(".monster-entry-attack");
+            const fields = row.querySelector(".monster-entry-attack-fields");
+            if (!toggle || !fields) return;
+            const bonusInput = fields.querySelector(".monster-attack-bonus");
+            const damageBonusInput = fields.querySelector(".monster-attack-damage-bonus");
+            if (!toggle.checked) {
+              bonusInput.value = "";
+              damageBonusInput.value = "";
+              return;
+            }
+            const modifier = monsterAbilityModifier(fields.querySelector(".monster-attack-ability").value);
+            bonusInput.value = modifier === null || proficiency === null ? "" : `+${modifier + proficiency}`;
+            damageBonusInput.value = modifier === null ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
+          });
+        });
+        updateMonsterAttackReference();
+      };
+
+      const updateMonsterXpReward = () => {
+        const xpInput = monsterSheet.querySelector('[name="monster-xp-reward"]');
+        if (!xpInput) return;
+        const cr = String(monsterCrSelect.value).trim();
+        if (!cr) {
+          xpInput.value = "";
+          return;
+        }
+        const crNumber = cr.includes("/") ? Number(cr.split("/")[0]) / Number(cr.split("/")[1]) : Number(cr);
+        const baseXp = monsterCrData.find(([key]) => key === cr)?.[1] || "";
+        const inLair = Boolean(monsterSheet.querySelector('[name="monster-lair"]')?.checked);
+        if (inLair && Number.isFinite(crNumber) && crNumber >= 1 && crNumber < 30) {
+          const lairCr = String(Math.floor(crNumber) + 1);
+          const lairXp = monsterCrData.find(([key]) => key === lairCr)?.[1] || baseXp;
+          xpInput.value = `${baseXp} XP (${lairXp} XP)`;
+        } else {
+          xpInput.value = `${baseXp} XP`;
+        }
+      };
+
+      const updateMonsterInitiative = () => {
+        const input = monsterSheet.querySelector('[name="monster-initiative"]');
+        if (!input) return;
+        const modifier = monsterAbilityModifier("DEX");
+        input.value = modifier === null ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
+      };
+
+      const updateMonsterSaveBonuses = () => {
+        const proficiency = getMonsterProficiency();
+        ["str", "dex", "con", "int", "wis", "cha"].forEach((ability) => {
+          const output = monsterSheet.querySelector(`[data-msave-for="${ability}"]`);
+          if (!output) return;
+          const checkbox = monsterSheet.querySelector(`[name="monster-${ability}-save-proficient"]`);
+          const modifier = monsterAbilityModifier(ability);
+          if (modifier === null) {
+            output.textContent = "";
+            return;
+          }
+          const total = modifier + (checkbox?.checked && proficiency !== null ? proficiency : 0);
+          output.textContent = `${total >= 0 ? "+" : ""}${total}`;
+        });
+      };
+
+      const updateMonsterProficiencyBonus = () => {
+        const pbInput = monsterSheet.querySelector('[name="monster-proficiency-bonus"]');
+        if (!pbInput) return;
+        const proficiency = getMonsterProficiency();
+        pbInput.value = proficiency === null ? "" : `+${proficiency}`;
       };
 
       const updateMonsterModifiers = () => {
@@ -1082,23 +1362,35 @@
             modifierInput.value = `${modifier >= 0 ? "+" : ""}${modifier}`;
           }
         });
+        updateMonsterHp();
+        updateMonsterProficiencyBonus();
+        updateMonsterXpReward();
+        updateMonsterAttackBonuses();
+        updateMonsterInitiative();
+        updateMonsterSaveBonuses();
       };
 
       const applyMonster = (data) => {
         if (!data || typeof data !== "object" || !data.fields) return;
         monsterSheet.reset();
         monsterSheet.querySelectorAll("[name]").forEach((input) => {
-          if (Object.prototype.hasOwnProperty.call(data.fields, input.name)) input.value = data.fields[input.name];
+          if (!Object.prototype.hasOwnProperty.call(data.fields, input.name)) return;
+          if (input.type === "checkbox") input.checked = data.fields[input.name] === true || data.fields[input.name] === "on";
+          else input.value = data.fields[input.name];
         });
         ["str", "dex", "con", "int", "wis", "cha"].forEach((ability) => {
           const scoreInput = monsterSheet.querySelector(`[name="monster-${ability}"]`);
           if (scoreInput && scoreInput.value === "") scoreInput.value = "10";
         });
+        const dieSizeSelect = monsterSheet.querySelector('[name="monster-hit-die-size"]');
+        if (dieSizeSelect && !dieSizeSelect.value) dieSizeSelect.value = "10";
         monsterEntryLists.forEach((list) => list.replaceChildren());
         (Array.isArray(data.entries) ? data.entries : []).forEach((entry) => addMonsterEntry(entry.group || "traits", entry));
         applyTheme(data.theme || document.querySelector('[name="monster-theme"]').value || "streetlamp");
         document.querySelector('[name="monster-theme"]').value = data.theme || "streetlamp";
+        applyModifierColor(data.modifierColor || "red", "monster");
         updateMonsterModifiers();
+        updateMonsterAttackReference();
       };
 
       const setMakerTab = (tab) => {
@@ -1106,7 +1398,9 @@
         sheet.hidden = monsterActive;
         monsterSheet.hidden = !monsterActive;
         characterOnly.forEach((element) => { element.hidden = monsterActive; });
+        document.querySelectorAll(".monster-only").forEach((element) => { element.hidden = !monsterActive; });
         applyTheme(document.querySelector(`[name="${monsterActive ? "monster-theme" : "theme"}"]`).value);
+        applyModifierColor(document.querySelector(`[name="${monsterActive ? "monster-modifier-color" : "modifier-color"}"]`).value, monsterActive ? "monster" : "character");
         characterTab.setAttribute("aria-selected", String(!monsterActive));
         monsterTab.setAttribute("aria-selected", String(monsterActive));
         document.querySelector("h1").textContent = monsterActive ? "Monster stat block maker" : "Character sheet";
@@ -1119,7 +1413,16 @@
         const autoSpellcasting = document.querySelector('[name="auto-spellcasting"]').checked;
         const maxHp = document.querySelector('[name="max-hp"]');
         if (maxHp) maxHp.readOnly = autoHealth && document.querySelector('[name="health-mode"]').value === "calculated";
-        document.querySelectorAll("[data-mod-for], [data-save-for]").forEach((output) => {
+        const initiativeInput = document.querySelector('[name="initiative"]');
+        if (initiativeInput) {
+          initiativeInput.readOnly = autoModifiers;
+          initiativeInput.setAttribute("aria-readonly", String(autoModifiers));
+        }
+        document.querySelectorAll("[data-mod-for]").forEach((output) => {
+          output.readOnly = autoModifiers;
+          output.setAttribute("aria-readonly", String(autoModifiers));
+        });
+        document.querySelectorAll("[data-save-for]").forEach((output) => {
           output.contentEditable = String(!autoModifiers);
           output.setAttribute("aria-readonly", String(autoModifiers));
         });
@@ -1141,7 +1444,7 @@
           const modifier = Math.floor((score - 10) / 2);
           const sign = modifier >= 0 ? "+" : "";
           const output = document.querySelector(`[data-mod-for="${input.name}"]`);
-          if (output) output.textContent = `${sign}${modifier} modifier`;
+          if (output) output.value = `${sign}${modifier}`;
           const saveInput = document.querySelector(`[name="${input.name}-save-proficient"]`);
           const saveOutput = document.querySelector(`[data-save-for="${input.name}"]`);
           const saveBonus = modifier + (saveInput?.checked ? proficiencyBonus : 0);
@@ -1157,6 +1460,11 @@
           const bonus = modifier + (proficient ? proficiencyBonus * (expertise ? 2 : 1) : 0);
           row.querySelector(".skill-bonus").value = `${bonus >= 0 ? "+" : ""}${bonus}`;
         });
+        const initiativeInput = document.querySelector('[name="initiative"]');
+        if (initiativeInput) {
+          const dexModifier = characterAbilityModifier("DEX");
+          initiativeInput.value = dexModifier === null ? "" : `${dexModifier >= 0 ? "+" : ""}${dexModifier}`;
+        }
         updateHealth();
       };
 
@@ -1369,6 +1677,57 @@
         amount: row.querySelector(".currency-amount").value
       }));
 
+      const addAttack = (attack = {}) => {
+        const row = attackTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".attack-name").value = attack.name || "";
+        row.querySelector(".attack-ability").value = attack.ability || "STR";
+        row.querySelector(".attack-damage").value = attack.damage || "";
+        row.querySelector(".attack-type").value = attack.type || "";
+        row.querySelector(".attack-range").value = attack.range || "";
+        row.querySelector(".attack-notes").value = attack.notes || "";
+        row.querySelector(".remove-attack").addEventListener("click", () => {
+          row.remove();
+          persistDraft();
+        });
+        attackList.appendChild(row);
+      };
+
+      const composeDamage = (dice, bonus) => {
+        const d = String(dice || "").trim();
+        const b = String(bonus || "").trim();
+        if (!d) return b;
+        if (!b) return d;
+        return `${d} ${b[0]} ${b.slice(1)}`;
+      };
+
+      const characterAbilityModifier = (ability) => {
+        const abilityFields = { STR: "strength", DEX: "dexterity", CON: "constitution", INT: "intelligence", WIS: "wisdom", CHA: "charisma" };
+        const scoreInput = document.querySelector(`[name="${abilityFields[ability] || ""}"]`);
+        const score = Number(scoreInput?.value);
+        return Number.isFinite(score) ? Math.floor((score - 10) / 2) : null;
+      };
+
+      const updateCharacterAttackBonuses = () => {
+        if (!attackList) return;
+        const proficiency = Number.parseInt(document.querySelector('[name="proficiency-bonus"]')?.value, 10);
+        attackList.querySelectorAll(".attack-row").forEach((row) => {
+          const modifier = characterAbilityModifier(row.querySelector(".attack-ability").value);
+          row.querySelector(".attack-bonus").value = modifier === null || !Number.isFinite(proficiency) ? "" : `+${modifier + proficiency}`;
+          row.querySelector(".attack-damage-bonus").value = modifier === null ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
+        });
+      };
+
+      const collectAttacks = () => [...attackList.querySelectorAll(".attack-row")].map((row) => ({
+        name: row.querySelector(".attack-name").value,
+        ability: row.querySelector(".attack-ability").value,
+        bonus: row.querySelector(".attack-bonus").value,
+        damage: row.querySelector(".attack-damage").value,
+        damageBonus: row.querySelector(".attack-damage-bonus").value,
+        type: row.querySelector(".attack-type").value,
+        range: row.querySelector(".attack-range").value,
+        notes: row.querySelector(".attack-notes").value
+      }));
+
       const addCustomField = (section, name = "", value = "") => {
         const container = document.querySelector(`[data-custom-fields-for="${section}"]`);
         if (!container) return;
@@ -1395,7 +1754,7 @@
 
       const collectSheet = () => {
         const fields = {};
-        document.querySelectorAll('#character-sheet [name], #configuration [name]:not([name="monster-theme"])').forEach((input) => {
+        document.querySelectorAll('#character-sheet [name], #configuration [name]:not([name="monster-theme"]):not([name="monster-modifier-color"])').forEach((input) => {
           fields[input.name] = input.type === "checkbox" ? (input.checked ? "on" : "") : input.value;
         });
         const features = [...featureList.querySelectorAll(".feature-card")].map((card) => ({
@@ -1405,10 +1764,10 @@
           uses: card.dataset.uses
         }));
         const manualModifiers = {};
-        document.querySelectorAll("[data-mod-for]").forEach((output) => { manualModifiers[output.dataset.modFor] = output.textContent; });
+        document.querySelectorAll("[data-mod-for]").forEach((output) => { manualModifiers[output.dataset.modFor] = output.value; });
         const manualSaves = {};
         document.querySelectorAll("[data-save-for]").forEach((output) => { manualSaves[output.dataset.saveFor] = output.textContent; });
-        return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells(), manualModifiers, manualSaves };
+        return { version: 1, fields, features, attacks: collectAttacks(), skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells(), manualModifiers, manualSaves };
       };
 
       const applyTheme = (themeName) => {
@@ -1417,17 +1776,17 @@
         document.body.dataset.theme = theme;
       };
 
-      const applyModifierColor = (modifierColor) => {
+      const applyModifierColor = (modifierColor, target = "character") => {
         const validColors = new Set(["red", "amber", "copper", "gold", "cream", "cyan", "blue", "green", "lime", "purple", "rose", "maroon"]);
         const color = validColors.has(modifierColor) ? modifierColor : "red";
         document.body.dataset.modifierColor = color;
-        const modifierSelect = document.querySelector('[name="modifier-color"]');
+        const modifierSelect = document.querySelector(target === "monster" ? '[name="monster-modifier-color"]' : '[name="modifier-color"]');
         if (modifierSelect) modifierSelect.value = color;
       };
 
       const resetCharacterFields = () => {
         sheet.reset();
-        document.querySelectorAll('#configuration [name]:not([name="monster-theme"])').forEach((input) => {
+        document.querySelectorAll('#configuration [name]:not([name="monster-theme"]):not([name="monster-modifier-color"])').forEach((input) => {
           if (input.type === "checkbox") input.checked = ["auto-health", "auto-modifiers", "auto-spellcasting"].includes(input.name);
           else if (input.tagName === "SELECT") input.selectedIndex = 0;
           else input.value = "";
@@ -1439,7 +1798,7 @@
       const applySheet = (data) => {
         if (!data || typeof data !== "object" || !data.fields || !Array.isArray(data.features)) throw new Error("Invalid character sheet");
         resetCharacterFields();
-        document.querySelectorAll('#character-sheet [name], #configuration [name]:not([name="monster-theme"])').forEach((input) => {
+        document.querySelectorAll('#character-sheet [name], #configuration [name]:not([name="monster-theme"]):not([name="monster-modifier-color"])').forEach((input) => {
           if (!Object.prototype.hasOwnProperty.call(data.fields, input.name)) return;
           if (input.type === "checkbox") {
             input.checked = data.fields[input.name] === true || data.fields[input.name] === "on";
@@ -1463,11 +1822,14 @@
         ];
         currencies.forEach((currency) => addCurrency(currency.name, currency.amount));
         renderCustomFields(Array.isArray(data.customFields) ? data.customFields : []);
+        attackList.replaceChildren();
+        (Array.isArray(data.attacks) ? data.attacks : []).forEach(addAttack);
+        updateCharacterAttackBonuses();
         spellList.replaceChildren();
         (Array.isArray(data.spells) ? data.spells : []).forEach(addSpell);
         Object.entries(data.manualModifiers || {}).forEach(([ability, value]) => {
           const output = document.querySelector(`[data-mod-for="${ability}"]`);
-          if (output) output.textContent = value;
+          if (output) output.value = value;
         });
         Object.entries(data.manualSaves || {}).forEach(([ability, value]) => {
           const output = document.querySelector(`[data-save-for="${ability}"]`);
@@ -1495,11 +1857,23 @@
 
       const makeMonsterPdf = (data) => {
         const fields = data.fields || {};
+        const cr = fields["monster-cr"];
+        const crXp = monsterCrData.find(([key]) => key === cr)?.[1];
+        const crNumber = cr && cr.includes("/") ? Number(cr.split("/")[0]) / Number(cr.split("/")[1]) : Number(cr);
+        const inLair = fields["monster-lair"] === "on" || fields["monster-lair"] === true;
+        const lairCr = inLair && Number.isFinite(crNumber) && crNumber >= 1 && crNumber < 30 ? String(Math.floor(crNumber) + 1) : "";
+        const lairXp = lairCr ? monsterCrData.find(([key]) => key === lairCr)?.[1] : "";
+        const crLabel = cr ? `CR ${cr}${crXp ? ` (${crXp} XP${lairXp ? `; lair: ${lairXp} XP` : ""})` : ""}` : "—";
+        const signedInt = (value) => { const n = Number.parseInt(value, 10); return Number.isFinite(n) ? n : 0; };
+        const saveLine = ["str", "dex", "con", "int", "wis", "cha"]
+          .filter((ability) => fields[`monster-${ability}-save-proficient`] === "on" || fields[`monster-${ability}-save-proficient`] === true)
+          .map((ability) => `${ability.toUpperCase()} +${signedInt(fields[`monster-${ability}-mod`]) + signedInt(fields["monster-proficiency-bonus"])}`)
+          .join(", ");
         const lines = [
           fields["monster-name"] || "Unnamed monster",
-          `${fields["monster-size"] || "Medium"} ${fields["monster-type"] || "creature"} · ${fields["monster-alignment"] || "Unaligned"} · CR ${fields["monster-cr"] || "—"}`,
+          `${fields["monster-size"] || "Medium"} ${fields["monster-type"] || "creature"} · ${fields["monster-alignment"] || "Unaligned"} · ${crLabel}`,
           "",
-          `AC ${fields["monster-ac"] || "—"}  HP ${fields["monster-hp"] || "—"}  Speed ${fields["monster-speed"] || "—"}`,
+          `AC ${fields["monster-ac"] || "—"}  HP ${fields["monster-hp"] || "—"}  PB ${fields["monster-proficiency-bonus"] || "—"}  Init ${fields["monster-initiative"] || "—"}  Speed ${fields["monster-speed"] || "—"}`,
           `Skills: ${fields["monster-skills"] || "—"}`,
           `Resistances: ${fields["monster-resistances"] || "—"}`,
           `Immunities: ${fields["monster-immunities"] || "—"}`,
@@ -1510,8 +1884,18 @@
           "",
           "ABILITY SCORES",
           ...["str", "dex", "con", "int", "wis", "cha"].map((ability) => `${ability.toUpperCase()} ${fields[`monster-${ability}`] || "—"} (${fields[`monster-${ability}-mod`] || "+0"})`),
+          ...(saveLine ? [`SAVING THROWS  ${saveLine}`] : []),
           "",
-          ...(data.entries || []).flatMap((entry) => [entry.group.toUpperCase(), entry.name || "Untitled", entry.description || ""]),
+          ...(data.entries || []).flatMap((entry) => {
+            const title = `${entry.name || "Untitled"}${entry.attack ? " [Attack]" : ""}`;
+            if (!entry.attack) return [entry.group.toUpperCase(), title, entry.description || ""];
+            const detailParts = [
+              entry.attackBonus ? `${entry.attackBonus} to hit` : "",
+              [composeDamage(entry.attackDamage, entry.attackDamageBonus), entry.attackDamageType].filter((part) => String(part || "").trim()).join(" "),
+              entry.attackRange
+            ].filter((part) => String(part || "").trim());
+            return [entry.group.toUpperCase(), title, ...detailParts, entry.description || ""];
+          }),
           "",
           fields["monster-notes"] || ""
         ];
@@ -1602,6 +1986,10 @@
           `AC ${pdfValue(fields["armor-class"])}  Initiative ${pdfValue(fields.initiative)}  Speed ${pdfValue(fields.speed)}`,
           `HP ${pdfValue(fields["current-hp"])} / ${pdfValue(fields["max-hp"])}  Hit dice ${pdfValue(getHitDice(fields))}`,
           `Proficiency bonus: ${pdfValue(fields["proficiency-bonus"])}`,
+          ...((data.attacks || []).some((attack) => String(attack.name || "").trim()) ? [
+            ...section("ATTACK REFERENCE"),
+            ...(data.attacks || []).map((attack) => [attack.name, attack.bonus ? `${attack.bonus} to hit` : "", composeDamage(attack.damage, attack.damageBonus), attack.type, attack.range, attack.notes].filter((part) => String(part || "").trim()).join(" · "))
+          ] : []),
           `Armor: ${pdfValue(["armor-light", "armor-medium", "armor-heavy", "armor-shields"].filter((name) => fields[name] === "on").map((name) => name.replace("armor-", "")).join(", "))}`,
           `Saving throw proficiencies: ${pdfValue(["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"].filter((name) => fields[`${name}-save-proficient`] === "on").join(", "))}`,
           ...section("FEATURES & TRAITS"),
@@ -1731,6 +2119,16 @@
       document.querySelector("#add-feature").addEventListener("click", () => {
         openFeatureEditor();
       });
+      document.querySelector("#add-attack").addEventListener("click", () => {
+        addAttack();
+        attackList.lastElementChild.querySelector(".attack-name").focus();
+        persistDraft();
+      });
+      attackList.addEventListener("input", persistDraft);
+      attackList.addEventListener("change", (event) => {
+        if (event.target.classList.contains("attack-ability")) updateCharacterAttackBonuses();
+      });
+      document.querySelectorAll('.score, [name="proficiency-bonus"]').forEach((input) => input.addEventListener("input", updateCharacterAttackBonuses));
       document.querySelector("#add-skill").addEventListener("click", () => {
         addSkill();
         skillList.lastElementChild.querySelector(".skill-name").focus();
@@ -1828,8 +2226,12 @@
         persistMonsterDraft();
       });
       document.querySelector('[name="modifier-color"]').addEventListener("change", () => {
-        applyModifierColor(document.querySelector('[name="modifier-color"]').value);
+        applyModifierColor(document.querySelector('[name="modifier-color"]').value, "character");
         persistDraft();
+      });
+      document.querySelector('[name="monster-modifier-color"]').addEventListener("change", () => {
+        applyModifierColor(document.querySelector('[name="monster-modifier-color"]').value, "monster");
+        persistMonsterDraft();
       });
       document.querySelector('[name="allow-odd-hit-dice"]').addEventListener("change", () => {
         updateHitDieRules();
@@ -1862,9 +2264,20 @@
       }));
       monsterSheet.querySelectorAll('[name^="monster-"]').forEach((input) => input.addEventListener("input", () => {
         if (input.name.match(/^monster-(str|dex|con|int|wis|cha)$/)) updateMonsterModifiers();
+        if (input.name.match(/^monster-(hit-dice|hit-die-size|hp-bonus)$/)) updateMonsterHp();
+        if (input.name === "monster-cr") {
+          updateMonsterProficiencyBonus();
+          updateMonsterXpReward();
+          updateMonsterAttackBonuses();
+        }
+        if (input.name === "monster-lair") updateMonsterXpReward();
         persistMonsterDraft();
       }));
-      monsterSheet.addEventListener("input", persistMonsterDraft);
+      monsterSheet.addEventListener("input", () => {
+        persistMonsterDraft();
+        updateMonsterAttackReference();
+        updateMonsterSaveBonuses();
+      });
       document.querySelector("#export-monster").addEventListener("click", () => {
         downloadFile(new Blob([JSON.stringify(collectMonster(), null, 2)], { type: "application/json" }), "monster-stat-block.json");
         setStatus("Monster JSON backup downloaded");
@@ -1919,6 +2332,7 @@
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         skillList.replaceChildren();
         standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
+        attackList.replaceChildren();
         currencyList.replaceChildren();
         [["Copper (CP)", ""], ["Silver (SP)", ""], ["Electrum (EP)", ""], ["Gold (GP)", ""]].forEach(([name, amount]) => addCurrency(name, amount));
         renderCustomFields();
@@ -1942,6 +2356,8 @@
       } catch { setStatus("Could not restore monster draft"); }
       setMakerTab("character");
       updateMonsterModifiers();
+      updateMonsterAttackReference();
+      updateCharacterAttackBonuses();
       renderSavedSheets();
       updateModifiers();
       syncManualOverrides();
