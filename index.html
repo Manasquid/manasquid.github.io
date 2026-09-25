@@ -492,7 +492,7 @@
     .monster-ability-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
     .monster-ability { display: grid; gap: .3rem; padding: .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); text-align: center; }
     .monster-ability input { min-width: 0; text-align: center; font-weight: 700; }
-    .monster-ability input[type="number"], .monster-ability input[name$="-mod"] { min-width: 4.5rem; }
+    .monster-ability input[type="number"], .monster-ability input[name$="-mod"] { min-width: 3.375rem; }
     .monster-entry-groups { display: grid; gap: 1rem; }
     .monster-entry-group { display: grid; gap: .65rem; }
     .monster-entry-group h3 { margin: 0; color: var(--text); font-size: .9rem; }
@@ -663,7 +663,7 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ 5.5e sheet maker</span></a>
-      <div class="top-actions">
+      <div class="top-actions character-only" id="character-actions">
         <span class="status" id="save-status" role="status">Ready to edit</span>
         <button class="button primary" id="save-character" type="button">Save / manage</button>
         <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
@@ -686,7 +686,7 @@
       <button class="button maker-tab" id="monster-tab" type="button" role="tab" aria-selected="false" aria-controls="monster-sheet">Monster stat block</button>
     </div>
 
-    <section class="panel storage-panel" aria-labelledby="storage-heading">
+    <section class="panel storage-panel character-only" aria-labelledby="storage-heading">
       <div class="panel-heading">
         <div><h2 id="storage-heading">Save &amp; transfer characters</h2><p>Keep versions in this browser or move a complete sheet between devices.</p></div>
         <div class="storage-tools">
@@ -706,7 +706,7 @@
       </div>
     </section>
 
-    <details class="panel config-panel" id="configuration">
+    <details class="panel config-panel character-only" id="configuration">
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
@@ -999,6 +999,7 @@
       const characterTab = document.querySelector("#character-tab");
       const monsterTab = document.querySelector("#monster-tab");
       const monsterEntryLists = [...document.querySelectorAll("[data-monster-group]")];
+      const characterOnly = [...document.querySelectorAll(".character-only")];
       const featureList = document.querySelector("#feature-list");
       const emptyState = document.querySelector("#empty-state");
       const template = document.querySelector("#feature-template");
@@ -1078,6 +1079,7 @@
         const monsterActive = tab === "monster";
         sheet.hidden = monsterActive;
         monsterSheet.hidden = !monsterActive;
+        characterOnly.forEach((element) => { element.hidden = monsterActive; });
         characterTab.setAttribute("aria-selected", String(!monsterActive));
         monsterTab.setAttribute("aria-selected", String(monsterActive));
         document.querySelector("h1").textContent = monsterActive ? "Monster stat block maker" : "Character sheet";
