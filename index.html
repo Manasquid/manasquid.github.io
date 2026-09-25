@@ -878,6 +878,17 @@
     </form>
 
     <form class="sheet maker-panel" id="monster-sheet" hidden>
+      <section class="panel monster-storage-panel" aria-labelledby="monster-storage-heading">
+        <div class="panel-heading">
+          <div><h2 id="monster-storage-heading">Save &amp; transfer stat blocks</h2><p>Export a monster as JSON or an importable PDF without affecting your character sheet.</p></div>
+          <div class="storage-tools">
+            <button class="button" id="export-monster" type="button">Download JSON</button>
+            <button class="button" id="print-monster" type="button">Download PDF</button>
+            <button class="button" id="import-monster" type="button">Import JSON or PDF</button>
+            <input class="sr-only" id="import-monster-file" type="file" accept="application/json,application/pdf,.json,.pdf">
+          </div>
+        </div>
+      </section>
       <section class="panel" aria-labelledby="monster-identity-heading">
         <div class="panel-heading"><div><h2 id="monster-identity-heading">Monster identity</h2><p>Build a reusable stat block for creatures, enemies, and allies.</p></div></div>
         <div class="panel-body fields">
@@ -1468,6 +1479,76 @@
         return JSON.parse(new TextDecoder().decode(bytes));
       };
 
+      const makeMonsterPdf = (data) => {
+        const fields = data.fields || {};
+        const lines = [
+          fields["monster-name"] || "Unnamed monster",
+          `${fields["monster-size"] || "Medium"} ${fields["monster-type"] || "creature"} · ${fields["monster-alignment"] || "Unaligned"} · CR ${fields["monster-cr"] || "—"}`,
+          "",
+          `AC ${fields["monster-ac"] || "—"}  HP ${fields["monster-hp"] || "—"}  Speed ${fields["monster-speed"] || "—"}`,
+          `Skills: ${fields["monster-skills"] || "—"}`,
+          `Resistances: ${fields["monster-resistances"] || "—"}`,
+          `Immunities: ${fields["monster-immunities"] || "—"}`,
+          `Gear: ${fields["monster-gear"] || "—"}`,
+          `Senses: ${fields["monster-senses"] || "—"}`,
+          `Languages: ${fields["monster-languages"] || "—"}`,
+          "",
+          "ABILITY SCORES",
+          ...["str", "dex", "con", "int", "wis", "cha"].map((ability) => `${ability.toUpperCase()} ${fields[`monster-${ability}`] || "—"} (${fields[`monster-${ability}-mod`] || "+0"})`),
+          "",
+          ...(data.entries || []).flatMap((entry) => [entry.group.toUpperCase(), entry.name || "Untitled", entry.description || ""]),
+          "",
+          fields["monster-notes"] || ""
+        ];
+        const wrappedLines = lines.flatMap((line) => {
+          const words = String(line).split(/\s+/);
+          const result = [];
+          let current = "";
+          words.forEach((word) => {
+            if ((current + " " + word).trim().length > 88 && current) {
+              result.push(current);
+              current = word;
+            } else current = `${current} ${word}`.trim();
+          });
+          result.push(current);
+          return result;
+        });
+        const metadata = `MANASQUID_MONSTER_JSON:${encodeSheet(data)}`;
+        const pages = [];
+        for (let index = 0; index < wrappedLines.length; index += 48) pages.push(wrappedLines.slice(index, index + 48));
+        const pageContents = pages.map((page) => [
+          "BT", "/F1 10 Tf", "50 742 Td",
+          ...page.flatMap((line, index) => [`(${pdfEscape(line)}) Tj`, index < page.length - 1 ? "0 -14 Td" : ""]),
+          "ET"
+        ].join("\n"));
+        const pageNumbers = pages.map((_, index) => 4 + index * 2);
+        const objects = ["<< /Type /Catalog /Pages 2 0 R >>", "", "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"];
+        pageContents.forEach((content, index) => {
+          objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents ${pageNumbers[index] + 1} 0 R >>`);
+          objects.push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+        });
+        const infoNumber = objects.length + 1;
+        objects[1] = `<< /Type /Pages /Kids [${pageNumbers.map((number) => `${number} 0 R`).join(" ")}] /Count ${pages.length} >>`;
+        objects.push(`<< /Title (${pdfEscape(fields["monster-name"] || "Monster Stat Block")}) /Subject (${metadata}) >>`);
+        let pdf = "%PDF-1.4\n";
+        const offsets = [0];
+        objects.forEach((object, index) => { offsets.push(pdf.length); pdf += `${index + 1} 0 obj\n${object}\nendobj\n`; });
+        const xref = pdf.length;
+        pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+        offsets.slice(1).forEach((offset) => { pdf += `${String(offset).padStart(10, "0")} 00000 n \n`; });
+        pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R /Info ${infoNumber} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+        return new Blob([pdf], { type: "application/pdf" });
+      };
+
+      const readPdfMonster = async (file) => {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        let binary = "";
+        bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+        const match = binary.match(/MANASQUID_MONSTER_JSON:([A-Za-z0-9+/=]+)/);
+        if (!match) throw new Error("This PDF was not created by Manasquid.");
+        return decodeSheet(match[1]);
+      };
+
       const pdfEscape = (value) => String(value).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
       const getHitDice = (fields) => {
         const level = Number.parseInt(fields.level, 10);
@@ -1763,6 +1844,30 @@
         persistMonsterDraft();
       }));
       monsterSheet.addEventListener("input", persistMonsterDraft);
+      document.querySelector("#export-monster").addEventListener("click", () => {
+        downloadFile(new Blob([JSON.stringify(collectMonster(), null, 2)], { type: "application/json" }), "monster-stat-block.json");
+        setStatus("Monster JSON backup downloaded");
+      });
+      document.querySelector("#print-monster").addEventListener("click", () => {
+        downloadFile(makeMonsterPdf(collectMonster()), "monster-stat-block.pdf");
+        setStatus("Importable monster PDF downloaded");
+      });
+      document.querySelector("#import-monster").addEventListener("click", () => document.querySelector("#import-monster-file").click());
+      document.querySelector("#import-monster-file").addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        try {
+          const imported = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
+            ? await readPdfMonster(file)
+            : JSON.parse(await file.text());
+          applyMonster(imported);
+          persistMonsterDraft();
+          setStatus(`${file.name.toLowerCase().endsWith(".pdf") ? "Monster PDF" : "Monster JSON"} imported`);
+        } catch {
+          setStatus("Monster import failed: choose a Manasquid monster PDF or JSON");
+        }
+        event.target.value = "";
+      });
       document.querySelectorAll(".armor-proficient").forEach((input) => input.addEventListener("change", () => {
         if (input.name === "armor-heavy" && input.checked) {
           document.querySelector('[name="armor-medium"]').checked = true;
