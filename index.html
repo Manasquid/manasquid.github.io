@@ -497,9 +497,10 @@
     .monster-entry-group { display: grid; gap: .65rem; }
     .monster-entry-group h3 { margin: 0; color: var(--text); font-size: .9rem; }
     .monster-entry-list { display: grid; gap: .65rem; }
-    .monster-entry { display: grid; grid-template-columns: minmax(10rem, .8fr) minmax(0, 2fr) auto; gap: .55rem; align-items: end; }
+    .monster-entry { display: grid; grid-template-columns: minmax(10rem, .8fr) minmax(0, 2fr) auto; gap: .55rem; align-items: start; }
     .monster-entry textarea { min-height: 4rem; }
     .monster-entry .remove-monster-entry { color: var(--bonus); }
+    .monster-entry .remove-monster-entry { margin-top: 1.35rem; }
     @media (max-width: 800px) {
       .monster-ability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -677,7 +678,7 @@
         <h1>Character sheet</h1>
         <p class="lede">Build a D&amp;D 5.5e character and keep every feature in one place.</p>
       </div>
-      <div class="sheet-actions">
+      <div class="sheet-actions character-only">
         <a class="button" href="#features">Jump to features</a>
       </div>
     </div>
@@ -706,7 +707,7 @@
       </div>
     </section>
 
-    <details class="panel config-panel character-only" id="configuration">
+    <details class="panel config-panel" id="configuration">
       <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
@@ -947,7 +948,7 @@
     </form>
   </main>
 
-  <footer><div class="shell">Manasquid Character Sheet Maker · Built for personal D&amp;D 5.5e prep. Your sheet stays in this browser until you print or save it.</div></footer>
+  <footer class="character-only"><div class="shell">Manasquid Character Sheet Maker · Built for personal D&amp;D 5.5e prep. Your sheet stays in this browser until you print or save it.</div></footer>
 
   <template id="feature-template">
     <article class="feature-card">
