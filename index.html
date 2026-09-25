@@ -687,6 +687,19 @@
       <button class="button maker-tab" id="monster-tab" type="button" role="tab" aria-selected="false" aria-controls="monster-sheet">Monster stat block</button>
     </div>
 
+    <details class="panel config-panel" id="configuration">
+      <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
+      <div class="panel-body config-options">
+        <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
+        <label class="config-option"><span class="field-label">Character theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
+        <label class="config-option"><span class="field-label">Monster theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
+        <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
+        <div class="config-option"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
+        <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
+      <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
+      </div>
+    </details>
+
     <section class="panel storage-panel character-only" aria-labelledby="storage-heading">
       <div class="panel-heading">
         <div><h2 id="storage-heading">Save &amp; transfer characters</h2><p>Keep versions in this browser or move a complete sheet between devices.</p></div>
@@ -706,19 +719,6 @@
         <div class="saved-list" id="saved-list" aria-live="polite"></div>
       </div>
     </section>
-
-    <details class="panel config-panel" id="configuration">
-      <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
-      <div class="panel-body config-options">
-        <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option"><span class="field-label">Character theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
-        <label class="config-option"><span class="field-label">Monster theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
-        <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
-        <div class="config-option"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
-        <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
-      <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
-      </div>
-    </details>
 
     <form class="sheet" id="character-sheet">
       <section class="panel" aria-labelledby="identity-heading">
