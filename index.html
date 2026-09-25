@@ -542,6 +542,8 @@
     .ability input { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
     .ability-name { color: var(--muted); font-size: .72rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .ability-mod { color: var(--bonus); font-size: .8rem; }
+    [contenteditable="true"] { cursor: text; }
+    [contenteditable="true"]:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
     .save-check { display: flex; align-items: center; justify-content: center; gap: .3rem; color: var(--bonus); font-size: .7rem; }
     .save-check strong[data-save-for] { color: var(--bonus); }
     .save-check input { width: 1rem; height: 1rem; accent-color: var(--accent); }
@@ -685,6 +687,7 @@
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
         <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
         <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
+        <div class="config-option"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
       </div>
@@ -714,12 +717,12 @@
           </div>
           <div class="panel-body">
             <div class="ability-grid">
-              <label class="ability"><span class="ability-name">Strength</span><input class="score" name="strength" type="number" min="1" max="30" value="10" aria-label="Strength score"><span class="ability-mod" data-mod-for="strength">+0 modifier</span><span class="save-check"><input class="save-proficient" name="strength-save-proficient" type="checkbox" aria-label="Strength saving throw proficiency"> Save <strong data-save-for="strength">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Dexterity</span><input class="score" name="dexterity" type="number" min="1" max="30" value="10" aria-label="Dexterity score"><span class="ability-mod" data-mod-for="dexterity">+0 modifier</span><span class="save-check"><input class="save-proficient" name="dexterity-save-proficient" type="checkbox" aria-label="Dexterity saving throw proficiency"> Save <strong data-save-for="dexterity">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Constitution</span><input class="score" name="constitution" type="number" min="1" max="30" value="10" aria-label="Constitution score"><span class="ability-mod" data-mod-for="constitution">+0 modifier</span><span class="save-check"><input class="save-proficient" name="constitution-save-proficient" type="checkbox" aria-label="Constitution saving throw proficiency"> Save <strong data-save-for="constitution">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Intelligence</span><input class="score" name="intelligence" type="number" min="1" max="30" value="10" aria-label="Intelligence score"><span class="ability-mod" data-mod-for="intelligence">+0 modifier</span><span class="save-check"><input class="save-proficient" name="intelligence-save-proficient" type="checkbox" aria-label="Intelligence saving throw proficiency"> Save <strong data-save-for="intelligence">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><span class="ability-mod" data-mod-for="wisdom">+0 modifier</span><span class="save-check"><input class="save-proficient" name="wisdom-save-proficient" type="checkbox" aria-label="Wisdom saving throw proficiency"> Save <strong data-save-for="wisdom">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><span class="ability-mod" data-mod-for="charisma">+0 modifier</span><span class="save-check"><input class="save-proficient" name="charisma-save-proficient" type="checkbox" aria-label="Charisma saving throw proficiency"> Save <strong data-save-for="charisma">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Strength</span><input class="score" name="strength" type="number" min="1" max="30" value="10" aria-label="Strength score"><span class="ability-mod" data-mod-for="strength" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="strength-save-proficient" type="checkbox" aria-label="Strength saving throw proficiency"> Save <strong data-save-for="strength" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Dexterity</span><input class="score" name="dexterity" type="number" min="1" max="30" value="10" aria-label="Dexterity score"><span class="ability-mod" data-mod-for="dexterity" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="dexterity-save-proficient" type="checkbox" aria-label="Dexterity saving throw proficiency"> Save <strong data-save-for="dexterity" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Constitution</span><input class="score" name="constitution" type="number" min="1" max="30" value="10" aria-label="Constitution score"><span class="ability-mod" data-mod-for="constitution" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="constitution-save-proficient" type="checkbox" aria-label="Constitution saving throw proficiency"> Save <strong data-save-for="constitution" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Intelligence</span><input class="score" name="intelligence" type="number" min="1" max="30" value="10" aria-label="Intelligence score"><span class="ability-mod" data-mod-for="intelligence" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="intelligence-save-proficient" type="checkbox" aria-label="Intelligence saving throw proficiency"> Save <strong data-save-for="intelligence" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><span class="ability-mod" data-mod-for="wisdom" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="wisdom-save-proficient" type="checkbox" aria-label="Wisdom saving throw proficiency"> Save <strong data-save-for="wisdom" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><span class="ability-mod" data-mod-for="charisma" contenteditable="false">+0 modifier</span><span class="save-check"><input class="save-proficient" name="charisma-save-proficient" type="checkbox" aria-label="Charisma saving throw proficiency"> Save <strong data-save-for="charisma" contenteditable="false">+0</strong></span></label>
             </div>
             <div class="custom-fields"><span class="field-label">Custom ability fields</span><div class="custom-field-list" data-custom-fields-for="abilities"></div><button class="button" data-add-custom-field="abilities" type="button">+ Add ability field</button></div>
           </div>
@@ -932,7 +935,28 @@
         try { localStorage.setItem(draftKey, JSON.stringify(collectSheet())); } catch { setStatus("Browser storage unavailable"); }
       };
 
+      const syncManualOverrides = () => {
+        const autoHealth = document.querySelector('[name="auto-health"]').checked;
+        const autoModifiers = document.querySelector('[name="auto-modifiers"]').checked;
+        const autoSpellcasting = document.querySelector('[name="auto-spellcasting"]').checked;
+        const maxHp = document.querySelector('[name="max-hp"]');
+        if (maxHp) maxHp.readOnly = autoHealth && document.querySelector('[name="health-mode"]').value === "calculated";
+        document.querySelectorAll("[data-mod-for], [data-save-for]").forEach((output) => {
+          output.contentEditable = String(!autoModifiers);
+          output.setAttribute("aria-readonly", String(autoModifiers));
+        });
+        document.querySelectorAll(".skill-bonus").forEach((input) => {
+          input.readOnly = autoModifiers;
+          input.setAttribute("aria-readonly", String(autoModifiers));
+        });
+        document.querySelectorAll('[name="spell-save-dc"], [name="spell-attack-bonus"]').forEach((input) => {
+          input.readOnly = autoSpellcasting;
+          input.setAttribute("aria-readonly", String(autoSpellcasting));
+        });
+      };
+
       const updateModifiers = () => {
+        if (!document.querySelector('[name="auto-modifiers"]').checked) return;
         const proficiencyBonus = Number(document.querySelector('[name="proficiency-bonus"]').value) || 0;
         document.querySelectorAll(".score").forEach((input) => {
           const score = Number(input.value) || 0;
@@ -962,7 +986,7 @@
         const mode = document.querySelector('[name="health-mode"]');
         const maxHp = document.querySelector('[name="max-hp"]');
         if (!mode || !maxHp) return;
-        const calculated = mode.value === "calculated";
+        const calculated = mode.value === "calculated" && document.querySelector('[name="auto-health"]').checked;
         maxHp.readOnly = calculated;
         maxHp.setAttribute("aria-readonly", String(calculated));
         if (!calculated) return;
@@ -1003,6 +1027,7 @@
       };
 
       const updateSpellcastingStats = () => {
+        if (!document.querySelector('[name="auto-spellcasting"]').checked) return;
         const abilityMap = { STR: "strength", DEX: "dexterity", CON: "constitution", INT: "intelligence", WIS: "wisdom", CHA: "charisma" };
         const ability = document.querySelector('[name="spellcasting-ability"]').value;
         const score = abilityMap[ability] ? Number(document.querySelector(`[name="${abilityMap[ability]}"]`).value) || 0 : 0;
@@ -1201,7 +1226,11 @@
           source: card.dataset.source,
           uses: card.dataset.uses
         }));
-        return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells() };
+        const manualModifiers = {};
+        document.querySelectorAll("[data-mod-for]").forEach((output) => { manualModifiers[output.dataset.modFor] = output.textContent; });
+        const manualSaves = {};
+        document.querySelectorAll("[data-save-for]").forEach((output) => { manualSaves[output.dataset.saveFor] = output.textContent; });
+        return { version: 1, fields, features, skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells(), manualModifiers, manualSaves };
       };
 
       const applyTheme = (themeName) => {
@@ -1223,7 +1252,7 @@
       const resetCharacterFields = () => {
         sheet.reset();
         document.querySelectorAll("#configuration [name]").forEach((input) => {
-          if (input.type === "checkbox") input.checked = false;
+          if (input.type === "checkbox") input.checked = ["auto-health", "auto-modifiers", "auto-spellcasting"].includes(input.name);
           else if (input.tagName === "SELECT") input.selectedIndex = 0;
           else input.value = "";
         });
@@ -1260,8 +1289,17 @@
         renderCustomFields(Array.isArray(data.customFields) ? data.customFields : []);
         spellList.replaceChildren();
         (Array.isArray(data.spells) ? data.spells : []).forEach(addSpell);
+        Object.entries(data.manualModifiers || {}).forEach(([ability, value]) => {
+          const output = document.querySelector(`[data-mod-for="${ability}"]`);
+          if (output) output.textContent = value;
+        });
+        Object.entries(data.manualSaves || {}).forEach(([ability, value]) => {
+          const output = document.querySelector(`[data-save-for="${ability}"]`);
+          if (output) output.textContent = value;
+        });
         syncArmorProficiencies();
         updateModifiers();
+        syncManualOverrides();
         updateSpellcastingVisibility();
         updateEmptyState();
       };
@@ -1523,6 +1561,13 @@
       document.querySelectorAll(".score").forEach((input) => input.addEventListener("input", updateModifiers));
       document.querySelectorAll('[name="level"], [name="hit-dice-size"]').forEach((input) => input.addEventListener("input", updateHealth));
       document.querySelector('[name="health-mode"]').addEventListener("change", updateHealth);
+      document.querySelectorAll('[name="auto-health"], [name="auto-modifiers"], [name="auto-spellcasting"]').forEach((input) => input.addEventListener("change", () => {
+        syncManualOverrides();
+        updateModifiers();
+        updateHealth();
+        updateSpellcastingStats();
+        persistDraft();
+      }));
       document.querySelector('[name="theme"]').addEventListener("change", () => {
         applyTheme(document.querySelector('[name="theme"]').value);
         persistDraft();
@@ -1588,6 +1633,7 @@
         closeFeatureEditor();
         localStorage.removeItem(draftKey);
         updateModifiers();
+        syncManualOverrides();
         updateSpellcastingVisibility();
         updateEmptyState();
         setStatus("Sheet cleared");
@@ -1599,6 +1645,7 @@
       } catch { setStatus("Could not restore browser draft"); }
       renderSavedSheets();
       updateModifiers();
+      syncManualOverrides();
       updateHitDieRules();
       updateSpellcastingVisibility();
     })();
