@@ -27,6 +27,7 @@
       --danger: #e68d8d;
       --shadow: 0 16px 45px rgba(0, 0, 0, .22);
       --bonus: #ff5d5d;
+      --ability-score-width: 100%;
     }
     body[data-theme="streetlamp"] {
       --bg: #111318;
@@ -492,6 +493,7 @@
     .monster-ability-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
     .monster-ability { display: grid; gap: .3rem; padding: .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); text-align: center; }
     .monster-ability input { min-width: 0; text-align: center; font-weight: 700; }
+    .monster-ability input[type="number"] { width: var(--ability-score-width); justify-self: center; }
     .monster-ability input[type="number"], .monster-ability input[name$="-mod"] { min-width: 3.375rem; }
     .monster-entry-groups { display: grid; gap: 1rem; }
     .monster-entry-group { display: grid; gap: .65rem; }
@@ -562,6 +564,7 @@
       text-align: center;
     }
     .ability input { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
+    .ability input.score { width: var(--ability-score-width); justify-self: center; }
     .ability-name { color: var(--muted); font-size: .72rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .ability-mod { color: var(--bonus); font-size: .8rem; }
     [contenteditable="true"] { cursor: text; }
@@ -715,6 +718,7 @@
         <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
+        <label class="config-option"><span class="field-label">Ability score field width <output for="ability-score-width" id="ability-score-width-value">100%</output></span><input id="ability-score-width" name="ability-score-width" type="range" min="40" max="100" step="5" value="100"></label>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
       </div>
     </details>
@@ -1412,6 +1416,15 @@
         if (modifierSelect) modifierSelect.value = color;
       };
 
+      const applyAbilityScoreWidth = (width) => {
+        const value = Math.min(100, Math.max(40, Number(width) || 100));
+        document.documentElement.style.setProperty("--ability-score-width", `${value}%`);
+        const widthInput = document.querySelector('[name="ability-score-width"]');
+        const widthOutput = document.querySelector("#ability-score-width-value");
+        if (widthInput) widthInput.value = String(value);
+        if (widthOutput) widthOutput.value = `${value}%`;
+      };
+
       const resetCharacterFields = () => {
         sheet.reset();
         document.querySelectorAll("#configuration [name]").forEach((input) => {
@@ -1421,6 +1434,7 @@
         });
         applyTheme("streetlamp");
         applyModifierColor("red");
+        applyAbilityScoreWidth(100);
       };
 
       const applySheet = (data) => {
@@ -1436,6 +1450,7 @@
         });
         applyTheme(data.fields.theme || "streetlamp");
         applyModifierColor(data.fields["modifier-color"] || "red");
+        applyAbilityScoreWidth(data.fields["ability-score-width"] || 100);
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
         skillList.replaceChildren();
@@ -1809,6 +1824,10 @@
       });
       document.querySelector('[name="modifier-color"]').addEventListener("change", () => {
         applyModifierColor(document.querySelector('[name="modifier-color"]').value);
+        persistDraft();
+      });
+      document.querySelector('[name="ability-score-width"]').addEventListener("input", (event) => {
+        applyAbilityScoreWidth(event.target.value);
         persistDraft();
       });
       document.querySelector('[name="allow-odd-hit-dice"]').addEventListener("change", () => {
