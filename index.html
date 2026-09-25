@@ -357,9 +357,10 @@
     body[data-modifier-color="gold"] { --bonus: #ffd166; }
     body[data-modifier-color="cream"] { --bonus: #f7e8c7; }
     body[data-modifier-color="cyan"] { --bonus: #8fe3ff; }
+    body[data-modifier-color="blue"] { --bonus: #4d8dff; }
     body[data-modifier-color="green"] { --bonus: #8fe39d; }
     body[data-modifier-color="lime"] { --bonus: #c9f26d; }
-    body[data-modifier-color="purple"] { --bonus: #d1a4ff; }
+    body[data-modifier-color="purple"] { --bonus: #8038b8; }
     body[data-modifier-color="rose"] { --bonus: #ff8a9a; }
     body[data-modifier-color="maroon"] { --bonus: #b13a42; }
     body[data-modifier-color="red"] { --bonus: #ff5d5d; }
@@ -683,7 +684,7 @@
       <div class="panel-body config-options">
         <label class="config-option"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
         <label class="config-option"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
-        <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
+        <label class="config-option"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
       </div>
@@ -1212,7 +1213,7 @@
       };
 
       const applyModifierColor = (modifierColor) => {
-        const validColors = new Set(["red", "amber", "copper", "gold", "cream", "cyan", "green", "lime", "purple", "rose", "maroon"]);
+        const validColors = new Set(["red", "amber", "copper", "gold", "cream", "cyan", "blue", "green", "lime", "purple", "rose", "maroon"]);
         const color = validColors.has(modifierColor) ? modifierColor : "red";
         document.body.dataset.modifierColor = color;
         const modifierSelect = document.querySelector('[name="modifier-color"]');
