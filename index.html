@@ -393,6 +393,21 @@
     .version { color: var(--muted); font-size: .78rem; font-weight: 500; }
     .top-actions { display: flex; align-items: center; gap: .65rem; }
     .status { color: var(--success); font-size: .78rem; }
+    .scrap-toggle[aria-expanded="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+    .scrap-panel {
+      position: fixed;
+      z-index: 9;
+      right: max(1.25rem, calc((100% - 1240px) / 2));
+      width: min(30rem, calc(100% - 2.5rem));
+      padding: .85rem .95rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: .75rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: .45rem;
+    }
+    .scrap-panel textarea { min-height: 11rem; resize: vertical; }
 
     .button, .icon-button {
       display: inline-flex;
@@ -686,7 +701,7 @@
     @media print {
       :root { color-scheme: light; }
       body { background: #fff; color: #111; }
-      .topbar, .sheet-actions, .feature-actions, .add-feature, .feature-editor, .storage-panel, .config-panel, footer { display: none !important; }
+      .topbar, .sheet-actions, .feature-actions, .add-feature, .feature-editor, .storage-panel, .config-panel, .scrap-panel, footer { display: none !important; }
       .shell { width: 100%; }
       main { padding: 0; }
       .panel { box-shadow: none; break-inside: avoid; }
@@ -702,11 +717,17 @@
       <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ 5.5e sheet maker</span></a>
       <div class="top-actions" id="maker-actions">
         <span class="status" id="save-status" role="status">Ready to edit</span>
+        <button class="button subtle scrap-toggle" id="scrap-toggle" type="button" aria-expanded="false" aria-controls="scrap-panel">Scrap sheet</button>
         <button class="button primary" id="save-character" type="button">Save / manage</button>
         <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
       </div>
     </div>
   </header>
+
+  <aside class="scrap-panel" id="scrap-panel" hidden>
+    <label class="field-label" for="scrap-notes">Scrap sheet</label>
+    <textarea id="scrap-notes" placeholder="Dice rolls, initiative orders, NPC names, reminders — anything you need at the table."></textarea>
+  </aside>
 
   <main class="shell" id="top">
     <div class="page-heading">
@@ -1117,6 +1138,10 @@
       const spellcasterToggle = document.querySelector('[name="spellcaster"]');
       const npcToggle = document.querySelector('[name="npc"]');
       const npcPanel = document.querySelector("#npc-details");
+      const scrapToggle = document.querySelector("#scrap-toggle");
+      const scrapPanel = document.querySelector("#scrap-panel");
+      const scrapNotes = document.querySelector("#scrap-notes");
+      const scrapKey = "manasquid.scrap-notes";
       const spellList = document.querySelector("#spell-list");
       const saveStatus = document.querySelector("#save-status");
       const storageKey = "manasquid.character-sheets";
@@ -2286,6 +2311,20 @@
         updateNpcVisibility();
         persistMonsterDraft();
       });
+      const positionScrapPanel = () => {
+        if (scrapPanel.hidden) return;
+        scrapPanel.style.top = `${document.querySelector(".topbar").getBoundingClientRect().bottom + 10}px`;
+      };
+      scrapToggle.addEventListener("click", () => {
+        scrapPanel.hidden = !scrapPanel.hidden;
+        scrapToggle.setAttribute("aria-expanded", String(!scrapPanel.hidden));
+        positionScrapPanel();
+        if (!scrapPanel.hidden) scrapNotes.focus();
+      });
+      scrapNotes.addEventListener("input", () => {
+        try { localStorage.setItem(scrapKey, scrapNotes.value); } catch { setStatus("Browser storage unavailable"); }
+      });
+      window.addEventListener("resize", positionScrapPanel);
       document.querySelector('[name="spellcasting-ability"]').addEventListener("change", updateSpellcastingStats);
       document.querySelector('[name="caster-progression"]').addEventListener("change", () => {
         updateSpellSlots();
@@ -2421,6 +2460,7 @@
       updateHitDieRules();
       updateSpellcastingVisibility();
       updateNpcVisibility();
+      try { scrapNotes.value = localStorage.getItem(scrapKey) || ""; } catch { setStatus("Could not restore scrap sheet"); }
     })();
   </script>
 </body>
