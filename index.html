@@ -527,7 +527,7 @@
     .monster-lair-toggle { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; }
     .monster-lair-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
     .attack-list { display: grid; gap: .45rem; }
-    .attack-row, .attack-header { display: grid; grid-template-columns: minmax(7rem, 1.2fr) 6.5rem 4.25rem 4.5rem minmax(4.25rem, .8fr) 4.5rem minmax(5rem, .7fr) minmax(5.5rem, .8fr) minmax(6rem, 1fr) 2.2rem; gap: .55rem; }
+    .attack-row, .attack-header { display: grid; grid-template-columns: minmax(7rem, 1.2fr) 4.25rem 4.25rem 4.5rem minmax(4.25rem, .8fr) 4.5rem minmax(5rem, .7fr) minmax(5.5rem, .8fr) minmax(8.25rem, 1fr) 2.2rem; gap: .55rem; }
     .attack-row { align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
     .attack-row input, .attack-row select { height: 2.3rem; padding: .4rem .5rem; }
     .attack-header { padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
@@ -871,7 +871,7 @@
           <button class="button primary" id="add-attack" type="button">+ Add attack</button>
         </div>
         <div class="panel-body">
-          <div class="attack-header" aria-hidden="true"><span>Attack</span><span>Roll type</span><span>Ability</span><span>Bonus</span><span>Damage dice</span><span>Dmg bonus</span><span>Type</span><span>Range</span><span>Notes</span><span></span></div>
+          <div class="attack-header" aria-hidden="true"><span>Attack</span><span>Roll</span><span>Ability</span><span>Bonus</span><span>Damage dice</span><span>Dmg bonus</span><span>Type</span><span>Range</span><span>Notes</span><span></span></div>
           <div class="attack-list" id="attack-list"></div>
         </div>
       </section>
@@ -1085,7 +1085,7 @@
   <template id="attack-template">
     <div class="attack-row">
       <input class="attack-name" aria-label="Attack name" placeholder="e.g. Longsword">
-      <select class="attack-kind" aria-label="Roll type"><option value="attack" selected>Attack roll</option><option value="save">Saving throw</option></select>
+      <select class="attack-kind" aria-label="Roll type"><option value="attack" selected>Attack</option><option value="save">Save</option></select>
       <select class="attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select>
       <input class="attack-bonus" readonly aria-readonly="true" placeholder="+5">
       <input class="attack-damage" aria-label="Damage dice" placeholder="1d8">
@@ -1234,7 +1234,7 @@
         const row = document.createElement("div");
         row.className = "monster-entry";
         const attackToggle = group === "traits" ? "" : `<span class="monster-entry-attack-row"><label class="monster-entry-attack-toggle"><input class="monster-entry-attack" type="checkbox" aria-label="Flag as attack"> Attack</label><input class="monster-entry-recharge" placeholder="5–6" aria-label="Recharge"></span>`;
-        const attackFields = group === "traits" ? "" : `<div class="monster-entry-attack-fields" hidden><label><span class="field-label">Roll type</span><select class="monster-attack-kind" aria-label="Roll type"><option value="attack" selected>Attack roll</option><option value="save">Saving throw</option></select></label><label><span class="field-label">Ability</span><select class="monster-attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label><label><span class="field-label">Attack bonus (auto)</span><input class="monster-attack-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage dice</span><input class="monster-attack-damage" placeholder="2d10"></label><label><span class="field-label">Dmg bonus (auto)</span><input class="monster-attack-damage-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage type</span><input class="monster-attack-damage-type" placeholder="Piercing"></label><label><span class="field-label">Range / reach</span><input class="monster-attack-range" placeholder="Melee 10 ft."></label></div>`;
+        const attackFields = group === "traits" ? "" : `<div class="monster-entry-attack-fields" hidden><label><span class="field-label">Roll type</span><select class="monster-attack-kind" aria-label="Roll type"><option value="attack" selected>Attack</option><option value="save">Save</option></select></label><label><span class="field-label">Ability</span><select class="monster-attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label><label><span class="field-label">Attack bonus (auto)</span><input class="monster-attack-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage dice</span><input class="monster-attack-damage" placeholder="2d10"></label><label><span class="field-label">Dmg bonus (auto)</span><input class="monster-attack-damage-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage type</span><input class="monster-attack-damage-type" placeholder="Piercing"></label><label><span class="field-label">Range / reach</span><input class="monster-attack-range" placeholder="Melee 10 ft."></label></div>`;
         row.innerHTML = `<div class="monster-entry-name-cell"><label class="monster-entry-name"><span class="field-label">Name</span><input placeholder="e.g. Amphibious"></label>${attackToggle}</div><label class="monster-entry-description"><span class="field-label">Rules text</span><textarea rows="2" placeholder="Describe the trait, action, or reaction."></textarea></label>${attackFields}<button class="icon-button remove-monster-entry" type="button" aria-label="Remove trait or action">×</button>`;
         row.querySelector(".monster-entry-name input").value = entry.name || "";
         row.querySelector(".monster-entry-description textarea").value = entry.description || "";
