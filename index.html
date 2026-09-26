@@ -654,13 +654,24 @@
     .feature-editor-actions { display: flex; justify-content: end; gap: .55rem; }
 
     .notes { min-height: 10rem; }
-    .proficiency-table { display: grid; gap: .45rem; max-width: 50rem; }
-    .skill-row { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 5.5rem 5rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
+    .proficiency-table { display: grid; gap: .45rem; max-width: 63rem; }
+    .skill-row { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 8rem 5.5rem 5.5rem 5.5rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
+    .skill-row > .skill-name { grid-column: 1; }
+    .skill-row > .skill-ability { grid-column: 2; }
+    .skill-row > .skill-alt-toggle { grid-column: 3; }
+    .skill-row > .skill-alt-ability { grid-column: 4; }
+    .skill-row > .skill-proficient { grid-column: 5; }
+    .skill-row > .skill-expertise { grid-column: 6; }
+    .skill-row > .skill-bonus { grid-column: 7; }
+    .skill-row > .remove-skill { grid-column: 8; }
     .skill-row .skill-name { font-weight: 650; }
     .skill-row .skill-ability { color: var(--muted); font-size: .8rem; }
+    .skill-alt-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .3rem; color: var(--muted); font-size: .68rem; font-weight: 650; cursor: pointer; white-space: nowrap; }
+    .skill-alt-toggle input { width: .95rem; height: .95rem; accent-color: var(--accent); margin: 0; }
+    .skill-alt-ability { color: var(--muted); font-size: .8rem; }
     .skill-row input[type="number"] { height: 2.2rem; }
     .skill-row input[type="checkbox"] { width: 1.1rem; height: 1.1rem; justify-self: center; accent-color: var(--accent); }
-    .proficiency-header { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 5.5rem 5rem 2.2rem; gap: .55rem; max-width: 50rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .proficiency-header { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 8rem 5.5rem 5.5rem 5.5rem 2.2rem; gap: .55rem; max-width: 63rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .proficiency-header span:nth-child(n+3) { text-align: center; white-space: nowrap; }
     .proficiency-actions { display: flex; justify-content: end; margin-top: .8rem; }
     .proficiency-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
@@ -690,7 +701,9 @@
       .fields > .field, .fields > .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
-      .skill-row, .proficiency-header { grid-template-columns: minmax(3.5rem, 1fr) 5rem 3.25rem 5.5rem 4.75rem 2rem; }
+      .skill-row, .proficiency-header { grid-template-columns: minmax(2.5rem, 1fr) 4.25rem 1.25rem 4rem 4.25rem 4.25rem 2.25rem 1.5rem; gap: .4rem; }
+      .skill-alt-toggle { font-size: 0; gap: 0; }
+      .proficiency-header { font-size: .6rem; letter-spacing: .03em; }
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
@@ -884,7 +897,7 @@
           <div><h2 id="proficiencies-heading">Proficiencies</h2><p>Track standard skills and add custom skills for any setting.</p></div>
         </div>
         <div class="panel-body">
-          <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>Bonus</span><span>Proficiency</span><span>Expertise</span><span></span></div>
+          <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>+ 2nd</span><span>2nd ability</span><span>Proficiency</span><span>Expertise</span><span>Bonus</span><span></span></div>
           <div class="proficiency-table" id="skill-list"></div>
           <div class="proficiency-actions"><button class="button" id="add-skill" type="button">+ Add custom skill</button></div>
           <div class="proficiency-fields">
@@ -1080,9 +1093,13 @@
       <select class="skill-ability" aria-label="Skill ability">
         <option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option>
       </select>
-      <input class="skill-bonus" type="text" aria-label="Skill bonus" placeholder="+0" readonly>
+      <label class="skill-alt-toggle"><input class="skill-alt-enabled" type="checkbox" aria-label="Add second ability"> + 2nd</label>
+      <select class="skill-alt-ability" aria-label="Second ability" hidden>
+        <option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option>
+      </select>
       <input class="skill-proficient" type="checkbox" aria-label="Proficient">
       <input class="skill-expertise" type="checkbox" aria-label="Expertise">
+      <input class="skill-bonus" type="text" aria-label="Skill bonus" placeholder="+0" readonly>
       <button class="icon-button remove-skill" type="button" aria-label="Remove skill">×</button>
     </div>
   </template>
@@ -1502,7 +1519,10 @@
           const modifier = Math.floor((score - 10) / 2);
           const proficient = row.querySelector(".skill-proficient").checked;
           const expertise = row.querySelector(".skill-expertise").checked;
-          const bonus = modifier + (proficient ? proficiencyBonus * (expertise ? 2 : 1) : 0);
+          const altEnabled = row.querySelector(".skill-alt-enabled");
+          const altAbility = altEnabled?.checked ? abilityMap[row.querySelector(".skill-alt-ability").value] : null;
+          const altModifier = altAbility ? Math.floor(((Number(document.querySelector(`[name="${altAbility}"]`).value) || 0) - 10) / 2) : 0;
+          const bonus = modifier + altModifier + (proficient ? proficiencyBonus * (expertise ? 2 : 1) : 0);
           row.querySelector(".skill-bonus").value = `${bonus >= 0 ? "+" : ""}${bonus}`;
         });
         const initiativeInput = document.querySelector('[name="initiative"]');
@@ -1686,13 +1706,16 @@
         }
       };
 
-      const addSkill = (name = "Custom skill", ability = "INT", bonus = "", proficient = false, expertise = false, removable = true) => {
+      const addSkill = (name = "Custom skill", ability = "INT", bonus = "", proficient = false, expertise = false, removable = true, altEnabled = false, altAbility = "STR") => {
         const row = skillTemplate.content.cloneNode(true).firstElementChild;
         row.querySelector(".skill-name").value = name;
         row.querySelector(".skill-ability").value = ability;
         row.querySelector(".skill-bonus").value = bonus;
         row.querySelector(".skill-proficient").checked = proficient;
         row.querySelector(".skill-expertise").checked = expertise;
+        row.querySelector(".skill-alt-ability").value = altAbility;
+        row.querySelector(".skill-alt-enabled").checked = Boolean(altEnabled);
+        row.querySelector(".skill-alt-ability").hidden = !altEnabled;
         row.querySelector(".remove-skill").hidden = !removable;
         row.querySelector(".remove-skill").addEventListener("click", () => {
           row.remove();
@@ -1707,6 +1730,8 @@
         bonus: row.querySelector(".skill-bonus").value,
         proficient: row.querySelector(".skill-proficient").checked,
         expertise: row.querySelector(".skill-expertise").checked,
+        altEnabled: row.querySelector(".skill-alt-enabled").checked,
+        altAbility: row.querySelector(".skill-alt-ability").value,
         removable: !row.querySelector(".remove-skill").hidden
       }));
 
@@ -1861,7 +1886,7 @@
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
         skillList.replaceChildren();
         (Array.isArray(data.skills) ? data.skills : standardSkills.map(([name, ability]) => ({ name, ability, bonus: "", proficient: false, expertise: false, removable: false })))
-          .forEach((skill) => addSkill(skill.name, skill.ability, skill.bonus, skill.proficient, skill.expertise, Object.prototype.hasOwnProperty.call(skill, "removable") ? skill.removable : true));
+          .forEach((skill) => addSkill(skill.name, skill.ability, skill.bonus, skill.proficient, skill.expertise, Object.prototype.hasOwnProperty.call(skill, "removable") ? skill.removable : true, Boolean(skill.altEnabled), skill.altAbility || "STR"));
         currencyList.replaceChildren();
         const currencies = Array.isArray(data.currencies) ? data.currencies : [
           { name: "Copper (CP)", amount: data.fields["currency-copper"] || "" },
@@ -2332,7 +2357,13 @@
       });
       document.querySelectorAll(".score, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("input", updateSpellcastingStats));
       document.querySelectorAll(".save-proficient, .skill-proficient, .skill-expertise, .skill-ability, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("change", updateModifiers));
-      skillList.addEventListener("change", updateModifiers);
+      skillList.addEventListener("change", (event) => {
+        if (event.target.classList.contains("skill-alt-enabled")) {
+          const row = event.target.closest(".skill-row");
+          row.querySelector(".skill-alt-ability").hidden = !event.target.checked;
+        }
+        updateModifiers();
+      });
       characterTab.addEventListener("click", () => setMakerTab("character"));
       monsterTab.addEventListener("click", () => setMakerTab("monster"));
       document.querySelectorAll(".add-monster-entry").forEach((button) => button.addEventListener("click", () => {
