@@ -546,7 +546,8 @@
       .monster-ability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }    @media (max-width: 520px) {
       .attack-header { display: none; }
-      .attack-row { grid-template-columns: minmax(5.5rem, 1.4fr) 4.75rem 3.5rem 3.5rem 2rem; }
+      .attack-row { grid-template-columns: minmax(4.5rem, 1.4fr) 4.25rem 3.25rem 3.25rem 2.2rem; gap: .45rem; }
+      .attack-row input, .attack-row select { font-size: .8rem; }
       .attack-row .attack-kind { grid-column: 2; grid-row: 1; }
       .attack-row .attack-ability { grid-column: 3; grid-row: 1; }
       .attack-row .attack-bonus { grid-column: 4; grid-row: 1; }
@@ -699,6 +700,29 @@
       .page-heading { align-items: start; flex-direction: column; }
       .sheet-grid { grid-template-columns: 1fr; }
       .fields > .field, .fields > .field.wide { grid-column: span 6; }
+      .proficiency-header, .proficiency-table { max-width: 100%; }
+      .proficiency-header, .skill-row {
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 2rem;
+        gap: .4rem;
+      }
+      .proficiency-header span:nth-child(n) { white-space: normal; }
+      .proficiency-header { font-size: .58rem; letter-spacing: .03em; }
+      .proficiency-header span:nth-child(1) { grid-column: 1 / 5; grid-row: 1; text-align: left; }
+      .proficiency-header span:nth-child(2) { grid-column: 1; grid-row: 2; }
+      .proficiency-header span:nth-child(3) { grid-column: 2; grid-row: 2; }
+      .proficiency-header span:nth-child(4) { grid-column: 3; grid-row: 2; }
+      .proficiency-header span:nth-child(5) { grid-column: 4; grid-row: 2; }
+      .proficiency-header span:nth-child(6) { grid-column: 5; grid-row: 2; }
+      .proficiency-header span:nth-child(7) { grid-column: 5; grid-row: 1; }
+      .proficiency-header span:nth-child(8) { grid-column: 6; grid-row: 1; }
+      .skill-row > .skill-name { grid-column: 1 / 5; grid-row: 1; }
+      .skill-row > .skill-bonus { grid-column: 5; grid-row: 1; }
+      .skill-row > .remove-skill { grid-column: 6; grid-row: 1; }
+      .skill-row > .skill-ability { grid-column: 1; grid-row: 2; }
+      .skill-row > .skill-alt-toggle { grid-column: 2; grid-row: 2; }
+      .skill-row > .skill-alt-ability { grid-column: 3; grid-row: 2; }
+      .skill-row > .skill-proficient { grid-column: 4; grid-row: 2; }
+      .skill-row > .skill-expertise { grid-column: 5; grid-row: 2; }
     }
     @media (max-width: 520px) {
       .shell { width: min(100% - 1.25rem, 440px); }
@@ -709,9 +733,7 @@
       .fields > .field, .fields > .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
-      .skill-row, .proficiency-header { grid-template-columns: minmax(2.5rem, 1fr) 4.25rem 1.25rem 4rem 4.25rem 4.25rem 2.25rem 1.5rem; gap: .4rem; }
       .skill-alt-toggle { font-size: 0; gap: 0; }
-      .proficiency-header { font-size: .6rem; letter-spacing: .03em; }
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
