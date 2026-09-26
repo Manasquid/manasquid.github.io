@@ -654,13 +654,13 @@
     .feature-editor-actions { display: flex; justify-content: end; gap: .55rem; }
 
     .notes { min-height: 10rem; }
-    .proficiency-table { display: grid; gap: .45rem; }
-    .skill-row { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 4.5rem 4.5rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
+    .proficiency-table { display: grid; gap: .45rem; max-width: 50rem; }
+    .skill-row { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 5.5rem 5rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
     .skill-row .skill-name { font-weight: 650; }
     .skill-row .skill-ability { color: var(--muted); font-size: .8rem; }
     .skill-row input[type="number"] { height: 2.2rem; }
     .skill-row input[type="checkbox"] { width: 1.1rem; height: 1.1rem; justify-self: center; accent-color: var(--accent); }
-    .proficiency-header { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 8rem 5.5rem 4.5rem 4.5rem 2.2rem; gap: .55rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .proficiency-header { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 5.5rem 5rem 2.2rem; gap: .55rem; max-width: 50rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .proficiency-header span:nth-child(n+3) { text-align: center; white-space: nowrap; }
     .proficiency-actions { display: flex; justify-content: end; margin-top: .8rem; }
     .proficiency-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
@@ -690,7 +690,7 @@
       .fields > .field, .fields > .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
-      .skill-row, .proficiency-header { grid-template-columns: minmax(6.25rem, 1fr) 5.25rem 3.5rem 4.25rem 4.25rem 2rem; }
+      .skill-row, .proficiency-header { grid-template-columns: minmax(3.5rem, 1fr) 5rem 3.25rem 5.5rem 4.75rem 2rem; }
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
@@ -884,7 +884,7 @@
           <div><h2 id="proficiencies-heading">Proficiencies</h2><p>Track standard skills and add custom skills for any setting.</p></div>
         </div>
         <div class="panel-body">
-          <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>Bonus</span><span title="Proficient">P</span><span title="Expertise">E</span><span></span></div>
+          <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>Bonus</span><span>Proficiency</span><span>Expertise</span><span></span></div>
           <div class="proficiency-table" id="skill-list"></div>
           <div class="proficiency-actions"><button class="button" id="add-skill" type="button">+ Add custom skill</button></div>
           <div class="proficiency-fields">
