@@ -739,7 +739,7 @@
       <div class="top-actions" id="maker-actions">
         <span class="status" id="save-status" role="status">Ready to edit</span>
         <button class="button subtle scrap-toggle" id="scrap-toggle" type="button" aria-expanded="false" aria-controls="scrap-panel">Scrap sheet</button>
-        <button class="button primary" id="save-character" type="button">Save / manage</button>
+        <button class="button primary" id="save-character" type="button">Save / transfer</button>
         <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
       </div>
     </div>
@@ -978,8 +978,8 @@
         <div class="panel-heading">
           <div><h2 id="monster-storage-heading">Save &amp; transfer stat blocks</h2><p>Export a monster as JSON or an importable PDF without affecting your character sheet.</p></div>
           <div class="storage-tools">
-            <button class="button" id="export-monster" type="button">Download JSON</button>
             <button class="button" id="print-monster" type="button">Download PDF</button>
+            <button class="button" id="export-monster" type="button">Download JSON</button>
             <button class="button" id="import-monster" type="button">Import JSON or PDF</button>
             <input class="sr-only" id="import-monster-file" type="file" accept="application/json,application/pdf,.json,.pdf">
           </div>
@@ -1483,7 +1483,7 @@
         monsterTab.setAttribute("aria-selected", String(monsterActive));
         document.querySelector("h1").textContent = monsterActive ? "Monster stat block maker" : "Character sheet";
         document.querySelector(".lede").textContent = monsterActive ? "Build encounter-ready creatures and keep every rule in one place." : "Build a D&D 5.5e character and keep every feature in one place.";
-        document.querySelector("#save-character").textContent = monsterActive ? "Save / transfer" : "Save / manage";
+        document.querySelector("#save-character").textContent = "Save / transfer";
         document.querySelector("#clear-sheet").textContent = monsterActive ? "Clear stat block" : "Clear sheet";
       };
 
