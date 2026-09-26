@@ -700,7 +700,7 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ 5.5e sheet maker</span></a>
-      <div class="top-actions character-only" id="character-actions">
+      <div class="top-actions" id="maker-actions">
         <span class="status" id="save-status" role="status">Ready to edit</span>
         <button class="button primary" id="save-character" type="button">Save / manage</button>
         <button class="button subtle" id="clear-sheet" type="button">Clear sheet</button>
@@ -716,6 +716,9 @@
       </div>
       <div class="sheet-actions character-only">
         <a class="button" href="#features">Jump to features</a>
+      </div>
+      <div class="sheet-actions monster-only" hidden>
+        <a class="button" href="#monster-features">Jump to traits &amp; actions</a>
       </div>
     </div>
     <div class="maker-tabs" role="tablist" aria-label="Sheet maker type">
@@ -1002,7 +1005,7 @@
           <div class="field wide"><label for="monster-gear">Gear</label><textarea id="monster-gear" name="monster-gear" placeholder="Weapons, armor, carried items"></textarea></div>
         </div>
       </section>
-      <section class="panel" aria-labelledby="monster-features-heading">
+      <section class="panel" id="monster-features" aria-labelledby="monster-features-heading">
         <div class="panel-heading"><div><h2 id="monster-features-heading">Traits, actions &amp; reactions</h2><p>Add the rules text that makes this creature unique.</p></div></div>
         <div class="panel-body">
           <div class="monster-entry-groups">
@@ -1419,6 +1422,8 @@
         monsterTab.setAttribute("aria-selected", String(monsterActive));
         document.querySelector("h1").textContent = monsterActive ? "Monster stat block maker" : "Character sheet";
         document.querySelector(".lede").textContent = monsterActive ? "Build encounter-ready creatures and keep every rule in one place." : "Build a D&D 5.5e character and keep every feature in one place.";
+        document.querySelector("#save-character").textContent = monsterActive ? "Save / transfer" : "Save / manage";
+        document.querySelector("#clear-sheet").textContent = monsterActive ? "Clear stat block" : "Clear sheet";
       };
 
       const syncManualOverrides = () => {
@@ -2197,6 +2202,10 @@
         closeFeatureEditor();
       });
       document.querySelector("#save-character").addEventListener("click", () => {
+        if (!monsterSheet.hidden) {
+          document.querySelector("#monster-storage-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
         document.querySelector("#save-name").focus();
         document.querySelector("#storage-heading").scrollIntoView({ behavior: "smooth", block: "start" });
       });
@@ -2356,7 +2365,21 @@
         setStatus("Importable PDF downloaded");
       });
       document.querySelector("#clear-sheet").addEventListener("click", () => {
-        if (!window.confirm("Clear all fields and remove every feature?")) return;
+        const monsterActive = !monsterSheet.hidden;
+        if (!window.confirm(monsterActive ? "Clear the whole stat block, including traits and actions?" : "Clear all fields and remove every feature?")) return;
+        if (monsterActive) {
+          monsterSheet.reset();
+          monsterEntryLists.forEach((list) => list.replaceChildren());
+          npcToggle.checked = false;
+          updateNpcVisibility();
+          localStorage.removeItem(monsterDraftKey);
+          applyTheme("streetlamp");
+          applyModifierColor("red", "monster");
+          updateMonsterModifiers();
+          updateMonsterAttackReference();
+          setStatus("Stat block cleared");
+          return;
+        }
         sheet.reset();
         applyTheme("sunset");
         spellcasterToggle.checked = false;
