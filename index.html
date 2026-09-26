@@ -733,7 +733,7 @@
         <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
         <div class="config-option"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
         <div class="config-option"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
-      <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
+      <div class="config-option"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label><label class="config-checkbox"><input name="npc" type="checkbox"> NPC</label></div>
       </div>
     </details>
 
@@ -952,6 +952,15 @@
           <div class="field full"><label for="monster-description">Description</label><textarea id="monster-description" name="monster-description" placeholder="Describe the creature's role, habitat, or first impression."></textarea></div>
         </div>
       </section>
+      <section class="panel npc-panel" id="npc-details" aria-labelledby="npc-details-heading" hidden>
+        <div class="panel-heading"><div><h2 id="npc-details-heading">NPC details</h2><p>Story hooks and table-only information for using this creature as a recurring NPC.</p></div></div>
+        <div class="panel-body fields">
+          <div class="field wide"><label for="npc-alignment">Alignment</label><input id="npc-alignment" name="npc-alignment" placeholder="e.g. Lawful neutral"></div>
+          <div class="field wide"><label for="npc-goals">Goals</label><textarea id="npc-goals" name="npc-goals" placeholder="What do they want, and what will they do to get it?"></textarea></div>
+          <div class="field wide"><label for="npc-personality">Personality</label><textarea id="npc-personality" name="npc-personality" placeholder="Mannerisms, traits, ideals, bonds, and flaws."></textarea></div>
+          <div class="field wide"><label for="npc-secret">Secret</label><textarea id="npc-secret" name="npc-secret" placeholder="What are they hiding, and what happens when it comes out?"></textarea></div>
+        </div>
+      </section>
       <div class="sheet-grid">
         <section class="panel" aria-labelledby="monster-defense-heading">
           <div class="panel-heading"><div><h2 id="monster-defense-heading">Defenses &amp; movement</h2><p>Core numbers for encounters.</p></div></div>
@@ -1102,6 +1111,8 @@
       const spellTemplate = document.querySelector("#spell-template");
       const spellcastingPanel = document.querySelector("#spellcasting");
       const spellcasterToggle = document.querySelector('[name="spellcaster"]');
+      const npcToggle = document.querySelector('[name="npc"]');
+      const npcPanel = document.querySelector("#npc-details");
       const spellList = document.querySelector("#spell-list");
       const saveStatus = document.querySelector("#save-status");
       const storageKey = "manasquid.character-sheets";
@@ -1122,6 +1133,7 @@
         version: 1,
         theme: document.querySelector('[name="monster-theme"]').value,
         modifierColor: document.querySelector('[name="monster-modifier-color"]').value,
+        npcEnabled: npcToggle.checked,
         fields: Object.fromEntries([...monsterSheet.querySelectorAll("[name]")].map((input) => [input.name, input.type === "checkbox" ? (input.checked ? "on" : "") : input.value])),
         entries: monsterEntryLists.flatMap((list) => [...list.querySelectorAll(".monster-entry")].map((row) => {
           const fields = row.querySelector(".monster-entry-attack-fields");
@@ -1389,6 +1401,8 @@
         applyTheme(data.theme || document.querySelector('[name="monster-theme"]').value || "streetlamp");
         document.querySelector('[name="monster-theme"]').value = data.theme || "streetlamp";
         applyModifierColor(data.modifierColor || "red", "monster");
+        npcToggle.checked = data.npcEnabled === true;
+        updateNpcVisibility();
         updateMonsterModifiers();
         updateMonsterAttackReference();
       };
@@ -1503,6 +1517,10 @@
         spellcastingPanel.hidden = !spellcasterToggle.checked;
         updateSpellSlots();
         updateSpellcastingStats();
+      };
+
+      const updateNpcVisibility = () => {
+        npcPanel.hidden = !npcToggle.checked;
       };
 
       const updateSpellSlots = () => {
@@ -1839,6 +1857,7 @@
         updateModifiers();
         syncManualOverrides();
         updateSpellcastingVisibility();
+        updateNpcVisibility();
         updateEmptyState();
       };
 
@@ -1896,6 +1915,14 @@
             ].filter((part) => String(part || "").trim());
             return [entry.group.toUpperCase(), title, ...detailParts, entry.description || ""];
           }),
+          ...(data.npcEnabled ? [
+            "",
+            "NPC DETAILS",
+            `Alignment: ${fields["npc-alignment"] || "—"}`,
+            `Goals: ${fields["npc-goals"] || "—"}`,
+            `Personality: ${fields["npc-personality"] || "—"}`,
+            `Secret: ${fields["npc-secret"] || "—"}`
+          ] : []),
           "",
           fields["monster-notes"] || ""
         ];
@@ -2245,6 +2272,10 @@
         updateSpellcastingVisibility();
         persistDraft();
       });
+      npcToggle.addEventListener("change", () => {
+        updateNpcVisibility();
+        persistMonsterDraft();
+      });
       document.querySelector('[name="spellcasting-ability"]').addEventListener("change", updateSpellcastingStats);
       document.querySelector('[name="caster-progression"]').addEventListener("change", () => {
         updateSpellSlots();
@@ -2329,6 +2360,7 @@
         sheet.reset();
         applyTheme("sunset");
         spellcasterToggle.checked = false;
+        npcToggle.checked = false;
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         skillList.replaceChildren();
         standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
@@ -2342,6 +2374,7 @@
         updateModifiers();
         syncManualOverrides();
         updateSpellcastingVisibility();
+        updateNpcVisibility();
         updateEmptyState();
         setStatus("Sheet cleared");
       });
@@ -2363,6 +2396,7 @@
       syncManualOverrides();
       updateHitDieRules();
       updateSpellcastingVisibility();
+      updateNpcVisibility();
     })();
   </script>
 </body>
