@@ -520,12 +520,14 @@
     .monster-entry-name-cell { display: grid; gap: .3rem; align-content: start; }
     .monster-entry-attack-toggle { display: flex; align-items: center; gap: .4rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; white-space: nowrap; }
     .monster-entry-attack-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .monster-entry-attack-row { display: flex; align-items: center; gap: .5rem; }
+    .monster-entry-recharge { height: 2.1rem; padding: .25rem .45rem; font-size: .78rem; min-width: 0; flex: 1; }
     .monster-xp-label-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
     .fields > .field.monster-defense-wide { grid-column: 1 / -1; }
     .monster-lair-toggle { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; }
     .monster-lair-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
     .attack-list { display: grid; gap: .45rem; }
-    .attack-row, .attack-header { display: grid; grid-template-columns: minmax(7.5rem, 1.2fr) 4.25rem 4.5rem minmax(4.25rem, .8fr) 4.5rem minmax(5rem, .7fr) minmax(5.5rem, .8fr) minmax(6rem, 1fr) 2.2rem; gap: .55rem; }
+    .attack-row, .attack-header { display: grid; grid-template-columns: minmax(7rem, 1.2fr) 6.5rem 4.25rem 4.5rem minmax(4.25rem, .8fr) 4.5rem minmax(5rem, .7fr) minmax(5.5rem, .8fr) minmax(6rem, 1fr) 2.2rem; gap: .55rem; }
     .attack-row { align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
     .attack-row input, .attack-row select { height: 2.3rem; padding: .4rem .5rem; }
     .attack-header { padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
@@ -536,7 +538,7 @@
     .monster-attack-item p { margin: 0; color: var(--field-text); font-size: .85rem; white-space: pre-wrap; }
     .monster-attack-empty { margin: 0; color: var(--muted); font-size: .82rem; }
     .monster-attack-item-details { margin: 0; color: var(--bonus); font-size: .8rem; font-weight: 700; }
-    .monster-entry-attack-fields { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .55rem; padding: .65rem; border: 1px dashed var(--line-strong); border-radius: .45rem; background: var(--accent-soft); }
+    .monster-entry-attack-fields { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .55rem; padding: .65rem; border: 1px dashed var(--line-strong); border-radius: .45rem; background: var(--accent-soft); }
     .monster-entry-attack-fields[hidden] { display: none; }
     .monster-entry-attack-fields label { display: grid; gap: .3rem; }
     .monster-entry-attack-fields input, .monster-entry-attack-fields select { height: 2.35rem; padding: .4rem .55rem; }
@@ -544,13 +546,16 @@
       .monster-ability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }    @media (max-width: 520px) {
       .attack-header { display: none; }
-      .attack-row { grid-template-columns: minmax(7rem, 1.4fr) 3.9rem 3.9rem 2rem; }
+      .attack-row { grid-template-columns: minmax(5.5rem, 1.4fr) 4.75rem 3.5rem 3.5rem 2rem; }
+      .attack-row .attack-kind { grid-column: 2; grid-row: 1; }
+      .attack-row .attack-ability { grid-column: 3; grid-row: 1; }
+      .attack-row .attack-bonus { grid-column: 4; grid-row: 1; }
+      .attack-row .remove-attack { grid-column: 5; grid-row: 1; }
       .attack-row .attack-damage { grid-column: 1; grid-row: 2; }
       .attack-row .attack-damage-bonus { grid-column: 2; grid-row: 2; }
       .attack-row .attack-type { grid-column: 3; grid-row: 2; }
       .attack-row .attack-range { grid-column: 1; grid-row: 3; }
-      .attack-row .attack-notes { grid-column: 2 / 5; grid-row: 3; }
-      .attack-row .remove-attack { grid-column: 4; grid-row: 1; }
+      .attack-row .attack-notes { grid-column: 2 / 6; grid-row: 3; }
     }
     @media (max-width: 520px) {
       .monster-entry { grid-template-columns: 1fr auto; }
@@ -615,6 +620,9 @@
     .ability input.score { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
     .ability-name { color: var(--muted); font-size: .72rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .ability-mod { color: var(--bonus); font-size: .8rem; }
+    .ability .ability-mod { width: 3.25rem; min-width: 0; height: 2.1rem; padding: .3rem .35rem; font-size: .85rem; text-align: center; }
+    .ability-mod-wrap { display: flex; align-items: center; justify-content: center; gap: .3rem; }
+    .ability-mod-caption { color: var(--bonus); font-size: .62rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
     [contenteditable="true"] { cursor: text; }
     [contenteditable="true"]:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
     .save-check { display: flex; align-items: center; justify-content: center; gap: .3rem; color: var(--bonus); font-size: .7rem; }
@@ -821,12 +829,12 @@
           </div>
           <div class="panel-body">
             <div class="ability-grid">
-              <label class="ability"><span class="ability-name">Strength</span><input class="score" name="strength" type="number" min="1" max="30" value="10" aria-label="Strength score"><input class="ability-mod" name="strength-mod" data-mod-for="strength" placeholder="+0" aria-label="Strength modifier" readonly><span class="save-check"><input class="save-proficient" name="strength-save-proficient" type="checkbox" aria-label="Strength saving throw proficiency"> Save <strong data-save-for="strength" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Dexterity</span><input class="score" name="dexterity" type="number" min="1" max="30" value="10" aria-label="Dexterity score"><input class="ability-mod" name="dexterity-mod" data-mod-for="dexterity" placeholder="+0" aria-label="Dexterity modifier" readonly><span class="save-check"><input class="save-proficient" name="dexterity-save-proficient" type="checkbox" aria-label="Dexterity saving throw proficiency"> Save <strong data-save-for="dexterity" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Constitution</span><input class="score" name="constitution" type="number" min="1" max="30" value="10" aria-label="Constitution score"><input class="ability-mod" name="constitution-mod" data-mod-for="constitution" placeholder="+0" aria-label="Constitution modifier" readonly><span class="save-check"><input class="save-proficient" name="constitution-save-proficient" type="checkbox" aria-label="Constitution saving throw proficiency"> Save <strong data-save-for="constitution" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Intelligence</span><input class="score" name="intelligence" type="number" min="1" max="30" value="10" aria-label="Intelligence score"><input class="ability-mod" name="intelligence-mod" data-mod-for="intelligence" placeholder="+0" aria-label="Intelligence modifier" readonly><span class="save-check"><input class="save-proficient" name="intelligence-save-proficient" type="checkbox" aria-label="Intelligence saving throw proficiency"> Save <strong data-save-for="intelligence" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><input class="ability-mod" name="wisdom-mod" data-mod-for="wisdom" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="save-check"><input class="save-proficient" name="wisdom-save-proficient" type="checkbox" aria-label="Wisdom saving throw proficiency"> Save <strong data-save-for="wisdom" contenteditable="false">+0</strong></span></label>
-              <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><input class="ability-mod" name="charisma-mod" data-mod-for="charisma" placeholder="+0" aria-label="Charisma modifier" readonly><span class="save-check"><input class="save-proficient" name="charisma-save-proficient" type="checkbox" aria-label="Charisma saving throw proficiency"> Save <strong data-save-for="charisma" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Strength</span><input class="score" name="strength" type="number" min="1" max="30" value="10" aria-label="Strength score"><span class="ability-mod-wrap"><input class="ability-mod" name="strength-mod" data-mod-for="strength" placeholder="+0" aria-label="Strength modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input class="save-proficient" name="strength-save-proficient" type="checkbox" aria-label="Strength saving throw proficiency"> Save <strong data-save-for="strength" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Dexterity</span><input class="score" name="dexterity" type="number" min="1" max="30" value="10" aria-label="Dexterity score"><span class="ability-mod-wrap"><input class="ability-mod" name="dexterity-mod" data-mod-for="dexterity" placeholder="+0" aria-label="Dexterity modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input class="save-proficient" name="dexterity-save-proficient" type="checkbox" aria-label="Dexterity saving throw proficiency"> Save <strong data-save-for="dexterity" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Constitution</span><input class="score" name="constitution" type="number" min="1" max="30" value="10" aria-label="Constitution score"><span class="ability-mod-wrap"><input class="ability-mod" name="constitution-mod" data-mod-for="constitution" placeholder="+0" aria-label="Constitution modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input class="save-proficient" name="constitution-save-proficient" type="checkbox" aria-label="Constitution saving throw proficiency"> Save <strong data-save-for="constitution" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Intelligence</span><input class="score" name="intelligence" type="number" min="1" max="30" value="10" aria-label="Intelligence score"><span class="ability-mod-wrap"><input class="ability-mod" name="intelligence-mod" data-mod-for="intelligence" placeholder="+0" aria-label="Intelligence modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input class="save-proficient" name="intelligence-save-proficient" type="checkbox" aria-label="Intelligence saving throw proficiency"> Save <strong data-save-for="intelligence" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><span class="ability-mod-wrap"><input class="ability-mod" name="wisdom-mod" data-mod-for="wisdom" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input class="save-proficient" name="wisdom-save-proficient" type="checkbox" aria-label="Wisdom saving throw proficiency"> Save <strong data-save-for="wisdom" contenteditable="false">+0</strong></span></label>
+              <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><span class="ability-mod-wrap"><input class="ability-mod" name="charisma-mod" data-mod-for="charisma" placeholder="+0" aria-label="Charisma modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input class="save-proficient" name="charisma-save-proficient" type="checkbox" aria-label="Charisma saving throw proficiency"> Save <strong data-save-for="charisma" contenteditable="false">+0</strong></span></label>
             </div>
             <div class="custom-fields"><span class="field-label">Custom ability fields</span><div class="custom-field-list" data-custom-fields-for="abilities"></div><button class="button" data-add-custom-field="abilities" type="button">+ Add ability field</button></div>
           </div>
@@ -863,7 +871,7 @@
           <button class="button primary" id="add-attack" type="button">+ Add attack</button>
         </div>
         <div class="panel-body">
-          <div class="attack-header" aria-hidden="true"><span>Attack</span><span>Ability</span><span>Bonus</span><span>Damage dice</span><span>Dmg bonus</span><span>Type</span><span>Range</span><span>Notes</span><span></span></div>
+          <div class="attack-header" aria-hidden="true"><span>Attack</span><span>Roll type</span><span>Ability</span><span>Bonus</span><span>Damage dice</span><span>Dmg bonus</span><span>Type</span><span>Range</span><span>Notes</span><span></span></div>
           <div class="attack-list" id="attack-list"></div>
         </div>
       </section>
@@ -1018,12 +1026,12 @@
         <section class="panel" aria-labelledby="monster-abilities-heading">
           <div class="panel-heading"><div><h2 id="monster-abilities-heading">Ability scores</h2><p>Enter scores and modifiers in one place.</p></div></div>
           <div class="panel-body"><div class="monster-ability-grid">
-            <label class="monster-ability"><span class="ability-name">STR</span><input name="monster-str" type="number" min="1" max="40" value="10" aria-label="Strength score"><input name="monster-str-mod" placeholder="+0" aria-label="Strength modifier" readonly><span class="save-check"><input name="monster-str-save-proficient" type="checkbox" aria-label="Strength save proficiency"> Save <strong data-msave-for="str">+0</strong></span></label>
-            <label class="monster-ability"><span class="ability-name">DEX</span><input name="monster-dex" type="number" min="1" max="40" value="10" aria-label="Dexterity score"><input name="monster-dex-mod" placeholder="+0" aria-label="Dexterity modifier" readonly><span class="save-check"><input name="monster-dex-save-proficient" type="checkbox" aria-label="Dexterity save proficiency"> Save <strong data-msave-for="dex">+0</strong></span></label>
-            <label class="monster-ability"><span class="ability-name">CON</span><input name="monster-con" type="number" min="1" max="40" value="10" aria-label="Constitution score"><input name="monster-con-mod" placeholder="+0" aria-label="Constitution modifier" readonly><span class="save-check"><input name="monster-con-save-proficient" type="checkbox" aria-label="Constitution save proficiency"> Save <strong data-msave-for="con">+0</strong></span></label>
-            <label class="monster-ability"><span class="ability-name">INT</span><input name="monster-int" type="number" min="1" max="40" value="10" aria-label="Intelligence score"><input name="monster-int-mod" placeholder="+0" aria-label="Intelligence modifier" readonly><span class="save-check"><input name="monster-int-save-proficient" type="checkbox" aria-label="Intelligence save proficiency"> Save <strong data-msave-for="int">+0</strong></span></label>
-            <label class="monster-ability"><span class="ability-name">WIS</span><input name="monster-wis" type="number" min="1" max="40" value="10" aria-label="Wisdom score"><input name="monster-wis-mod" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="save-check"><input name="monster-wis-save-proficient" type="checkbox" aria-label="Wisdom save proficiency"> Save <strong data-msave-for="wis">+0</strong></span></label>
-            <label class="monster-ability"><span class="ability-name">CHA</span><input name="monster-cha" type="number" min="1" max="40" value="10" aria-label="Charisma score"><input name="monster-cha-mod" placeholder="+0" aria-label="Charisma modifier" readonly><span class="save-check"><input name="monster-cha-save-proficient" type="checkbox" aria-label="Charisma save proficiency"> Save <strong data-msave-for="cha">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">STR</span><input name="monster-str" type="number" min="1" max="40" value="10" aria-label="Strength score"><span class="ability-mod-wrap"><input name="monster-str-mod" placeholder="+0" aria-label="Strength modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-str-save-proficient" type="checkbox" aria-label="Strength save proficiency"> Save <strong data-msave-for="str">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">DEX</span><input name="monster-dex" type="number" min="1" max="40" value="10" aria-label="Dexterity score"><span class="ability-mod-wrap"><input name="monster-dex-mod" placeholder="+0" aria-label="Dexterity modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-dex-save-proficient" type="checkbox" aria-label="Dexterity save proficiency"> Save <strong data-msave-for="dex">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">CON</span><input name="monster-con" type="number" min="1" max="40" value="10" aria-label="Constitution score"><span class="ability-mod-wrap"><input name="monster-con-mod" placeholder="+0" aria-label="Constitution modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-con-save-proficient" type="checkbox" aria-label="Constitution save proficiency"> Save <strong data-msave-for="con">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">INT</span><input name="monster-int" type="number" min="1" max="40" value="10" aria-label="Intelligence score"><span class="ability-mod-wrap"><input name="monster-int-mod" placeholder="+0" aria-label="Intelligence modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-int-save-proficient" type="checkbox" aria-label="Intelligence save proficiency"> Save <strong data-msave-for="int">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">WIS</span><input name="monster-wis" type="number" min="1" max="40" value="10" aria-label="Wisdom score"><span class="ability-mod-wrap"><input name="monster-wis-mod" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-wis-save-proficient" type="checkbox" aria-label="Wisdom save proficiency"> Save <strong data-msave-for="wis">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">CHA</span><input name="monster-cha" type="number" min="1" max="40" value="10" aria-label="Charisma score"><span class="ability-mod-wrap"><input name="monster-cha-mod" placeholder="+0" aria-label="Charisma modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-cha-save-proficient" type="checkbox" aria-label="Charisma save proficiency"> Save <strong data-msave-for="cha">+0</strong></span></label>
           </div></div>
         </section>
       </div>
@@ -1077,6 +1085,7 @@
   <template id="attack-template">
     <div class="attack-row">
       <input class="attack-name" aria-label="Attack name" placeholder="e.g. Longsword">
+      <select class="attack-kind" aria-label="Roll type"><option value="attack" selected>Attack roll</option><option value="save">Saving throw</option></select>
       <select class="attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select>
       <input class="attack-bonus" readonly aria-readonly="true" placeholder="+5">
       <input class="attack-damage" aria-label="Damage dice" placeholder="1d8">
@@ -1188,7 +1197,9 @@
             name: row.querySelector(".monster-entry-name input").value,
             description: row.querySelector(".monster-entry-description textarea").value,
             attack: Boolean(row.querySelector(".monster-entry-attack")?.checked),
+            attackKind: fields?.querySelector(".monster-attack-kind")?.value || "attack",
             attackAbility: fields?.querySelector(".monster-attack-ability")?.value || "",
+            recharge: row.querySelector(".monster-entry-recharge")?.value.trim() || "",
             attackBonus: fields?.querySelector(".monster-attack-bonus")?.value || "",
             attackDamage: fields?.querySelector(".monster-attack-damage")?.value || "",
             attackDamageBonus: fields?.querySelector(".monster-attack-damage-bonus")?.value || "",
@@ -1222,14 +1233,17 @@
       const addMonsterEntry = (group = "traits", entry = {}) => {
         const row = document.createElement("div");
         row.className = "monster-entry";
-        const attackToggle = group === "traits" ? "" : `<label class="monster-entry-attack-toggle"><input class="monster-entry-attack" type="checkbox" aria-label="Flag as attack"> Attack</label>`;
-        const attackFields = group === "traits" ? "" : `<div class="monster-entry-attack-fields" hidden><label><span class="field-label">Ability</span><select class="monster-attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label><label><span class="field-label">Attack bonus (auto)</span><input class="monster-attack-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage dice</span><input class="monster-attack-damage" placeholder="2d10"></label><label><span class="field-label">Dmg bonus (auto)</span><input class="monster-attack-damage-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage type</span><input class="monster-attack-damage-type" placeholder="Piercing"></label><label><span class="field-label">Range / reach</span><input class="monster-attack-range" placeholder="Melee 10 ft."></label></div>`;
+        const attackToggle = group === "traits" ? "" : `<span class="monster-entry-attack-row"><label class="monster-entry-attack-toggle"><input class="monster-entry-attack" type="checkbox" aria-label="Flag as attack"> Attack</label><input class="monster-entry-recharge" placeholder="5–6" aria-label="Recharge"></span>`;
+        const attackFields = group === "traits" ? "" : `<div class="monster-entry-attack-fields" hidden><label><span class="field-label">Roll type</span><select class="monster-attack-kind" aria-label="Roll type"><option value="attack" selected>Attack roll</option><option value="save">Saving throw</option></select></label><label><span class="field-label">Ability</span><select class="monster-attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label><label><span class="field-label">Attack bonus (auto)</span><input class="monster-attack-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage dice</span><input class="monster-attack-damage" placeholder="2d10"></label><label><span class="field-label">Dmg bonus (auto)</span><input class="monster-attack-damage-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage type</span><input class="monster-attack-damage-type" placeholder="Piercing"></label><label><span class="field-label">Range / reach</span><input class="monster-attack-range" placeholder="Melee 10 ft."></label></div>`;
         row.innerHTML = `<div class="monster-entry-name-cell"><label class="monster-entry-name"><span class="field-label">Name</span><input placeholder="e.g. Amphibious"></label>${attackToggle}</div><label class="monster-entry-description"><span class="field-label">Rules text</span><textarea rows="2" placeholder="Describe the trait, action, or reaction."></textarea></label>${attackFields}<button class="icon-button remove-monster-entry" type="button" aria-label="Remove trait or action">×</button>`;
         row.querySelector(".monster-entry-name input").value = entry.name || "";
         row.querySelector(".monster-entry-description textarea").value = entry.description || "";
         const attackInput = row.querySelector(".monster-entry-attack");
         const fields = row.querySelector(".monster-entry-attack-fields");
+        const rechargeInput = row.querySelector(".monster-entry-recharge");
+        if (rechargeInput) rechargeInput.value = entry.recharge || "";
         if (attackInput && fields) {
+          fields.querySelector(".monster-attack-kind").value = entry.attackKind === "save" ? "save" : "attack";
           fields.querySelector(".monster-attack-ability").value = entry.attackAbility || "STR";
           fields.querySelector(".monster-attack-damage").value = entry.attackDamage || "";
           fields.querySelector(".monster-attack-damage-type").value = entry.attackDamageType || "";
@@ -1241,6 +1255,7 @@
             updateMonsterAttackBonuses();
           });
           fields.querySelector(".monster-attack-ability").addEventListener("change", updateMonsterAttackBonuses);
+          fields.querySelector(".monster-attack-kind").addEventListener("change", updateMonsterAttackBonuses);
         }
         row.querySelector(".remove-monster-entry").addEventListener("click", () => { row.remove(); persistMonsterDraft(); updateMonsterAttackReference(); });
         const list = document.querySelector(`[data-monster-group="${group}"]`);
@@ -1262,16 +1277,18 @@
             const details = [];
             if (fields) {
               const bonus = fields.querySelector(".monster-attack-bonus").value.trim();
-              if (bonus) details.push(`${bonus} to hit`);
+              const isSave = fields.querySelector(".monster-attack-kind").value === "save";
+              if (bonus) details.push(isSave ? `DC ${bonus}` : `${bonus} to hit`);
               const damage = composeDamage(fields.querySelector(".monster-attack-damage").value, fields.querySelector(".monster-attack-damage-bonus").value).trim();
               const damageType = fields.querySelector(".monster-attack-damage-type").value.trim();
               if (damage) details.push(damageType ? `${damage} ${damageType}` : damage);
               const range = fields.querySelector(".monster-attack-range").value.trim();
               if (range) details.push(range);
             }
+            const recharge = row.querySelector(".monster-entry-recharge")?.value.trim();
             attacks.push({
               group: list.dataset.monsterGroup,
-              name: row.querySelector(".monster-entry-name input").value.trim() || "Untitled attack",
+              name: `${row.querySelector(".monster-entry-name input").value.trim() || "Untitled attack"}${recharge ? ` (Recharge ${recharge})` : ""}`,
               description: row.querySelector(".monster-entry-description textarea").value.trim(),
               details: details.join(" · ")
             });
@@ -1352,9 +1369,10 @@
               damageBonusInput.value = "";
               return;
             }
+            const isSave = fields.querySelector(".monster-attack-kind").value === "save";
             const modifier = monsterAbilityModifier(fields.querySelector(".monster-attack-ability").value);
-            bonusInput.value = modifier === null || proficiency === null ? "" : `+${modifier + proficiency}`;
-            damageBonusInput.value = modifier === null ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
+            bonusInput.value = modifier === null || proficiency === null ? "" : isSave ? `${modifier + 8 + proficiency}` : `+${modifier + proficiency}`;
+            damageBonusInput.value = modifier === null || isSave ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
           });
         });
         updateMonsterAttackReference();
@@ -1754,6 +1772,7 @@
       const addAttack = (attack = {}) => {
         const row = attackTemplate.content.cloneNode(true).firstElementChild;
         row.querySelector(".attack-name").value = attack.name || "";
+        row.querySelector(".attack-kind").value = attack.kind || "attack";
         row.querySelector(".attack-ability").value = attack.ability || "STR";
         row.querySelector(".attack-damage").value = attack.damage || "";
         row.querySelector(".attack-type").value = attack.type || "";
@@ -1786,13 +1805,22 @@
         const proficiency = Number.parseInt(document.querySelector('[name="proficiency-bonus"]')?.value, 10);
         attackList.querySelectorAll(".attack-row").forEach((row) => {
           const modifier = characterAbilityModifier(row.querySelector(".attack-ability").value);
-          row.querySelector(".attack-bonus").value = modifier === null || !Number.isFinite(proficiency) ? "" : `+${modifier + proficiency}`;
-          row.querySelector(".attack-damage-bonus").value = modifier === null ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
+          const isSave = row.querySelector(".attack-kind").value === "save";
+          const proficiencyValue = Number.isFinite(proficiency) ? proficiency : 0;
+          if (modifier === null || (!isSave && !Number.isFinite(proficiency))) {
+            row.querySelector(".attack-bonus").value = "";
+          } else if (isSave) {
+            row.querySelector(".attack-bonus").value = `${modifier + 8 + proficiencyValue}`;
+          } else {
+            row.querySelector(".attack-bonus").value = `+${modifier + proficiencyValue}`;
+          }
+          row.querySelector(".attack-damage-bonus").value = modifier === null || isSave ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
         });
       };
 
       const collectAttacks = () => [...attackList.querySelectorAll(".attack-row")].map((row) => ({
         name: row.querySelector(".attack-name").value,
+        kind: row.querySelector(".attack-kind").value,
         ability: row.querySelector(".attack-ability").value,
         bonus: row.querySelector(".attack-bonus").value,
         damage: row.querySelector(".attack-damage").value,
@@ -1962,10 +1990,10 @@
           ...(saveLine ? [`SAVING THROWS  ${saveLine}`] : []),
           "",
           ...(data.entries || []).flatMap((entry) => {
-            const title = `${entry.name || "Untitled"}${entry.attack ? " [Attack]" : ""}`;
+            const title = `${entry.name || "Untitled"}${entry.recharge ? ` (Recharge ${entry.recharge})` : ""}${entry.attack ? " [Attack]" : ""}`;
             if (!entry.attack) return [entry.group.toUpperCase(), title, entry.description || ""];
             const detailParts = [
-              entry.attackBonus ? `${entry.attackBonus} to hit` : "",
+              entry.attackBonus ? (entry.attackKind === "save" ? `DC ${entry.attackBonus}` : `${entry.attackBonus} to hit`) : "",
               [composeDamage(entry.attackDamage, entry.attackDamageBonus), entry.attackDamageType].filter((part) => String(part || "").trim()).join(" "),
               entry.attackRange
             ].filter((part) => String(part || "").trim());
@@ -2209,7 +2237,7 @@
       });
       attackList.addEventListener("input", persistDraft);
       attackList.addEventListener("change", (event) => {
-        if (event.target.classList.contains("attack-ability")) updateCharacterAttackBonuses();
+        if (event.target.classList.contains("attack-ability") || event.target.classList.contains("attack-kind")) updateCharacterAttackBonuses();
       });
       document.querySelectorAll('.score, [name="proficiency-bonus"]').forEach((input) => input.addEventListener("input", updateCharacterAttackBonuses));
       document.querySelector("#add-skill").addEventListener("click", () => {
