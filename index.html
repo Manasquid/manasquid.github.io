@@ -531,6 +531,17 @@
     .attack-row { align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
     .attack-row input, .attack-row select { height: 2.3rem; padding: .4rem .5rem; }
     .attack-header { padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .attack-cell { display: grid; gap: .3rem; min-width: 0; align-content: end; }
+    .attack-cell .field-label { display: none; }
+    @media (max-width: 960px) {
+      .attack-header { display: none; }
+      .attack-row { grid-template-columns: 1fr 1fr; gap: .45rem .55rem; }
+      .attack-cell .field-label { display: block; }
+      .attack-cell { align-content: start; }
+      .attack-row input, .attack-row select { font-size: .8rem; }
+      .attack-row .attack-cell:nth-child(1), .attack-row .attack-cell:nth-child(9), .attack-row .attack-cell:nth-child(10) { grid-column: 1 / -1; }
+      .attack-row .attack-cell:nth-child(10) { justify-self: center; }
+    }
     .monster-attack-list { display: grid; gap: .6rem; }
     .monster-attack-item { display: grid; gap: .35rem; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .monster-attack-item-head { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
@@ -545,20 +556,6 @@
     @media (max-width: 800px) {
       .monster-ability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }    @media (max-width: 520px) {
-      .attack-header { display: none; }
-      .attack-row { grid-template-columns: minmax(4.5rem, 1.4fr) 4.25rem 3.25rem 3.25rem 2.2rem; gap: .45rem; }
-      .attack-row input, .attack-row select { font-size: .8rem; }
-      .attack-row .attack-kind { grid-column: 2; grid-row: 1; }
-      .attack-row .attack-ability { grid-column: 3; grid-row: 1; }
-      .attack-row .attack-bonus { grid-column: 4; grid-row: 1; }
-      .attack-row .remove-attack { grid-column: 5; grid-row: 1; }
-      .attack-row .attack-damage { grid-column: 1; grid-row: 2; }
-      .attack-row .attack-damage-bonus { grid-column: 2; grid-row: 2; }
-      .attack-row .attack-type { grid-column: 3; grid-row: 2; }
-      .attack-row .attack-range { grid-column: 1; grid-row: 3; }
-      .attack-row .attack-notes { grid-column: 2 / 6; grid-row: 3; }
-    }
-    @media (max-width: 520px) {
       .monster-entry { grid-template-columns: 1fr auto; }
       .monster-entry .monster-entry-description { grid-column: 1 / -1; }
       .monster-entry-attack-fields { grid-template-columns: 1fr 1fr; }
@@ -665,17 +662,19 @@
     .notes { min-height: 10rem; }
     .proficiency-table { display: grid; gap: .45rem; max-width: 63rem; }
     .skill-row { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 8rem 5.5rem 5.5rem 5.5rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
-    .skill-row > .skill-name { grid-column: 1; }
-    .skill-row > .skill-ability { grid-column: 2; }
-    .skill-row > .skill-alt-toggle { grid-column: 3; }
-    .skill-row > .skill-alt-ability { grid-column: 4; }
-    .skill-row > .skill-proficient { grid-column: 5; }
-    .skill-row > .skill-expertise { grid-column: 6; }
-    .skill-row > .skill-bonus { grid-column: 7; }
-    .skill-row > .remove-skill { grid-column: 8; }
+    .skill-row > .skill-cell-name { grid-column: 1; }
+    .skill-row > .skill-cell-ability { grid-column: 2; }
+    .skill-row > .skill-cell-toggle { grid-column: 3; }
+    .skill-row > .skill-cell-alt { grid-column: 4; }
+    .skill-row > .skill-cell-prof { grid-column: 5; }
+    .skill-row > .skill-cell-exp { grid-column: 6; }
+    .skill-row > .skill-cell-bonus { grid-column: 7; }
+    .skill-row > .skill-cell-remove { grid-column: 8; }
+    .skill-cell { display: grid; gap: .3rem; min-width: 0; align-content: end; }
+    .skill-cell .field-label { display: none; }
     .skill-row .skill-name { font-weight: 650; }
     .skill-row .skill-ability { color: var(--muted); font-size: .8rem; }
-    .skill-alt-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .3rem; color: var(--muted); font-size: .68rem; font-weight: 650; cursor: pointer; white-space: nowrap; }
+    .skill-alt-toggle { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
     .skill-alt-toggle input { width: .95rem; height: .95rem; accent-color: var(--accent); margin: 0; }
     .skill-alt-ability { color: var(--muted); font-size: .8rem; }
     .skill-row input[type="number"] { height: 2.2rem; }
@@ -700,29 +699,19 @@
       .page-heading { align-items: start; flex-direction: column; }
       .sheet-grid { grid-template-columns: 1fr; }
       .fields > .field, .fields > .field.wide { grid-column: span 6; }
-      .proficiency-header, .proficiency-table { max-width: 100%; }
-      .proficiency-header, .skill-row {
-        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 2rem;
-        gap: .4rem;
-      }
-      .proficiency-header span:nth-child(n) { white-space: normal; }
-      .proficiency-header { font-size: .58rem; letter-spacing: .03em; }
-      .proficiency-header span:nth-child(1) { grid-column: 1 / 5; grid-row: 1; text-align: left; }
-      .proficiency-header span:nth-child(2) { grid-column: 1; grid-row: 2; }
-      .proficiency-header span:nth-child(3) { grid-column: 2; grid-row: 2; }
-      .proficiency-header span:nth-child(4) { grid-column: 3; grid-row: 2; }
-      .proficiency-header span:nth-child(5) { grid-column: 4; grid-row: 2; }
-      .proficiency-header span:nth-child(6) { grid-column: 5; grid-row: 2; }
-      .proficiency-header span:nth-child(7) { grid-column: 5; grid-row: 1; }
-      .proficiency-header span:nth-child(8) { grid-column: 6; grid-row: 1; }
-      .skill-row > .skill-name { grid-column: 1 / 5; grid-row: 1; }
-      .skill-row > .skill-bonus { grid-column: 5; grid-row: 1; }
-      .skill-row > .remove-skill { grid-column: 6; grid-row: 1; }
-      .skill-row > .skill-ability { grid-column: 1; grid-row: 2; }
-      .skill-row > .skill-alt-toggle { grid-column: 2; grid-row: 2; }
-      .skill-row > .skill-alt-ability { grid-column: 3; grid-row: 2; }
-      .skill-row > .skill-proficient { grid-column: 4; grid-row: 2; }
-      .skill-row > .skill-expertise { grid-column: 5; grid-row: 2; }
+      .proficiency-table { max-width: 100%; }
+      .proficiency-header { display: none; }
+      .skill-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem .45rem; }
+      .skill-cell .field-label { display: block; }
+      .skill-cell { align-content: start; }
+      .skill-row > .skill-cell-name { grid-column: 1 / 3; grid-row: 1; }
+      .skill-row > .skill-cell-bonus { grid-column: 3; grid-row: 1; }
+      .skill-row > .skill-cell-ability { grid-column: 1; grid-row: 2; }
+      .skill-row > .skill-cell-toggle { grid-column: 2; grid-row: 2; }
+      .skill-row > .skill-cell-alt { grid-column: 3; grid-row: 2; }
+      .skill-row > .skill-cell-prof { grid-column: 1; grid-row: 3; }
+      .skill-row > .skill-cell-exp { grid-column: 2; grid-row: 3; }
+      .skill-row > .skill-cell-remove { grid-column: 3; grid-row: 3; justify-self: end; }
     }
     @media (max-width: 520px) {
       .shell { width: min(100% - 1.25rem, 440px); }
@@ -733,7 +722,6 @@
       .fields > .field, .fields > .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
-      .skill-alt-toggle { font-size: 0; gap: 0; }
       .proficiency-fields { grid-template-columns: 1fr; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
@@ -1106,32 +1094,28 @@
   </template>
   <template id="attack-template">
     <div class="attack-row">
-      <input class="attack-name" aria-label="Attack name" placeholder="e.g. Longsword">
-      <select class="attack-kind" aria-label="Roll type"><option value="attack" selected>Attack</option><option value="save">Save</option></select>
-      <select class="attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select>
-      <input class="attack-bonus" readonly aria-readonly="true" placeholder="+5">
-      <input class="attack-damage" aria-label="Damage dice" placeholder="1d8">
-      <input class="attack-damage-bonus" readonly aria-readonly="true" placeholder="+3">
-      <input class="attack-type" aria-label="Damage type" placeholder="Slashing">
-      <input class="attack-range" aria-label="Range" placeholder="5 ft.">
-      <input class="attack-notes" aria-label="Notes" placeholder="Versatile (1d10)">
-      <button class="icon-button remove-attack" type="button" aria-label="Remove attack">×</button>
+      <label class="attack-cell"><span class="field-label">Attack</span><input class="attack-name" aria-label="Attack name" placeholder="e.g. Longsword"></label>
+      <label class="attack-cell"><span class="field-label">Roll</span><select class="attack-kind" aria-label="Roll type"><option value="attack" selected>Attack</option><option value="save">Save</option></select></label>
+      <label class="attack-cell"><span class="field-label">Ability</span><select class="attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label>
+      <label class="attack-cell"><span class="field-label">Bonus</span><input class="attack-bonus" readonly aria-readonly="true" placeholder="+5"></label>
+      <label class="attack-cell"><span class="field-label">Damage dice</span><input class="attack-damage" aria-label="Damage dice" placeholder="1d8"></label>
+      <label class="attack-cell"><span class="field-label">Dmg bonus</span><input class="attack-damage-bonus" readonly aria-readonly="true" placeholder="+3"></label>
+      <label class="attack-cell"><span class="field-label">Type</span><input class="attack-type" aria-label="Damage type" placeholder="Slashing"></label>
+      <label class="attack-cell"><span class="field-label">Range</span><input class="attack-range" aria-label="Range" placeholder="5 ft."></label>
+      <label class="attack-cell"><span class="field-label">Notes</span><input class="attack-notes" aria-label="Notes" placeholder="Versatile (1d10)"></label>
+      <div class="attack-cell attack-cell-remove"><button class="icon-button remove-attack" type="button" aria-label="Remove attack">×</button></div>
     </div>
   </template>
   <template id="skill-template">
     <div class="skill-row">
-      <input class="skill-name" aria-label="Skill name" placeholder="Custom skill">
-      <select class="skill-ability" aria-label="Skill ability">
-        <option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option>
-      </select>
-      <label class="skill-alt-toggle"><input class="skill-alt-enabled" type="checkbox" aria-label="Add second ability"> + 2nd</label>
-      <select class="skill-alt-ability" aria-label="Second ability" hidden>
-        <option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option>
-      </select>
-      <input class="skill-proficient" type="checkbox" aria-label="Proficient">
-      <input class="skill-expertise" type="checkbox" aria-label="Expertise">
-      <input class="skill-bonus" type="text" aria-label="Skill bonus" placeholder="+0" readonly>
-      <button class="icon-button remove-skill" type="button" aria-label="Remove skill">×</button>
+      <label class="skill-cell skill-cell-name"><span class="field-label">Skill</span><input class="skill-name" aria-label="Skill name" placeholder="Custom skill"></label>
+      <label class="skill-cell skill-cell-ability"><span class="field-label">Ability</span><select class="skill-ability" aria-label="Skill ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label>
+      <div class="skill-cell skill-cell-toggle"><span class="field-label">+ 2nd</span><label class="skill-alt-toggle"><input class="skill-alt-enabled" type="checkbox" aria-label="Add second ability"></label></div>
+      <label class="skill-cell skill-cell-alt"><span class="field-label">2nd ability</span><select class="skill-alt-ability" aria-label="Second ability" hidden><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label>
+      <label class="skill-cell skill-cell-prof"><span class="field-label">Proficiency</span><input class="skill-proficient" type="checkbox" aria-label="Proficient"></label>
+      <label class="skill-cell skill-cell-exp"><span class="field-label">Expertise</span><input class="skill-expertise" type="checkbox" aria-label="Expertise"></label>
+      <label class="skill-cell skill-cell-bonus"><span class="field-label">Bonus</span><input class="skill-bonus" type="text" aria-label="Skill bonus" placeholder="+0" readonly></label>
+      <div class="skill-cell skill-cell-remove"><button class="icon-button remove-skill" type="button" aria-label="Remove skill">×</button></div>
     </div>
   </template>
   <template id="currency-template">
