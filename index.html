@@ -530,22 +530,8 @@
     .fields > .field.monster-defense-wide { grid-column: 1 / -1; }
     .monster-lair-toggle { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; }
     .monster-lair-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
-    .attack-list { display: grid; gap: .45rem; }
-    .attack-row, .attack-header { display: grid; grid-template-columns: minmax(7rem, 1.2fr) 4.25rem 4.25rem 4.5rem minmax(4.25rem, .8fr) 4.5rem minmax(5rem, .7fr) minmax(5.5rem, .8fr) minmax(8.25rem, 1fr) 2.2rem; gap: .55rem; }
-    .attack-row { align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
-    .attack-row input, .attack-row select { height: 2.3rem; padding: .4rem .5rem; }
-    .attack-header { padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
-    .attack-cell { display: grid; gap: .3rem; min-width: 0; align-content: end; }
-    .attack-cell .field-label { display: none; }
-    @media (max-width: 960px) {
-      .attack-header { display: none; }
-      .attack-row { grid-template-columns: 1fr 1fr; gap: .45rem .55rem; }
-      .attack-cell .field-label { display: block; }
-      .attack-cell { align-content: start; }
-      .attack-row input, .attack-row select { font-size: .8rem; }
-      .attack-row .attack-cell:nth-child(1), .attack-row .attack-cell:nth-child(9), .attack-row .attack-cell:nth-child(10) { grid-column: 1 / -1; }
-      .attack-row .attack-cell:nth-child(10) { justify-self: center; }
-    }
+    .attack-list { display: grid; gap: .75rem; }
+    .feature-actions .remove-attack { color: var(--bonus); }
     .monster-attack-list { display: grid; gap: .6rem; }
     .monster-attack-item { display: grid; gap: .35rem; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .monster-attack-item-head { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
@@ -892,8 +878,24 @@
           <button class="button primary" id="add-attack" type="button">+ Add attack</button>
         </div>
         <div class="panel-body">
-          <div class="attack-header" aria-hidden="true"><span>Attack</span><span>Roll</span><span>Ability</span><span>Bonus</span><span>Damage dice</span><span>Dmg bonus</span><span>Type</span><span>Range</span><span>Notes</span><span></span></div>
-          <div class="attack-list" id="attack-list"></div>
+          <div class="feature-editor attack-editor" id="attack-editor" hidden>
+            <div class="feature-editor-grid">
+              <div class="field"><label for="attack-name">Attack name</label><input id="attack-name" placeholder="e.g. Longsword"></div>
+              <div class="field"><label for="attack-kind">Roll type</label><select id="attack-kind"><option value="attack" selected>Attack roll</option><option value="save">Saving throw</option></select></div>
+              <div class="field"><label for="attack-ability">Ability</label><select id="attack-ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
+              <div class="field"><label for="attack-damage">Damage dice</label><input id="attack-damage" placeholder="1d8"></div>
+              <div class="field"><label for="attack-damage-type">Damage type</label><input id="attack-damage-type" placeholder="Slashing"></div>
+              <div class="field"><label for="attack-range">Range / reach</label><input id="attack-range" placeholder="5 ft."></div>
+              <div class="field full"><label for="attack-notes">Notes</label><input id="attack-notes" placeholder="Versatile (1d10)"></div>
+            </div>
+            <div class="feature-editor-actions">
+              <button class="button subtle" id="cancel-attack" type="button">Cancel</button>
+              <button class="button primary" id="save-attack" type="button">Save attack</button>
+            </div>
+          </div>
+          <div class="attack-list" id="attack-list" aria-live="polite">
+            <div class="empty-state" id="attack-empty-state">No attacks yet. Add your first attack to start building the sheet.</div>
+          </div>
         </div>
       </section>
 
@@ -1112,18 +1114,17 @@
     </article>
   </template>
   <template id="attack-template">
-    <div class="attack-row">
-      <label class="attack-cell"><span class="field-label">Attack</span><input class="attack-name" aria-label="Attack name" placeholder="e.g. Longsword"></label>
-      <label class="attack-cell"><span class="field-label">Roll</span><select class="attack-kind" aria-label="Roll type"><option value="attack" selected>Attack</option><option value="save">Save</option></select></label>
-      <label class="attack-cell"><span class="field-label">Ability</span><select class="attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label>
-      <label class="attack-cell"><span class="field-label">Bonus</span><input class="attack-bonus" readonly aria-readonly="true" placeholder="+5"></label>
-      <label class="attack-cell"><span class="field-label">Damage dice</span><input class="attack-damage" aria-label="Damage dice" placeholder="1d8"></label>
-      <label class="attack-cell"><span class="field-label">Dmg bonus</span><input class="attack-damage-bonus" readonly aria-readonly="true" placeholder="+3"></label>
-      <label class="attack-cell"><span class="field-label">Type</span><input class="attack-type" aria-label="Damage type" placeholder="Slashing"></label>
-      <label class="attack-cell"><span class="field-label">Range</span><input class="attack-range" aria-label="Range" placeholder="5 ft."></label>
-      <label class="attack-cell"><span class="field-label">Notes</span><input class="attack-notes" aria-label="Notes" placeholder="Versatile (1d10)"></label>
-      <div class="attack-cell attack-cell-remove"><button class="icon-button remove-attack" type="button" aria-label="Remove attack">×</button></div>
-    </div>
+    <article class="feature-card attack-card">
+      <div>
+        <h3 class="attack-title"></h3>
+        <p class="attack-line"></p>
+        <div class="feature-meta"><span class="tag attack-kind-tag"></span><span class="tag attack-ability-tag"></span><span class="tag attack-range-tag"></span></div>
+      </div>
+      <div class="feature-actions">
+        <button class="icon-button edit-attack" type="button" aria-label="Edit attack">✎</button>
+        <button class="icon-button remove-attack" type="button" aria-label="Remove attack">×</button>
+      </div>
+    </article>
   </template>
   <template id="skill-template">
     <div class="skill-row">
@@ -1184,6 +1185,42 @@
       const customFieldTemplate = document.querySelector("#custom-field-template");
       const attackTemplate = document.querySelector("#attack-template");
       const attackList = document.querySelector("#attack-list");
+      const attackEditor = document.querySelector("#attack-editor");
+      const attackEmpty = document.querySelector("#attack-empty-state");
+      const attackNameInput = document.querySelector("#attack-name");
+      const attackKindInput = document.querySelector("#attack-kind");
+      const attackAbilityInput = document.querySelector("#attack-ability");
+      const attackDamageInput = document.querySelector("#attack-damage");
+      const attackDamageTypeInput = document.querySelector("#attack-damage-type");
+      const attackRangeInput = document.querySelector("#attack-range");
+      const attackNotesInput = document.querySelector("#attack-notes");
+      let editingAttackIndex = null;
+
+      const openAttackEditor = (index = null) => {
+        editingAttackIndex = index;
+        const attack = index === null ? {} : attacks[index];
+        attackNameInput.value = attack.name || "";
+        attackKindInput.value = attack.kind || "attack";
+        attackAbilityInput.value = attack.ability || "STR";
+        attackDamageInput.value = attack.damage || "";
+        attackDamageTypeInput.value = attack.type || "";
+        attackRangeInput.value = attack.range || "";
+        attackNotesInput.value = attack.notes || "";
+        attackEditor.hidden = false;
+        attackNameInput.focus();
+      };
+
+      const closeAttackEditor = () => {
+        editingAttackIndex = null;
+        attackEditor.hidden = true;
+        attackNameInput.value = "";
+        attackKindInput.value = "attack";
+        attackAbilityInput.value = "STR";
+        attackDamageInput.value = "";
+        attackDamageTypeInput.value = "";
+        attackRangeInput.value = "";
+        attackNotesInput.value = "";
+      };
       const spellTemplate = document.querySelector("#spell-template");
       const spellcastingPanel = document.querySelector("#spellcasting");
       const spellcasterToggle = document.querySelector('[name="spellcaster"]');
@@ -1796,20 +1833,61 @@
         amount: row.querySelector(".currency-amount").value
       }));
 
-      const addAttack = (attack = {}) => {
-        const row = attackTemplate.content.cloneNode(true).firstElementChild;
-        row.querySelector(".attack-name").value = attack.name || "";
-        row.querySelector(".attack-kind").value = attack.kind || "attack";
-        row.querySelector(".attack-ability").value = attack.ability || "STR";
-        row.querySelector(".attack-damage").value = attack.damage || "";
-        row.querySelector(".attack-type").value = attack.type || "";
-        row.querySelector(".attack-range").value = attack.range || "";
-        row.querySelector(".attack-notes").value = attack.notes || "";
-        row.querySelector(".remove-attack").addEventListener("click", () => {
-          row.remove();
-          persistDraft();
+      let attacks = [];
+
+      const normalizeAttack = (attack = {}) => ({
+        name: attack.name || "",
+        kind: attack.kind === "save" ? "save" : "attack",
+        ability: attack.ability || "STR",
+        damage: attack.damage || "",
+        damageBonus: "",
+        type: attack.type || "",
+        range: attack.range || "",
+        notes: attack.notes || "",
+        bonus: ""
+      });
+
+      const setAttacks = (list) => {
+        attacks = (Array.isArray(list) ? list : []).map(normalizeAttack);
+        renderAttacks();
+        updateCharacterAttackBonuses();
+      };
+
+      const renderAttacks = () => {
+        attackList.replaceChildren();
+        attacks.forEach((attack, index) => {
+          const fragment = attackTemplate.content.cloneNode(true);
+          const card = fragment.querySelector(".attack-card");
+          updateAttackCard(card, attack);
+          card.querySelector(".edit-attack").addEventListener("click", () => openAttackEditor(index));
+          card.querySelector(".remove-attack").addEventListener("click", () => {
+            attacks.splice(index, 1);
+            updateCharacterAttackBonuses();
+            renderAttacks();
+            persistDraft();
+            setStatus("Attack removed");
+          });
+          attackList.appendChild(fragment);
         });
-        attackList.appendChild(row);
+        attackEmpty.hidden = attacks.length > 0;
+      };
+
+      const updateAttackCard = (card, attack) => {
+        const parts = [];
+        if (attack.kind === "save") {
+          if (attack.bonus) parts.push(`DC ${attack.bonus}`);
+        } else if (attack.bonus) {
+          parts.push(`${attack.bonus} to hit`);
+        }
+        const damage = composeDamage(attack.damage, attack.damageBonus === "+0" ? "" : attack.damageBonus).trim();
+        if (damage) parts.push(damage);
+        if (attack.type) parts.push(attack.type);
+        if (attack.notes) parts.push(attack.notes);
+        card.querySelector(".attack-title").textContent = attack.name || "Untitled attack";
+        card.querySelector(".attack-line").textContent = parts.join(" · ") || "No damage added.";
+        card.querySelector(".attack-kind-tag").textContent = attack.kind === "save" ? "Saving throw" : "Attack roll";
+        card.querySelector(".attack-ability-tag").textContent = attack.ability;
+        card.querySelector(".attack-range-tag").textContent = attack.range || "Any range";
       };
 
       const composeDamage = (dice, bonus) => {
@@ -1827,34 +1905,39 @@
         return Number.isFinite(score) ? Math.floor((score - 10) / 2) : null;
       };
 
+      const attackBonusFor = (attack) => {
+        const modifier = characterAbilityModifier(attack.ability);
+        const proficiency = Number.parseInt(document.querySelector('[name="proficiency-bonus"]')?.value, 10);
+        const proficiencyValue = Number.isFinite(proficiency) ? proficiency : 0;
+        if (modifier === null) return "";
+        return attack.kind === "save" ? `${modifier + 8 + proficiencyValue}` : `+${modifier + proficiencyValue}`;
+      };
+
       const updateCharacterAttackBonuses = () => {
         if (!attackList) return;
         const proficiency = Number.parseInt(document.querySelector('[name="proficiency-bonus"]')?.value, 10);
-        attackList.querySelectorAll(".attack-row").forEach((row) => {
-          const modifier = characterAbilityModifier(row.querySelector(".attack-ability").value);
-          const isSave = row.querySelector(".attack-kind").value === "save";
-          const proficiencyValue = Number.isFinite(proficiency) ? proficiency : 0;
-          if (modifier === null || (!isSave && !Number.isFinite(proficiency))) {
-            row.querySelector(".attack-bonus").value = "";
-          } else if (isSave) {
-            row.querySelector(".attack-bonus").value = `${modifier + 8 + proficiencyValue}`;
-          } else {
-            row.querySelector(".attack-bonus").value = `+${modifier + proficiencyValue}`;
-          }
-          row.querySelector(".attack-damage-bonus").value = modifier === null || isSave ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
+        const proficiencyValue = Number.isFinite(proficiency) ? proficiency : 0;
+        attacks.forEach((attack) => {
+          const modifier = characterAbilityModifier(attack.ability);
+          const isSave = attack.kind === "save";
+          attack.bonus = modifier === null ? "" : isSave ? `${modifier + 8 + proficiencyValue}` : Number.isFinite(proficiency) ? `+${modifier + proficiencyValue}` : "";
+          attack.damageBonus = modifier === null || isSave ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
+        });
+        attackList.querySelectorAll(".attack-card").forEach((card, index) => {
+          if (attacks[index]) updateAttackCard(card, attacks[index]);
         });
       };
 
-      const collectAttacks = () => [...attackList.querySelectorAll(".attack-row")].map((row) => ({
-        name: row.querySelector(".attack-name").value,
-        kind: row.querySelector(".attack-kind").value,
-        ability: row.querySelector(".attack-ability").value,
-        bonus: row.querySelector(".attack-bonus").value,
-        damage: row.querySelector(".attack-damage").value,
-        damageBonus: row.querySelector(".attack-damage-bonus").value,
-        type: row.querySelector(".attack-type").value,
-        range: row.querySelector(".attack-range").value,
-        notes: row.querySelector(".attack-notes").value
+      const collectAttacks = () => attacks.map((attack) => ({
+        name: attack.name,
+        kind: attack.kind,
+        ability: attack.ability,
+        bonus: attack.bonus,
+        damage: attack.damage,
+        damageBonus: attack.damageBonus,
+        type: attack.type,
+        range: attack.range,
+        notes: attack.notes
       }));
 
       const addCustomField = (section, name = "", value = "") => {
@@ -1953,8 +2036,7 @@
         currencies.forEach((currency) => addCurrency(currency.name, currency.amount));
         renderCustomFields(Array.isArray(data.customFields) ? data.customFields : []);
         attackList.replaceChildren();
-        (Array.isArray(data.attacks) ? data.attacks : []).forEach(addAttack);
-        updateCharacterAttackBonuses();
+        setAttacks(Array.isArray(data.attacks) ? data.attacks : []);
         spellList.replaceChildren();
         (Array.isArray(data.spells) ? data.spells : []).forEach(addSpell);
         Object.entries(data.manualModifiers || {}).forEach(([ability, value]) => {
@@ -2135,7 +2217,7 @@
           `Proficiency bonus: ${pdfValue(fields["proficiency-bonus"])}`,
           ...((data.attacks || []).some((attack) => String(attack.name || "").trim()) ? [
             ...section("ATTACK REFERENCE"),
-            ...(data.attacks || []).map((attack) => [attack.name, attack.bonus ? `${attack.bonus} to hit` : "", composeDamage(attack.damage, attack.damageBonus), attack.type, attack.range, attack.notes].filter((part) => String(part || "").trim()).join(" · "))
+            ...(data.attacks || []).map((attack) => [attack.name, attack.bonus ? (attack.kind === "save" ? `DC ${attack.bonus}` : `${attack.bonus} to hit`) : "", composeDamage(attack.damage, attack.damageBonus), attack.type, attack.range, attack.notes].filter((part) => String(part || "").trim()).join(" · "))
           ] : []),
           `Armor: ${pdfValue(["armor-light", "armor-medium", "armor-heavy", "armor-shields"].filter((name) => fields[name] === "on").map((name) => name.replace("armor-", "")).join(", "))}`,
           `Saving throw proficiencies: ${pdfValue(["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"].filter((name) => fields[`${name}-save-proficient`] === "on").join(", "))}`,
@@ -2306,13 +2388,28 @@
         openFeatureEditor();
       });
       document.querySelector("#add-attack").addEventListener("click", () => {
-        addAttack();
-        attackList.lastElementChild.querySelector(".attack-name").focus();
-        persistDraft();
+        openAttackEditor();
       });
-      attackList.addEventListener("input", persistDraft);
-      attackList.addEventListener("change", (event) => {
-        if (event.target.classList.contains("attack-ability") || event.target.classList.contains("attack-kind")) updateCharacterAttackBonuses();
+      document.querySelector("#cancel-attack").addEventListener("click", closeAttackEditor);
+      document.querySelector("#save-attack").addEventListener("click", () => {
+        const isEdit = editingAttackIndex !== null;
+        const attack = normalizeAttack({
+          name: attackNameInput.value.trim() || "Untitled attack",
+          kind: attackKindInput.value,
+          ability: attackAbilityInput.value,
+          damage: attackDamageInput.value.trim(),
+          type: attackDamageTypeInput.value.trim(),
+          range: attackRangeInput.value.trim(),
+          notes: attackNotesInput.value.trim()
+        });
+        attack.bonus = attackBonusFor(attack);
+        if (isEdit) attacks[editingAttackIndex] = attack;
+        else attacks.push(attack);
+        updateCharacterAttackBonuses();
+        renderAttacks();
+        closeAttackEditor();
+        persistDraft();
+        setStatus(isEdit ? "Attack updated" : "Attack added");
       });
       document.querySelectorAll('.score, [name="proficiency-bonus"]').forEach((input) => input.addEventListener("input", updateCharacterAttackBonuses));
       document.querySelector("#add-skill").addEventListener("click", () => {
@@ -2574,7 +2671,7 @@
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         skillList.replaceChildren();
         standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
-        attackList.replaceChildren();
+        setAttacks([]);
         currencyList.replaceChildren();
         [["Copper (CP)", ""], ["Silver (SP)", ""], ["Electrum (EP)", ""], ["Gold (GP)", ""]].forEach(([name, amount]) => addCurrency(name, amount));
         renderCustomFields();
