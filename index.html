@@ -83,12 +83,12 @@
       --bonus: #ff7d76;
     }
     body[data-theme="starlight"] {
-      --bg: #120d1a;
-      --surface: #1e1629;
-      --surface-raised: #261d35;
-      --surface-soft: #201a2b;
-      --line: #483c5d;
-      --line-strong: #6b5a82;
+      --bg: #05000c;
+      --surface: #32173a;
+      --surface-raised: #2d1138;
+      --surface-soft: #350352;
+      --line: #533c5d;
+      --line-strong: #825a82;
       --text: #b7d8eb;
       --muted: #d9eefb;
       --accent: #f4d0a0;
@@ -98,7 +98,7 @@
       --button-strong-text: #2d1b12;
       --button-strong-hover: #f4d8a0;
       --topbar-bg: rgba(18, 13, 26, .94);
-      --bonus: #ff8d74;
+      --bonus: #ff552f;
     }
     body[data-theme="monochrome"] {
       --bg: #0a0a0d;
@@ -287,16 +287,16 @@
       --surface-soft: #0c1d14;
       --line: #285238;
       --line-strong: #3d754d;
-      --text: #ff2638;
-      --muted: #684242;
+      --text: #ff2626;
+      --muted: #a00505;
       --accent: #ff1830;
-      --accent-soft: #3a1018;
+      --accent-soft: #800017;
       --field-text: #ff6b70;
       --field-placeholder: #8d9f88;
       --button-strong-text: #fff1dc;
       --button-strong-hover: #ff5261;
       --topbar-bg: rgba(7, 20, 14, .94);
-      --bonus: #ffb347;
+      --bonus: #149e32;
     }
     body[data-theme="teapot"] {
       --bg: #d9e0df;
@@ -307,14 +307,14 @@
       --line-strong: #474fbb;
       --text: #3f459b;
       --muted: #5c607e;
-      --accent: #b9f1f3;
+      --accent: #8f90a8;
       --accent-soft: #e3ecf2;
       --field-text: #4f616f;
       --field-placeholder: #99a9aa;
       --button-strong-text: #fffaf0;
-      --button-strong-hover: #a9b1dd;
+      --button-strong-hover: #7d84a8;
       --topbar-bg: rgba(217, 224, 223, .94);
-      --bonus: #f87123;
+      --bonus: #0026ff;
     }
     body[data-theme="forge"] {
       --bg: #17191b;
@@ -324,9 +324,9 @@
       --line: #50545a;
       --line-strong: #777d84;
       --text: #f19a3e;
-      --muted: #ffc078;
-      --accent: #e87525;
-      --accent-soft: #3a2416;
+      --muted: #fdab4d;
+      --accent: #f54813;
+      --accent-soft: #943b04;
       --field-text: #ffd18a;
       --field-placeholder: #9c8a78;
       --button-strong-text: #21150e;
@@ -633,6 +633,8 @@
 
     .combat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
     .combat-card { padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
+    .combat-grid > *, .ability-grid > *, .monster-ability-grid > * { min-width: 0; }
+    .combat-card input, .ability input, .monster-ability input { width: 100%; min-width: 0; }
     .combat-card strong { display: block; margin-top: .25rem; color: var(--text); font-size: 1.3rem; }
     .armor-proficiencies { grid-column: 1 / -1; display: grid; gap: .5rem; padding-top: .3rem; }
     .armor-options { display: flex; flex-wrap: wrap; gap: .65rem; }
@@ -718,12 +720,14 @@
       .skill-row > .skill-cell-exp { grid-column: 2; grid-row: 3; }
       .skill-row > .skill-cell-remove { grid-column: 3; grid-row: 3; justify-self: end; }
     }
-    @media (max-width: 520px) {
-      .shell { width: min(100% - 1.25rem, 440px); }
+    @media (max-width: 760px) {
       .topbar-inner { align-items: start; flex-direction: column; padding: .85rem 0; }
       .top-actions { width: 100%; justify-content: space-between; flex-wrap: wrap; }
       .top-actions .status { flex: 1 1 100%; }
       .top-actions .button { min-width: 0; flex: 1 1 30%; }
+    }
+    @media (max-width: 520px) {
+      .shell { width: min(100% - 1.25rem, 440px); }
       main { padding-top: 2rem; }
       .fields, .ability-grid, .combat-grid { grid-template-columns: 1fr 1fr; }
       .fields > .field, .fields > .field.wide { grid-column: span 2; }
