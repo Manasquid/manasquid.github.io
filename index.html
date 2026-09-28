@@ -788,8 +788,8 @@
         <label class="config-option character-only"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
         <label class="config-option character-only"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
         <label class="config-option monster-only"><span class="field-label">Theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
-        <label class="config-option character-only"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
-        <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="red">Red (default)</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
+        <label class="config-option character-only"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="default" selected>Theme default</option><option value="red">Red</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
+        <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="default" selected>Theme default</option><option value="red">Red</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
         <div class="config-option character-only"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
         <div class="config-option character-only"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option character-only"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
@@ -1483,7 +1483,7 @@
         (Array.isArray(data.entries) ? data.entries : []).forEach((entry) => addMonsterEntry(entry.group || "traits", entry));
         applyTheme(data.theme || document.querySelector('[name="monster-theme"]').value || "streetlamp");
         document.querySelector('[name="monster-theme"]').value = data.theme || "streetlamp";
-        applyModifierColor(data.modifierColor || "red", "monster");
+        applyModifierColor(data.modifierColor || "default", "monster");
         npcToggle.checked = data.npcEnabled === true;
         updateNpcVisibility();
         updateMonsterModifiers();
@@ -1899,9 +1899,10 @@
       };
 
       const applyModifierColor = (modifierColor, target = "character") => {
-        const validColors = new Set(["red", "Scarlet", "Orange", "Amber", "Yellow", "Lime", "Green", "Turquoise", "Cyan", "Blue", "Purple", "Rose", "Maroon"]);
-        const color = validColors.has(modifierColor) ? modifierColor : "red";
-        document.body.dataset.modifierColor = color;
+        const validColors = new Set(["default", "red", "Scarlet", "Orange", "Amber", "Yellow", "Lime", "Green", "Turquoise", "Cyan", "Blue", "Purple", "Rose", "Maroon"]);
+        const color = validColors.has(modifierColor) ? modifierColor : "default";
+        if (color === "default") delete document.body.dataset.modifierColor;
+        else document.body.dataset.modifierColor = color;
         const modifierSelect = document.querySelector(target === "monster" ? '[name="monster-modifier-color"]' : '[name="modifier-color"]');
         if (modifierSelect) modifierSelect.value = color;
       };
@@ -1914,7 +1915,7 @@
           else input.value = "";
         });
         applyTheme("streetlamp");
-        applyModifierColor("red");
+        applyModifierColor("default");
       };
 
       const applySheet = (data) => {
@@ -1929,7 +1930,7 @@
           }
         });
         applyTheme(data.fields.theme || "streetlamp");
-        applyModifierColor(data.fields["modifier-color"] || "red");
+        applyModifierColor(data.fields["modifier-color"] || "default");
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
         skillList.replaceChildren();
