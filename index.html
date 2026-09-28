@@ -618,6 +618,9 @@
     .save-check input { width: 1rem; height: 1rem; accent-color: var(--accent); }
 
     .combat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+    @media (max-width: 1050px) {
+      .combat-grid { grid-template-columns: 1fr 1fr; }
+    }
     .combat-card { padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .combat-grid > *, .ability-grid > *, .monster-ability-grid > * { min-width: 0; }
     .combat-card input, .ability input, .monster-ability input { width: 100%; min-width: 0; }
