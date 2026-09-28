@@ -986,13 +986,21 @@
     <form class="sheet maker-panel" id="monster-sheet" hidden>
       <section class="panel monster-storage-panel" aria-labelledby="monster-storage-heading">
         <div class="panel-heading">
-          <div><h2 id="monster-storage-heading">Save &amp; transfer stat blocks</h2><p>Export a monster as JSON or an importable PDF without affecting your character sheet.</p></div>
+          <div><h2 id="monster-storage-heading">Save &amp; transfer stat blocks</h2><p>Export a monster as JSON or an importable PDF, keep versions in this browser, or import without affecting your character sheet.</p></div>
           <div class="storage-tools">
             <button class="button" id="print-monster" type="button">Download PDF</button>
             <button class="button" id="export-monster" type="button">Download JSON</button>
             <button class="button" id="import-monster" type="button">Import JSON or PDF</button>
             <input class="sr-only" id="import-monster-file" type="file" accept="application/json,application/pdf,.json,.pdf">
           </div>
+        </div>
+        <div class="panel-body">
+          <div class="storage-tools">
+            <div class="field"><label for="monster-save-name">Save as</label><input id="monster-save-name" placeholder="e.g. Varkyl, Warden of the Deep"></div>
+            <button class="button primary" id="save-named-monster" type="button">Save browser copy</button>
+          </div>
+          <p class="storage-help">Saved stat blocks stay in this browser until you delete them.</p>
+          <div class="saved-list" id="monster-saved-list" aria-live="polite"></div>
         </div>
       </section>
       <section class="panel" aria-labelledby="monster-identity-heading">
@@ -1179,6 +1187,7 @@
       const storageKey = "manasquid.character-sheets";
       const draftKey = "manasquid.character-draft";
       const monsterDraftKey = "manasquid.monster-draft";
+      const monsterSheetsKey = "manasquid.monster-sheets";
 
       const setStatus = (message) => {
         saveStatus.textContent = message;
@@ -2233,6 +2242,45 @@
         });
       };
 
+      const readSavedMonsters = () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(monsterSheetsKey) || "[]");
+          return Array.isArray(saved) ? saved : [];
+        } catch {
+          return [];
+        }
+      };
+
+      const writeSavedMonsters = (saved) => localStorage.setItem(monsterSheetsKey, JSON.stringify(saved));
+
+      const renderSavedMonsters = () => {
+        const savedList = document.querySelector("#monster-saved-list");
+        const saved = readSavedMonsters();
+        savedList.replaceChildren();
+        if (!saved.length) {
+          savedList.innerHTML = '<span class="saved-empty">No saved stat blocks yet. Save a snapshot to keep a version here.</span>';
+          return;
+        }
+        saved.forEach((entry) => {
+          const item = document.createElement("div");
+          item.className = "saved-item";
+          const date = new Date(entry.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+          item.innerHTML = `<div><strong></strong><small>Saved ${date}</small></div><div class="saved-actions"><button class="button load-saved" type="button">Load</button><button class="button subtle delete-saved" type="button">Delete</button></div>`;
+          item.querySelector("strong").textContent = entry.name;
+          item.querySelector(".load-saved").addEventListener("click", () => {
+            applyMonster(entry.sheet);
+            persistMonsterDraft();
+            setStatus(`Loaded ${entry.name}`);
+          });
+          item.querySelector(".delete-saved").addEventListener("click", () => {
+            writeSavedMonsters(readSavedMonsters().filter((savedEntry) => savedEntry.id !== entry.id));
+            renderSavedMonsters();
+            setStatus("Saved stat block deleted");
+          });
+          savedList.appendChild(item);
+        });
+      };
+
       document.querySelector("#add-feature").addEventListener("click", () => {
         openFeatureEditor();
       });
@@ -2288,6 +2336,7 @@
       });
       document.querySelector("#save-character").addEventListener("click", () => {
         if (!monsterSheet.hidden) {
+          document.querySelector("#monster-save-name").focus();
           document.querySelector("#monster-storage-heading").scrollIntoView({ behavior: "smooth", block: "start" });
           return;
         }
@@ -2304,6 +2353,18 @@
         writeSavedSheets([entry, ...saved.filter((savedEntry) => savedEntry.id !== entry.id)]);
         nameInput.value = "";
         renderSavedSheets();
+        setStatus(`Saved ${name}`);
+      });
+      document.querySelector("#save-named-monster").addEventListener("click", () => {
+        const nameInput = document.querySelector("#monster-save-name");
+        const name = nameInput.value.trim() || monsterSheet.querySelector('[name="monster-name"]').value.trim() || "Unnamed monster";
+        const saved = readSavedMonsters();
+        const existing = saved.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
+        const id = existing?.id || (window.crypto?.randomUUID ? window.crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
+        const entry = { id, name, updatedAt: new Date().toISOString(), sheet: collectMonster() };
+        writeSavedMonsters([entry, ...saved.filter((savedEntry) => savedEntry.id !== entry.id)]);
+        nameInput.value = "";
+        renderSavedMonsters();
         setStatus(`Saved ${name}`);
       });
       document.querySelector("#export-sheet").addEventListener("click", () => {
@@ -2520,6 +2581,7 @@
       updateMonsterAttackReference();
       updateCharacterAttackBonuses();
       renderSavedSheets();
+      renderSavedMonsters();
       updateModifiers();
       syncManualOverrides();
       updateHitDieRules();
