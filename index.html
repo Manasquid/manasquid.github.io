@@ -946,7 +946,7 @@
           <div class="feature-editor attack-editor" id="armor-editor" hidden>
             <div class="feature-editor-grid">
               <div class="field"><label for="armor-name">Armor name</label><input id="armor-name" placeholder="e.g. Chain Shirt"></div>
-              <div class="field"><label for="armor-type">Armor type</label><select id="armor-type"><option selected>Light</option><option>Medium</option><option>Heavy</option></select></div>
+              <div class="field"><label for="armor-type">Armor type</label><select id="armor-type"><option selected>Light</option><option>Medium</option><option>Heavy</option><option>Other</option></select></div>
               <div class="field"><label for="armor-mode">AC formula</label><select id="armor-mode"><option value="fixed" selected>Fixed</option><option value="ability">Ability</option><option value="abilityCapped">Ability (capped)</option><option value="dual">Dual ability</option></select></div>
               <div class="field" id="armor-fixed-field" hidden><label for="armor-fixed-ac">Fixed AC</label><input id="armor-fixed-ac" type="number" placeholder="16"></div>
               <div class="field" id="armor-ability-field" hidden><label for="armor-ability">Ability</label><select id="armor-ability"><option selected>DEX</option><option>STR</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
@@ -954,6 +954,7 @@
               <div class="field" id="armor-cap-field" hidden><label for="armor-cap">Ability cap</label><input id="armor-cap" type="number" placeholder="2"></div>
               <div class="field"><label for="armor-ac-preview">Total AC</label><input id="armor-ac-preview" readonly aria-readonly="true" placeholder="—"></div>
               <div class="field"><label for="armor-stealth">Stealth</label><select id="armor-stealth"><option value="neutral" selected>Neutral</option><option value="disadvantage">Disadvantage</option><option value="advantage">Advantage</option></select></div>
+              <div class="field"><label for="armor-dondoff">Don / doff</label><input id="armor-dondoff" placeholder="e.g. 5 min. / 1 min."></div>
               <div class="field"><label class="config-checkbox"><input id="armor-req-toggle" type="checkbox"> Has ability requirement</label></div>
               <div class="field" id="armor-req-fields" hidden><span class="field-label">Requirement</span><div class="armor-req-row"><select id="armor-req-ability" aria-label="Required ability"><option selected>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select><input id="armor-req-score" type="number" placeholder="13" aria-label="Required score"></div></div>
             </div>
@@ -2040,6 +2041,7 @@
       const armorCapField = document.querySelector("#armor-cap-field");
       const armorAcPreview = document.querySelector("#armor-ac-preview");
       const armorStealthInput = document.querySelector("#armor-stealth");
+      const armorDonDoffInput = document.querySelector("#armor-dondoff");
       const armorReqToggle = document.querySelector("#armor-req-toggle");
       const armorReqAbilityInput = document.querySelector("#armor-req-ability");
       const armorReqScoreInput = document.querySelector("#armor-req-score");
@@ -2060,7 +2062,7 @@
 
       const normalizeArmor = (armor = {}) => ({
         name: armor.name || "",
-        type: ["Light", "Medium", "Heavy"].includes(armor.type) ? armor.type : "Light",
+        type: ["Light", "Medium", "Heavy", "Other"].includes(armor.type) ? armor.type : "Light",
         mode: ["fixed", "ability", "abilityCapped", "dual"].includes(armor.mode) ? armor.mode : "fixed",
         fixedAc: armor.fixedAc || "",
         cap: armor.cap || "2",
@@ -2071,6 +2073,7 @@
         reqScore: armor.reqScore || "",
         equipped: armor.equipped === true,
         stealth: ["neutral", "disadvantage", "advantage"].includes(armor.stealth) ? armor.stealth : "neutral",
+        dondoff: armor.dondoff || "",
         ac: "", modeText: "", stealthText: "", reqText: ""
       });
 
@@ -2090,6 +2093,7 @@
         if (armor.ac) parts.push(`AC ${armor.ac}`);
         if (armor.stealthText) parts.push(armor.stealthText);
         if (armor.reqText) parts.push(armor.reqText);
+        if (armor.dondoff) parts.push(`Don/doff ${armor.dondoff}`);
         card.querySelector(".armor-title").textContent = armor.name || "Unnamed armor";
         card.querySelector(".armor-line").textContent = parts.join(" · ") || "Set an AC to finish this piece.";
         card.querySelector(".armor-type-tag").textContent = armor.type;
@@ -2171,6 +2175,7 @@
         armorAbilityInput.value = armor.ability || "DEX";
         armorAbilityBInput.value = armor.abilityB || "CON";
         armorStealthInput.value = armor.stealth || "neutral";
+        armorDonDoffInput.value = armor.dondoff || "";
         armorReqToggle.checked = armor.reqEnabled === true;
         armorReqAbilityInput.value = armor.reqAbility || "STR";
         armorReqScoreInput.value = armor.reqScore || "";
@@ -2190,6 +2195,7 @@
         armorAbilityInput.value = "DEX";
         armorAbilityBInput.value = "CON";
         armorStealthInput.value = "neutral";
+        armorDonDoffInput.value = "";
         armorReqToggle.checked = false;
         armorReqAbilityInput.value = "STR";
         armorReqScoreInput.value = "";
@@ -2209,6 +2215,7 @@
         reqAbility: armor.reqAbility,
         reqScore: armor.reqScore,
         stealth: armor.stealth,
+        dondoff: armor.dondoff,
         equipped: armor.equipped,
         ac: armor.ac,
         modeText: armor.modeText,
@@ -2498,7 +2505,7 @@
           ] : []),
           ...((data.armors || []).some((armor) => String(armor.name || "").trim()) ? [
             ...section("ARMOR"),
-            ...(data.armors || []).map((armor) => [armor.name, armor.equipped ? "Equipped" : "", armor.ac ? `AC ${armor.ac}` : "", armor.type, armor.modeText, armor.stealthText, armor.reqText].filter((part) => String(part || "").trim()).join(" · "))
+            ...(data.armors || []).map((armor) => [armor.name, armor.equipped ? "Equipped" : "", armor.ac ? `AC ${armor.ac}` : "", armor.type, armor.modeText, armor.stealthText, armor.reqText, armor.dondoff ? `Don/doff ${armor.dondoff}` : ""].filter((part) => String(part || "").trim()).join(" · "))
           ] : []),
           `Armor: ${pdfValue(["armor-light", "armor-medium", "armor-heavy", "armor-shields"].filter((name) => fields[name] === "on").map((name) => name.replace("armor-", "")).join(", "))}`,
           `Saving throw proficiencies: ${pdfValue(["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"].filter((name) => fields[`${name}-save-proficient`] === "on").join(", "))}`,
@@ -2707,7 +2714,8 @@
           reqEnabled: armorReqToggle.checked,
           reqAbility: armorReqAbilityInput.value,
           reqScore: armorReqScoreInput.value.trim(),
-          stealth: armorStealthInput.value
+          stealth: armorStealthInput.value,
+          dondoff: armorDonDoffInput.value.trim()
         });
         armor.equipped = isEdit ? armors[editingArmorIndex].equipped : false;
         lastArmorAbility = armor.ability;
