@@ -378,6 +378,7 @@
       --bonus: #ff4b55;
     }
     
+    body[data-modifier-color="red"] { --bonus: #fa1e1e; }
     body[data-modifier-color="Scarlet"] { --bonus: #f5471b; }
     body[data-modifier-color="Orange"] { --bonus: #ff9011; }
     body[data-modifier-color="Amber"] { --bonus: #faba30; }
@@ -2644,6 +2645,7 @@
       const armorReqAbilityInput = document.querySelector("#armor-req-ability");
       const armorReqScoreInput = document.querySelector("#armor-req-score");
       const armorAbilityField = document.querySelector("#armor-ability-field");
+      const armorAbilityInput = document.querySelector(`#armor-ability`);
       const armorAbilityBField = document.querySelector("#armor-ability-b-field");
       const armorReqFields = document.querySelector("#armor-req-fields");
       const armorModeText = { fixed: "Flat AC", ability: "Base + Ability", abilityCapped: "Base + Ability (capped)", dual: "Base + Dual ability" };
