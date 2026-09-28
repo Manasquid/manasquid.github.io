@@ -482,7 +482,7 @@
     .config-panel[open] summary::after { content: "−"; }
     .config-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
     .config-option { display: grid; gap: .35rem; align-content: start; }
-    .config-option input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .config-option input[type="checkbox"] { justify-self: start; }
     .config-checkbox { display: flex; align-items: center; gap: .5rem; min-height: 2.55rem; color: var(--text); }
     .spellcasting-panel[hidden] { display: none; }
     .spell-slot-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; }
@@ -491,7 +491,7 @@
     .spell-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 2.8rem 1.2fr .8fr .48fr .8fr 1.9fr 5.4rem 5.25rem 1.9rem; gap: .55rem; align-items: end; }
     .spell-row input { height: 2.35rem; }
     .spell-prepared { display: flex; align-items: center; justify-content: center; gap: .3rem; min-height: 2.35rem; padding: 0 .35rem; color: var(--muted); font-size: .72rem; }
-    .spell-prepared input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .spell-prepared input { justify-self: center; }
     .remove-spell {
       width: 1.9rem;
       height: 1.9rem;
@@ -514,7 +514,23 @@
     .custom-field-list { display: grid; gap: .6rem; }
     .custom-field-row { display: grid; grid-template-columns: 1.2fr 1.6fr auto; gap: .55rem; align-items: end; }
     .custom-field-row input { height: 2.35rem; }
+    .custom-field-row-wide { grid-template-columns: minmax(6rem, 1fr) 2.4fr auto; align-items: start; }
+    .custom-field-row-wide textarea.custom-field-value { min-height: 4.5rem; resize: vertical; }
     .custom-field-empty { color: var(--muted); font-size: .82rem; }
+    [data-custom-fields-for="abilities"] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+    .custom-ability-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .3rem; align-items: start; }
+    .custom-ability-head { display: flex; gap: .35rem; }
+    .custom-ability-head .custom-ability-name { flex: 1; min-width: 0; height: 2.1rem; text-align: center; }
+    .custom-ability-head .custom-ability-abbr { width: 4.2rem; min-width: 0; height: 2.1rem; text-align: center; text-transform: uppercase; }
+    [data-custom-fields-for="abilities"] .custom-ability-score { height: 2.9rem; font-size: 1.35rem; font-weight: 750; text-align: center; }
+    [data-monster-custom-abilities] .custom-ability-abbr { text-transform: uppercase; }
+    .custom-ability-row .remove-custom-field { margin-top: .2rem; }
+    @media (max-width: 1050px) {
+      [data-custom-fields-for="abilities"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      [data-custom-fields-for="abilities"] { grid-template-columns: minmax(0, 1fr); }
+    }
     .saved-list { display: grid; gap: .65rem; margin-top: 1rem; }
     .saved-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .saved-item strong { display: block; font-size: .9rem; }
@@ -527,9 +543,10 @@
     .maker-tab[aria-selected="true"] { border-color: var(--accent); background: var(--accent); color: var(--button-strong-text); }
     .sheet[hidden], .maker-panel[hidden] { display: none; }
     .monster-ability-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
-    .monster-ability { display: grid; gap: .3rem; padding: .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); text-align: center; }
-    .monster-ability input { min-width: 0; text-align: center; font-weight: 700; }
-    .monster-ability input[type="number"], .monster-ability input[name$="-mod"] { min-width: 3.375rem; }
+    [data-monster-custom-abilities] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+    .monster-ability { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: .3rem; padding: .7rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); text-align: center; }
+    .monster-ability input { width: 100%; min-width: 0; text-align: center; font-weight: 700; }
+    .monster-ability .ability-mod-wrap, .monster-ability .save-check { flex-wrap: wrap; }
     .monster-ability input[name$="-mod"], .monster-attack-bonus, .monster-attack-damage-bonus, [name="monster-initiative"], [name="monster-proficiency-bonus"] { color: var(--bonus); }
     .monster-entry-groups { display: grid; gap: 1rem; }
     .monster-entry-group { display: grid; gap: .65rem; }
@@ -541,13 +558,35 @@
     .monster-entry .remove-monster-entry { margin-top: 1.35rem; }
     .monster-entry-name-cell { display: grid; gap: .3rem; align-content: start; }
     .monster-entry-attack-toggle { display: flex; align-items: center; gap: .4rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; white-space: nowrap; }
-    .monster-entry-attack-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .monster-entry-attack-toggle input { justify-self: start; }
     .monster-entry-attack-row { display: flex; align-items: center; gap: .5rem; }
     .monster-entry-recharge { height: 2.1rem; padding: .25rem .45rem; font-size: .78rem; min-width: 0; flex: 1; }
     .monster-xp-label-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
     .fields > .field.monster-defense-wide { grid-column: 1 / -1; }
     .monster-lair-toggle { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; }
-    .monster-lair-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .monster-lair-toggle input { justify-self: start; }
+    .monster-spell-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+    .monster-spellcasting-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin-bottom: 1rem; }
+    .monster-spellcasting-fields > .field.wide { grid-column: 1 / -1; }
+    .monster-spell-group { display: grid; gap: .6rem; padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); align-content: start; }
+    .monster-spell-group h3 { margin: 0; color: var(--text); font-size: .9rem; }
+    .monster-spell-list { display: grid; gap: .45rem; }
+    .monster-spell-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) 4.2rem auto; gap: .45rem; align-items: center; }
+    .monster-spell-row .monster-spell-source, .monster-spell-row .monster-spell-page { min-width: 0; }
+    .monster-per-day-list { display: grid; gap: .65rem; }
+    .monster-per-day-group { display: grid; gap: .5rem; padding: .65rem; border: 1px dashed var(--line-strong); border-radius: .45rem; }
+    .monster-per-day-head { display: flex; align-items: end; gap: .45rem; }
+    .monster-per-day-head label { display: grid; gap: .3rem; }
+    .monster-per-day-head .monster-per-day-count { width: 5.5rem; }
+    .remove-monster-spell, .remove-monster-per-day { color: var(--danger); }
+    .monster-per-day-group .add-monster-spell { justify-self: start; }
+    .monster-entry-editor-attack-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin-top: .35rem; }
+    @media (max-width: 800px) {
+      .monster-entry-editor-attack-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 800px) {
+      .monster-spell-groups, .monster-spellcasting-fields { grid-template-columns: minmax(0, 1fr); }
+    }
     .attack-list { display: grid; gap: .75rem; }
     .armor-list { display: grid; gap: .75rem; }
     .armor-req-row { display: flex; gap: .45rem; }
@@ -575,8 +614,12 @@
     .monster-entry-attack-fields label { display: grid; gap: .3rem; }
     .monster-entry-attack-fields input, .monster-entry-attack-fields select { height: 2.35rem; padding: .4rem .55rem; }
     @media (max-width: 800px) {
-      .monster-ability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }    @media (max-width: 520px) {
+      .monster-ability-grid, [data-monster-custom-abilities] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      .monster-ability-grid, [data-monster-custom-abilities] { grid-template-columns: minmax(0, 1fr); }
+      .monster-spell-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+      .monster-spell-row .monster-spell-name { grid-column: 1 / -1; }
       .monster-entry { grid-template-columns: 1fr auto; }
       .monster-entry .monster-entry-description { grid-column: 1 / -1; }
       .monster-entry-attack-fields { grid-template-columns: 1fr 1fr; }
@@ -646,7 +689,7 @@
     [contenteditable="true"]:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
     .save-check { display: flex; align-items: center; justify-content: center; gap: .3rem; color: var(--bonus); font-size: .7rem; }
     .save-check strong[data-save-for] { color: var(--bonus); }
-    .save-check input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .save-check input { accent-color: var(--accent); }
 
     .combat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
     @media (max-width: 1050px) {
@@ -655,11 +698,12 @@
     .combat-card { padding: .8rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .combat-grid > *, .ability-grid > *, .monster-ability-grid > * { min-width: 0; }
     .combat-card input, .ability input, .monster-ability input { width: 100%; min-width: 0; }
+    input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
     .combat-card strong { display: block; margin-top: .25rem; color: var(--text); font-size: 1.3rem; }
     .armor-proficiencies { grid-column: 1 / -1; display: grid; gap: .5rem; padding-top: .3rem; }
     .armor-options { display: flex; flex-wrap: wrap; gap: .65rem; }
     .armor-option { display: flex; align-items: center; gap: .35rem; color: var(--muted); font-size: .82rem; }
-    .armor-option input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+    .armor-option input { justify-self: start; }
 
     .feature-list { display: grid; gap: .75rem; }
     .feature-card {
@@ -686,7 +730,7 @@
     .feature-editor-actions { display: flex; justify-content: end; gap: .55rem; }
 
     .notes { min-height: 10rem; }
-    .proficiency-table { display: grid; gap: .45rem; max-width: 63rem; }
+    .proficiency-table { display: grid; gap: .45rem; max-width: 63rem; margin-inline: auto; }
     .skill-row { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 8rem 5.5rem 5.5rem 5.5rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
     .skill-row > .skill-cell-name { grid-column: 1; }
     .skill-row > .skill-cell-ability { grid-column: 2; }
@@ -705,10 +749,24 @@
     .skill-alt-ability { color: var(--muted); font-size: .8rem; }
     .skill-row input[type="number"] { height: 2.2rem; }
     .skill-row input[type="checkbox"] { width: 1.1rem; height: 1.1rem; justify-self: center; accent-color: var(--accent); }
-    .proficiency-header { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 8rem 5.5rem 5.5rem 5.5rem 2.2rem; gap: .55rem; max-width: 63rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .proficiency-header { display: grid; grid-template-columns: minmax(4.5rem, 1fr) 8rem 5.5rem 8rem 5.5rem 5.5rem 5.5rem 2.2rem; gap: .55rem; max-width: 63rem; margin-inline: auto; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
     .proficiency-header span:nth-child(n+3) { text-align: center; white-space: nowrap; }
     .proficiency-actions { display: flex; justify-content: end; margin-top: .8rem; }
-    .proficiency-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+    .proficiencies-body { display: grid; gap: 1.4rem; justify-items: center; }
+    .proficiencies-body > * { width: min(100%, 63rem); }
+    .proficiencies-body > .custom-fields { margin-top: 0; }
+    .tools-block { display: grid; gap: .45rem; max-width: 63rem; margin-inline: auto; }
+    .tools-header { display: grid; grid-template-columns: minmax(0, 1fr) 8rem 5.5rem 2.2rem; gap: .55rem; padding: 0 .6rem; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+    .tools-header span:nth-child(n+3) { text-align: center; }
+    .tool-row { display: grid; grid-template-columns: minmax(0, 1fr) 8rem 5.5rem 2.2rem; gap: .55rem; align-items: center; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface-soft); }
+    .tool-cell { display: grid; gap: .3rem; min-width: 0; }
+    .tool-cell .field-label { display: none; }
+    .tool-cell-name { grid-column: 1; }
+    .tool-cell-ability { grid-column: 2; }
+    .tool-cell-bonus { grid-column: 3; }
+    .tool-cell-remove { grid-column: 4; }
+    .tool-bonus { color: var(--bonus); text-align: center; }
+    .remove-tool, .remove-weapon { color: var(--danger); }
     .background-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
     .background-grid .field.full { grid-column: 1 / -1; }
     .inventory-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 1rem; }
@@ -757,7 +815,13 @@
       .fields > .field, .fields > .field.wide { grid-column: span 2; }
       .feature-card { grid-template-columns: 1fr; }
       .feature-actions { justify-content: end; }
-      .proficiency-fields { grid-template-columns: 1fr; }
+      .tools-header { display: none; }
+      .tool-cell .field-label { display: block; }
+      .tool-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem .45rem; }
+      .tools-block .tool-cell-name, #weapon-list .tool-cell-name { grid-column: 1 / -1; }
+      .tools-block .tool-cell-ability, #weapon-list .tool-cell-ability { grid-column: 1; }
+      .tools-block .tool-cell-bonus, #weapon-list .tool-cell-bonus { grid-column: 2; }
+      .tools-block .tool-cell-remove, #weapon-list .tool-cell-remove { grid-column: 2; grid-row: 3; justify-self: end; }
       .background-grid, .inventory-grid { grid-template-columns: 1fr; }
       .background-grid .field.full { grid-column: auto; }
       .custom-field-row { grid-template-columns: 1fr auto; }
@@ -821,10 +885,10 @@
         <label class="config-option monster-only"><span class="field-label">Theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
         <label class="config-option character-only"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="default" selected>Theme default</option><option value="red">Red</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
         <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="default" selected>Theme default</option><option value="red">Red</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
-        <div class="config-option character-only"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
+        <div class="config-option character-only"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-proficiency" type="checkbox" checked> Proficiency bonus</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
         <div class="config-option character-only"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option character-only"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
-      <div class="config-option monster-only" hidden><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="npc" type="checkbox"> NPC</label></div>
+      <div class="config-option monster-only" hidden><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="npc" type="checkbox"> NPC</label><label class="config-checkbox"><input name="monster-spellcaster" type="checkbox"> Spellcasting</label></div>
       </div>
     </details>
 
@@ -881,7 +945,7 @@
               <label class="ability"><span class="ability-name">Wisdom</span><input class="score" name="wisdom" type="number" min="1" max="30" value="10" aria-label="Wisdom score"><span class="ability-mod-wrap"><input class="ability-mod" name="wisdom-mod" data-mod-for="wisdom" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input class="save-proficient" name="wisdom-save-proficient" type="checkbox" aria-label="Wisdom saving throw proficiency"> Save <strong data-save-for="wisdom" contenteditable="false">+0</strong></span></label>
               <label class="ability"><span class="ability-name">Charisma</span><input class="score" name="charisma" type="number" min="1" max="30" value="10" aria-label="Charisma score"><span class="ability-mod-wrap"><input class="ability-mod" name="charisma-mod" data-mod-for="charisma" placeholder="+0" aria-label="Charisma modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input class="save-proficient" name="charisma-save-proficient" type="checkbox" aria-label="Charisma saving throw proficiency"> Save <strong data-save-for="charisma" contenteditable="false">+0</strong></span></label>
             </div>
-            <div class="custom-fields"><span class="field-label">Custom ability fields</span><div class="custom-field-list" data-custom-fields-for="abilities"></div><button class="button" data-add-custom-field="abilities" type="button">+ Add ability field</button></div>
+            <div class="custom-fields"><span class="field-label">Custom ability fields</span><div class="custom-field-list" data-custom-fields-for="abilities"></div><button class="button" data-add-custom-field="abilities" type="button">+ Add custom ability</button></div>
           </div>
         </section>
 
@@ -946,15 +1010,18 @@
           <div class="feature-editor attack-editor" id="armor-editor" hidden>
             <div class="feature-editor-grid">
               <div class="field"><label for="armor-name">Armor name</label><input id="armor-name" placeholder="e.g. Chain Shirt"></div>
-              <div class="field"><label for="armor-type">Armor type</label><select id="armor-type"><option selected>Light</option><option>Medium</option><option>Heavy</option><option>Other</option></select></div>
+              <div class="field"><label for="armor-type">Armor type</label><select id="armor-type"><option selected>Light</option><option>Medium</option><option>Heavy</option><option>Shield</option><option>Other</option></select></div>
               <div class="field"><label for="armor-mode">AC formula</label><select id="armor-mode"><option value="fixed" selected>Fixed</option><option value="ability">Ability</option><option value="abilityCapped">Ability (capped)</option><option value="dual">Dual ability</option></select></div>
+              <div class="field" id="armor-bonus-field" hidden><label for="armor-bonus">AC bonus</label><input id="armor-bonus" type="number" placeholder="2"></div>
+              <div class="field" id="armor-bonus-ability-field" hidden><label for="armor-bonus-ability">Bonus ability</label><select id="armor-bonus-ability"><option value="none" selected>None</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
               <div class="field" id="armor-fixed-field" hidden><label for="armor-fixed-ac">Fixed AC</label><input id="armor-fixed-ac" type="number" placeholder="16"></div>
               <div class="field" id="armor-ability-field" hidden><label for="armor-ability">Ability</label><select id="armor-ability"><option selected>DEX</option><option>STR</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
               <div class="field" id="armor-ability-b-field" hidden><label for="armor-ability-b">Second ability</label><select id="armor-ability-b"><option selected>CON</option><option>STR</option><option>DEX</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
               <div class="field" id="armor-cap-field" hidden><label for="armor-cap">Ability cap</label><input id="armor-cap" type="number" placeholder="2"></div>
               <div class="field"><label for="armor-ac-preview">Total AC</label><input id="armor-ac-preview" readonly aria-readonly="true" placeholder="—"></div>
               <div class="field"><label for="armor-stealth">Stealth</label><select id="armor-stealth"><option value="neutral" selected>Neutral</option><option value="disadvantage">Disadvantage</option><option value="advantage">Advantage</option></select></div>
-              <div class="field"><label for="armor-dondoff">Don / doff</label><input id="armor-dondoff" placeholder="e.g. 5 min. / 1 min."></div>
+              <div class="field"><label for="armor-don">Don</label><input id="armor-don" placeholder="e.g. 1 min."></div>
+              <div class="field"><label for="armor-doff">Doff</label><input id="armor-doff" placeholder="e.g. 5 min."></div>
               <div class="field"><label class="config-checkbox"><input id="armor-req-toggle" type="checkbox"> Has ability requirement</label></div>
               <div class="field" id="armor-req-fields" hidden><span class="field-label">Requirement</span><div class="armor-req-row"><select id="armor-req-ability" aria-label="Required ability"><option selected>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select><input id="armor-req-score" type="number" placeholder="13" aria-label="Required score"></div></div>
             </div>
@@ -997,13 +1064,19 @@
         <div class="panel-heading">
           <div><h2 id="proficiencies-heading">Proficiencies</h2><p>Skills, weapons, tools, and languages.</p></div>
         </div>
-        <div class="panel-body">
+        <div class="panel-body proficiencies-body">
           <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>+ 2nd</span><span>2nd ability</span><span>Proficiency</span><span>Expertise</span><span>Bonus</span><span></span></div>
           <div class="proficiency-table" id="skill-list"></div>
           <div class="proficiency-actions"><button class="button" id="add-skill" type="button">+ Add custom skill</button></div>
-          <div class="proficiency-fields">
-            <div class="field"><label for="weapon-proficiencies">Weapon proficiencies</label><textarea id="weapon-proficiencies" name="weapon-proficiencies" placeholder="Simple weapons, martial weapons, hand crossbows..."></textarea></div>
-            <div class="field"><label for="tool-proficiencies">Tool proficiencies</label><textarea id="tool-proficiencies" name="tool-proficiencies" placeholder="Thieves' tools, tinker's tools, vehicles..."></textarea></div>
+          <div class="tools-block">
+            <div class="tools-header" aria-hidden="true"><span>Weapon</span><span>Ability</span><span>Bonus</span><span></span></div>
+            <div class="tool-list" id="weapon-list"></div>
+            <div class="proficiency-actions"><button class="button" id="add-weapon" type="button">+ Add weapon</button></div>
+          </div>
+          <div class="tools-block">
+            <div class="tools-header" aria-hidden="true"><span>Tool</span><span>Ability</span><span>Bonus</span><span></span></div>
+            <div class="tool-list" id="tool-list"></div>
+            <div class="proficiency-actions"><button class="button" id="add-tool" type="button">+ Add tool</button></div>
           </div>
           <div class="custom-fields"><span class="field-label">Custom proficiency fields</span><div class="custom-field-list" data-custom-fields-for="proficiencies"></div><button class="button" data-add-custom-field="proficiencies" type="button">+ Add proficiency field</button></div>
         </div>
@@ -1014,7 +1087,6 @@
           <div><h2 id="background-heading">Character background</h2><p>The character's story and details.</p></div>
         </div>
         <div class="panel-body background-grid">
-          <div class="field full"><label for="first-impression">Initial description</label><textarea id="first-impression" name="first-impression" placeholder="How others first see the character."></textarea></div>
           <div class="field full"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Look, clothing, and mannerisms."></textarea></div>
           <div class="field full"><label for="languages">Languages</label><textarea id="languages" name="languages" placeholder="e.g. Common, Elvish"></textarea></div>
           <div class="field full"><label for="background-story">Background story</label><textarea id="background-story" name="background-story" placeholder="Where they came from and what shaped them."></textarea></div>
@@ -1108,6 +1180,28 @@
           <div class="field wide"><label for="npc-secret">Secret</label><textarea id="npc-secret" name="npc-secret" placeholder="What are they hiding?"></textarea></div>
         </div>
       </section>
+      <section class="panel" id="monster-spellcasting" aria-labelledby="monster-spellcasting-heading" hidden>
+        <div class="panel-heading"><div><h2 id="monster-spellcasting-heading">Spellcasting</h2><p>At-will and per-day spell lists.</p></div></div>
+        <div class="panel-body">
+          <div class="monster-spellcasting-fields">
+            <div class="field"><label for="monster-spellcasting-ability">Spellcasting ability</label><select id="monster-spellcasting-ability" name="monster-spellcasting-ability"><option value="" selected>Select ability</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
+            <div class="field"><label for="monster-spell-save-dc">Spell save DC</label><input id="monster-spell-save-dc" name="monster-spell-save-dc" readonly aria-readonly="true" placeholder="15"></div>
+            <div class="field wide"><label for="monster-spellcasting-notes">Other details</label><textarea id="monster-spellcasting-notes" name="monster-spellcasting-notes" placeholder="Casting trait text, components, or other specifics."></textarea></div>
+          </div>
+          <div class="monster-spell-groups">
+            <div class="monster-spell-group">
+              <h3>At will</h3>
+              <div class="monster-spell-list" data-monster-atwill-list></div>
+              <button class="button" id="add-monster-atwill" type="button">+ Add spell</button>
+            </div>
+            <div class="monster-spell-group">
+              <h3># per day</h3>
+              <div class="monster-per-day-list" id="monster-per-day-list"></div>
+              <button class="button" id="add-monster-per-day" type="button">+ Add per-day group</button>
+            </div>
+          </div>
+        </div>
+      </section>
       <div class="sheet-grid">
         <section class="panel" aria-labelledby="monster-defense-heading">
           <div class="panel-heading"><div><h2 id="monster-defense-heading">Defenses &amp; movement</h2><p>Quickstats for combat.</p></div></div>
@@ -1133,7 +1227,9 @@
             <label class="monster-ability"><span class="ability-name">INT</span><input name="monster-int" type="number" min="1" max="40" value="10" aria-label="Intelligence score"><span class="ability-mod-wrap"><input name="monster-int-mod" placeholder="+0" aria-label="Intelligence modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-int-save-proficient" type="checkbox" aria-label="Intelligence save proficiency"> Save <strong data-msave-for="int">+0</strong></span></label>
             <label class="monster-ability"><span class="ability-name">WIS</span><input name="monster-wis" type="number" min="1" max="40" value="10" aria-label="Wisdom score"><span class="ability-mod-wrap"><input name="monster-wis-mod" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-wis-save-proficient" type="checkbox" aria-label="Wisdom save proficiency"> Save <strong data-msave-for="wis">+0</strong></span></label>
             <label class="monster-ability"><span class="ability-name">CHA</span><input name="monster-cha" type="number" min="1" max="40" value="10" aria-label="Charisma score"><span class="ability-mod-wrap"><input name="monster-cha-mod" placeholder="+0" aria-label="Charisma modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-cha-save-proficient" type="checkbox" aria-label="Charisma save proficiency"> Save <strong data-msave-for="cha">+0</strong></span></label>
-          </div></div>
+          </div>
+            <div class="custom-fields"><span class="field-label">Custom ability fields</span><div class="custom-field-list" data-monster-custom-abilities></div><button class="button" id="add-monster-ability" type="button">+ Add custom ability</button></div>
+          </div>
         </section>
       </div>
       <section class="panel" aria-labelledby="monster-attacks-heading">
@@ -1150,14 +1246,40 @@
         </div>
       </section>
       <section class="panel" id="monster-features" aria-labelledby="monster-features-heading">
-        <div class="panel-heading"><div><h2 id="monster-features-heading">Traits, actions &amp; reactions</h2><p>Rules text for the stat block.</p></div></div>
+        <div class="panel-heading"><div><h2 id="monster-features-heading">Traits, actions &amp; reactions</h2><p>Rules text for the stat block.</p></div><button class="button primary" id="add-monster-entry" type="button">+ Add entry</button></div>
         <div class="panel-body">
+          <div class="feature-editor" id="monster-entry-editor" hidden>
+            <div class="feature-editor-grid">
+              <div class="field"><label for="monster-entry-editor-group">Group</label><select id="monster-entry-editor-group"><option value="traits">Trait</option><option value="actions">Action</option><option value="bonus-actions">Bonus action</option><option value="reactions">Reaction</option><option value="legendary-actions">Legendary action</option></select></div>
+              <div class="field"><label for="monster-entry-editor-name">Name</label><input id="monster-entry-editor-name" placeholder="e.g. Amphibious"></div>
+              <div class="field"><label for="monster-entry-editor-recharge">Recharge</label><input id="monster-entry-editor-recharge" placeholder="5–6"></div>
+              <div class="field"><label class="config-checkbox" for="monster-entry-editor-attack"><input id="monster-entry-editor-attack" type="checkbox"> Flag as attack</label></div>
+              <div class="field full"><label for="monster-entry-editor-description">Description</label><textarea id="monster-entry-editor-description" rows="3" placeholder="Describe the trait, action, or reaction."></textarea></div>
+              <div class="field full" id="monster-entry-editor-attack-fields" hidden>
+                <span class="field-label">Attack details</span>
+                <div class="monster-entry-editor-attack-grid">
+                  <div class="field"><label for="monster-entry-editor-kind">Roll type</label><select id="monster-entry-editor-kind"><option value="attack" selected>Attack</option><option value="save">Save</option></select></div>
+                  <div class="field"><label for="monster-entry-editor-ability">Ability</label><select id="monster-entry-editor-ability" class="monster-attack-ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
+                  <div class="field"><label for="monster-entry-editor-bonus">Attack bonus (auto)</label><input id="monster-entry-editor-bonus" class="monster-attack-bonus" readonly aria-readonly="true" placeholder="+0"></div>
+                  <div class="field"><label for="monster-entry-editor-damage">Damage dice</label><input id="monster-entry-editor-damage" placeholder="2d10"></div>
+                  <div class="field"><label for="monster-entry-editor-damage-bonus">Dmg bonus (auto)</label><input id="monster-entry-editor-damage-bonus" class="monster-attack-damage-bonus" readonly aria-readonly="true" placeholder="+0"></div>
+                  <div class="field"><label for="monster-entry-editor-damage-type">Damage type</label><input id="monster-entry-editor-damage-type" placeholder="Piercing"></div>
+                  <div class="field"><label for="monster-entry-editor-range">Range / reach</label><input id="monster-entry-editor-range" placeholder="Melee 10 ft."></div>
+                </div>
+              </div>
+            </div>
+            <div class="feature-editor-actions">
+              <button class="button subtle" id="cancel-monster-entry" type="button">Cancel</button>
+              <button class="button primary" id="save-monster-entry" type="button">Save entry</button>
+            </div>
+          </div>
           <div class="monster-entry-groups">
-            <div class="monster-entry-group"><h3>Traits</h3><div class="monster-entry-list" data-monster-group="traits"></div><button class="button add-monster-entry" data-monster-group="traits" type="button">+ Add trait</button></div>
-            <div class="monster-entry-group"><h3>Actions</h3><div class="monster-entry-list" data-monster-group="actions"></div><button class="button add-monster-entry" data-monster-group="actions" type="button">+ Add action</button></div>
-            <div class="monster-entry-group"><h3>Bonus actions</h3><div class="monster-entry-list" data-monster-group="bonus-actions"></div><button class="button add-monster-entry" data-monster-group="bonus-actions" type="button">+ Add bonus action</button></div>
-            <div class="monster-entry-group"><h3>Reactions</h3><div class="monster-entry-list" data-monster-group="reactions"></div><button class="button add-monster-entry" data-monster-group="reactions" type="button">+ Add reaction</button></div>
-            <div class="monster-entry-group"><h3>Legendary actions</h3><div class="monster-entry-list" data-monster-group="legendary-actions"></div><button class="button add-monster-entry" data-monster-group="legendary-actions" type="button">+ Add legendary action</button></div>
+            <div class="monster-entry-group"><h3>Traits</h3><div class="monster-entry-list" data-monster-group="traits"></div></div>
+            <div class="monster-entry-group"><h3>Actions</h3><div class="monster-entry-list" data-monster-group="actions"></div></div>
+            <div class="monster-entry-group"><h3>Bonus actions</h3><div class="monster-entry-list" data-monster-group="bonus-actions"></div></div>
+            <div class="monster-entry-group"><h3>Reactions</h3><div class="monster-entry-list" data-monster-group="reactions"></div></div>
+            <div class="monster-entry-group"><h3>Legendary actions</h3><div class="monster-entry-list" data-monster-group="legendary-actions"></div></div>
+            <div class="empty-state" id="monster-entry-empty" hidden>No entries yet. Use “+ Add entry” to create a trait, action, bonus action, reaction, or legendary action.</div>
           </div>
         </div>
       </section>
@@ -1201,7 +1323,7 @@
       <div>
         <h3 class="armor-title"></h3>
         <p class="armor-line"></p>
-        <div class="feature-meta"><span class="tag armor-type-tag"></span><span class="tag armor-mode-tag"></span><span class="tag armor-equipped-tag" hidden></span></div>
+        <div class="feature-meta"><span class="tag armor-type-tag"></span><span class="tag armor-mode-tag"></span><span class="tag armor-equipped-tag" hidden></span><span class="tag armor-don-tag" hidden></span><span class="tag armor-doff-tag" hidden></span></div>
       </div>
       <div class="feature-actions">
         <button class="button equip-armor" type="button">Equip</button>
@@ -1236,6 +1358,82 @@
       <button class="icon-button remove-custom-field" type="button" aria-label="Remove custom field">×</button>
     </div>
   </template>
+  <template id="custom-field-textarea-template">
+    <div class="custom-field-row custom-field-row-wide">
+      <label><span class="field-label">Field name</span><input class="custom-field-name" placeholder="e.g. Rival"></label>
+      <label><span class="field-label">Value</span><textarea class="custom-field-value" placeholder="Enter a value"></textarea></label>
+      <button class="icon-button remove-custom-field" type="button" aria-label="Remove custom field">×</button>
+    </div>
+  </template>
+  <template id="custom-ability-template">
+    <div class="custom-ability-row">
+      <label class="ability custom-ability">
+        <span class="custom-ability-head"><input class="custom-ability-name" placeholder="Name" aria-label="Custom ability name"><input class="custom-ability-abbr" placeholder="ABC" maxlength="3" aria-label="Three letter abbreviation"></span>
+        <input class="custom-ability-score" type="number" min="1" max="30" value="10" aria-label="Custom ability score">
+        <span class="ability-mod-wrap"><input class="ability-mod custom-ability-mod" data-mod-for="" placeholder="+0" aria-label="Custom ability modifier" readonly><span class="ability-mod-caption">Modifier</span></span>
+        <span class="save-check"><input class="save-proficient custom-ability-save" type="checkbox" aria-label="Custom ability save proficiency"> Save <strong class="custom-ability-save-bonus" data-save-for="" contenteditable="false">+0</strong></span>
+      </label>
+      <button class="icon-button remove-custom-field" type="button" aria-label="Remove custom ability">×</button>
+    </div>
+  </template>
+  <template id="monster-custom-ability-template">
+    <div class="custom-ability-row">
+      <label class="monster-ability">
+        <input class="custom-ability-abbr" placeholder="ABC" maxlength="3" aria-label="Custom ability abbreviation">
+        <input class="custom-ability-score" type="number" min="1" max="40" value="10" aria-label="Custom ability score">
+        <span class="ability-mod-wrap"><input class="ability-mod custom-ability-mod" placeholder="+0" aria-label="Custom ability modifier" readonly><span class="ability-mod-caption">Modifier</span></span>
+        <span class="save-check"><input class="custom-ability-save" type="checkbox" aria-label="Custom ability save proficiency"> Save <strong class="custom-ability-save-bonus">+0</strong></span>
+      </label>
+      <button class="icon-button remove-custom-field" type="button" aria-label="Remove custom ability">×</button>
+    </div>
+  </template>
+  <template id="monster-spell-template">
+    <div class="monster-spell-row">
+      <input class="monster-spell-name" placeholder="e.g. Mage hand" aria-label="Spell">
+      <input class="monster-spell-source" placeholder="Source" aria-label="Spell source">
+      <input class="monster-spell-page" placeholder="p." aria-label="Page">
+      <button class="icon-button remove-monster-spell" type="button" aria-label="Remove spell">×</button>
+    </div>
+  </template>
+  <template id="monster-per-day-template">
+    <div class="monster-per-day-group">
+      <div class="monster-per-day-head">
+        <label><span class="field-label">Uses per day</span><input class="monster-per-day-count" type="number" min="1" placeholder="3"></label>
+        <button class="icon-button remove-monster-per-day" type="button" aria-label="Remove group">×</button>
+      </div>
+      <div class="monster-spell-list" data-per-day-spells></div>
+      <button class="button subtle" data-per-day-add type="button">+ Add spell</button>
+    </div>
+  </template>
+  <template id="monster-entry-card-template">
+    <article class="feature-card monster-entry-card">
+      <div>
+        <h3 class="monster-entry-card-title"></h3>
+        <p class="monster-entry-card-description"></p>
+        <div class="feature-meta"><span class="tag monster-entry-card-attack-tag" hidden></span><span class="tag monster-entry-card-details" hidden></span></div>
+      </div>
+      <div class="feature-actions">
+        <button class="icon-button edit-monster-entry-card" type="button" aria-label="Edit entry">✎</button>
+        <button class="icon-button remove-monster-entry-card" type="button" aria-label="Remove entry">×</button>
+      </div>
+    </article>
+  </template>
+  <template id="tool-template">
+    <div class="tool-row">
+      <label class="tool-cell tool-cell-name"><span class="field-label">Tool</span><input class="tool-name" placeholder="e.g. Thieves' tools"></label>
+      <label class="tool-cell tool-cell-ability"><span class="field-label">Ability</span><select class="tool-ability"><option value="" selected>None</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label>
+      <label class="tool-cell tool-cell-bonus"><span class="field-label">Bonus</span><input class="tool-bonus" readonly aria-readonly="true" placeholder="+0"></label>
+      <div class="tool-cell tool-cell-remove"><button class="icon-button remove-tool" type="button" aria-label="Remove tool">×</button></div>
+    </div>
+  </template>
+  <template id="weapon-template">
+    <div class="tool-row weapon-row">
+      <label class="tool-cell tool-cell-name"><span class="field-label">Weapon</span><input class="weapon-name" placeholder="e.g. Longsword"></label>
+      <label class="tool-cell tool-cell-ability"><span class="field-label">Ability</span><select class="weapon-ability"><option value="" selected>None</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label>
+      <label class="tool-cell tool-cell-bonus"><span class="field-label">Bonus</span><input class="weapon-bonus" readonly aria-readonly="true" placeholder="+0"></label>
+      <div class="tool-cell tool-cell-remove"><button class="icon-button remove-weapon" type="button" aria-label="Remove weapon">×</button></div>
+    </div>
+  </template>
   <template id="spell-template">
     <div class="spell-row">
       <label><span class="field-label">Spell name</span><input class="spell-name" placeholder="e.g. Magic Missile"></label>
@@ -1267,6 +1465,8 @@
       const currencyTemplate = document.querySelector("#currency-template");
       const currencyList = document.querySelector("#currency-list");
       const customFieldTemplate = document.querySelector("#custom-field-template");
+      const customFieldTextareaTemplate = document.querySelector("#custom-field-textarea-template");
+      const customAbilityTemplate = document.querySelector("#custom-ability-template");
       const attackTemplate = document.querySelector("#attack-template");
       const attackList = document.querySelector("#attack-list");
       const attackEditor = document.querySelector("#attack-editor");
@@ -1310,6 +1510,12 @@
       const spellcasterToggle = document.querySelector('[name="spellcaster"]');
       const npcToggle = document.querySelector('[name="npc"]');
       const npcPanel = document.querySelector("#npc-details");
+      const monsterSpellToggle = document.querySelector('[name="monster-spellcaster"]');
+      const monsterSpellcastingPanel = document.querySelector("#monster-spellcasting");
+      const monsterAtwillList = document.querySelector("[data-monster-atwill-list]");
+      const monsterPerDayList = document.querySelector("#monster-per-day-list");
+      const monsterSpellTemplate = document.querySelector("#monster-spell-template");
+      const monsterPerDayTemplate = document.querySelector("#monster-per-day-template");
       const scrapToggle = document.querySelector("#scrap-toggle");
       const scrapPanel = document.querySelector("#scrap-panel");
       const scrapNotes = document.querySelector("#scrap-notes");
@@ -1336,24 +1542,15 @@
         theme: document.querySelector('[name="monster-theme"]').value,
         modifierColor: document.querySelector('[name="monster-modifier-color"]').value,
         npcEnabled: npcToggle.checked,
+        spellcastingEnabled: monsterSpellToggle?.checked === true,
+        spellcasting: collectMonsterSpellcasting(),
         fields: Object.fromEntries([...monsterSheet.querySelectorAll("[name]")].map((input) => [input.name, input.type === "checkbox" ? (input.checked ? "on" : "") : input.value])),
-        entries: monsterEntryLists.flatMap((list) => [...list.querySelectorAll(".monster-entry")].map((row) => {
-          const fields = row.querySelector(".monster-entry-attack-fields");
-          return {
-            group: list.dataset.monsterGroup,
-            name: row.querySelector(".monster-entry-name input").value,
-            description: row.querySelector(".monster-entry-description textarea").value,
-            attack: Boolean(row.querySelector(".monster-entry-attack")?.checked),
-            attackKind: fields?.querySelector(".monster-attack-kind")?.value || "attack",
-            attackAbility: fields?.querySelector(".monster-attack-ability")?.value || "",
-            recharge: row.querySelector(".monster-entry-recharge")?.value.trim() || "",
-            attackBonus: fields?.querySelector(".monster-attack-bonus")?.value || "",
-            attackDamage: fields?.querySelector(".monster-attack-damage")?.value || "",
-            attackDamageBonus: fields?.querySelector(".monster-attack-damage-bonus")?.value || "",
-            attackDamageType: fields?.querySelector(".monster-attack-damage-type")?.value || "",
-            attackRange: fields?.querySelector(".monster-attack-range")?.value || ""
-          };
-        }))
+        customAbilities: monsterCustomRows().map((row) => ({
+          abbr: row.querySelector(".custom-ability-abbr").value,
+          value: row.querySelector(".custom-ability-score").value,
+          saveProficient: row.querySelector(".custom-ability-save").checked
+        })),
+        entries: monsterEntryData.map((entry) => ({ ...entry }))
       });
 
       const persistMonsterDraft = () => {
@@ -1377,36 +1574,141 @@
         monsterCrSelect.appendChild(option);
       });
 
-      const addMonsterEntry = (group = "traits", entry = {}) => {
-        const row = document.createElement("div");
-        row.className = "monster-entry";
-        const attackToggle = group === "traits" ? "" : `<span class="monster-entry-attack-row"><label class="monster-entry-attack-toggle"><input class="monster-entry-attack" type="checkbox" aria-label="Flag as attack"> Attack</label><input class="monster-entry-recharge" placeholder="5–6" aria-label="Recharge"></span>`;
-        const attackFields = group === "traits" ? "" : `<div class="monster-entry-attack-fields" hidden><label><span class="field-label">Roll type</span><select class="monster-attack-kind" aria-label="Roll type"><option value="attack" selected>Attack</option><option value="save">Save</option></select></label><label><span class="field-label">Ability</span><select class="monster-attack-ability" aria-label="Attack ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></label><label><span class="field-label">Attack bonus (auto)</span><input class="monster-attack-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage dice</span><input class="monster-attack-damage" placeholder="2d10"></label><label><span class="field-label">Dmg bonus (auto)</span><input class="monster-attack-damage-bonus" readonly aria-readonly="true" placeholder="+0"></label><label><span class="field-label">Damage type</span><input class="monster-attack-damage-type" placeholder="Piercing"></label><label><span class="field-label">Range / reach</span><input class="monster-attack-range" placeholder="Melee 10 ft."></label></div>`;
-        row.innerHTML = `<div class="monster-entry-name-cell"><label class="monster-entry-name"><span class="field-label">Name</span><input placeholder="e.g. Amphibious"></label>${attackToggle}</div><label class="monster-entry-description"><span class="field-label">Rules text</span><textarea rows="2" placeholder="Describe the trait, action, or reaction."></textarea></label>${attackFields}<button class="icon-button remove-monster-entry" type="button" aria-label="Remove trait or action">×</button>`;
-        row.querySelector(".monster-entry-name input").value = entry.name || "";
-        row.querySelector(".monster-entry-description textarea").value = entry.description || "";
-        const attackInput = row.querySelector(".monster-entry-attack");
-        const fields = row.querySelector(".monster-entry-attack-fields");
-        const rechargeInput = row.querySelector(".monster-entry-recharge");
-        if (rechargeInput) rechargeInput.value = entry.recharge || "";
-        if (attackInput && fields) {
-          fields.querySelector(".monster-attack-kind").value = entry.attackKind === "save" ? "save" : "attack";
-          fields.querySelector(".monster-attack-ability").value = entry.attackAbility || "STR";
-          fields.querySelector(".monster-attack-damage").value = entry.attackDamage || "";
-          fields.querySelector(".monster-attack-damage-type").value = entry.attackDamageType || "";
-          fields.querySelector(".monster-attack-range").value = entry.attackRange || "";
-          attackInput.checked = Boolean(entry.attack);
-          fields.hidden = !attackInput.checked;
-          attackInput.addEventListener("change", () => {
-            fields.hidden = !attackInput.checked;
-            updateMonsterAttackBonuses();
-          });
-          fields.querySelector(".monster-attack-ability").addEventListener("change", updateMonsterAttackBonuses);
-          fields.querySelector(".monster-attack-kind").addEventListener("change", updateMonsterAttackBonuses);
+      let monsterEntryData = [];
+      let editingMonsterEntryIndex = null;
+      const monsterEntryEditor = document.querySelector("#monster-entry-editor");
+      const monsterEntryEditorGroup = document.querySelector("#monster-entry-editor-group");
+      const monsterEntryEditorName = document.querySelector("#monster-entry-editor-name");
+      const monsterEntryEditorRecharge = document.querySelector("#monster-entry-editor-recharge");
+      const monsterEntryEditorAttack = document.querySelector("#monster-entry-editor-attack");
+      const monsterEntryEditorDescription = document.querySelector("#monster-entry-editor-description");
+      const monsterEntryEditorAttackFields = document.querySelector("#monster-entry-editor-attack-fields");
+      const monsterEntryEditorKind = document.querySelector("#monster-entry-editor-kind");
+      const monsterEntryEditorAbility = document.querySelector("#monster-entry-editor-ability");
+      const monsterEntryEditorBonus = document.querySelector("#monster-entry-editor-bonus");
+      const monsterEntryEditorDamage = document.querySelector("#monster-entry-editor-damage");
+      const monsterEntryEditorDamageBonus = document.querySelector("#monster-entry-editor-damage-bonus");
+      const monsterEntryEditorDamageType = document.querySelector("#monster-entry-editor-damage-type");
+      const monsterEntryEditorRange = document.querySelector("#monster-entry-editor-range");
+      const monsterEntryCardTemplate = document.querySelector("#monster-entry-card-template");
+
+      const computeMonsterEntryBonuses = (entry) => {
+        const computed = { ...entry, attackBonus: "", attackDamageBonus: "" };
+        if (!computed.attack) return computed;
+        const modifier = monsterAbilityModifier(computed.attackAbility);
+        const proficiency = getMonsterProficiency();
+        if (modifier === null) return computed;
+        const isSave = computed.attackKind === "save";
+        computed.attackBonus = proficiency === null ? "" : isSave ? `${modifier + 8 + proficiency}` : `+${modifier + proficiency}`;
+        computed.attackDamageBonus = isSave ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
+        return computed;
+      };
+
+      const updateMonsterEntryCard = (card, entry) => {
+        const recharge = String(entry.recharge || "").trim();
+        card.querySelector(".monster-entry-card-title").textContent = `${entry.name || "Untitled"}${recharge ? ` (Recharge ${recharge})` : ""}`;
+        card.querySelector(".monster-entry-card-description").textContent = entry.description || "No description added.";
+        const attackTag = card.querySelector(".monster-entry-card-attack-tag");
+        attackTag.hidden = !entry.attack;
+        if (entry.attack) attackTag.textContent = `${entry.attackKind === "save" ? "Saving throw" : "Attack"} · ${entry.attackAbility}`;
+        const detailsTag = card.querySelector(".monster-entry-card-details");
+        const details = [];
+        if (entry.attack) {
+          if (entry.attackBonus) details.push(entry.attackKind === "save" ? `DC ${entry.attackBonus}` : `${entry.attackBonus} to hit`);
+          const damage = composeDamage(entry.attackDamage, entry.attackDamageBonus === "+0" ? "" : entry.attackDamageBonus).trim();
+          const damageType = String(entry.attackDamageType || "").trim();
+          if (damage) details.push(damageType ? `${damage} ${damageType}` : damage);
+          if (entry.attackRange) details.push(String(entry.attackRange).trim());
         }
-        row.querySelector(".remove-monster-entry").addEventListener("click", () => { row.remove(); persistMonsterDraft(); updateMonsterAttackReference(); });
-        const list = document.querySelector(`[data-monster-group="${group}"]`);
-        if (list) list.appendChild(row);
+        detailsTag.hidden = details.length === 0;
+        detailsTag.textContent = details.join(" · ");
+      };
+
+      const renderMonsterEntryCards = () => {
+        monsterEntryLists.forEach((list) => list.replaceChildren());
+        monsterEntryData.forEach((entry, index) => {
+          const list = document.querySelector(`[data-monster-group="${entry.group}"]`);
+          if (!list) return;
+          const fragment = monsterEntryCardTemplate.content.cloneNode(true);
+          const card = fragment.querySelector(".monster-entry-card");
+          updateMonsterEntryCard(card, entry);
+          card.querySelector(".edit-monster-entry-card").addEventListener("click", () => openMonsterEntryEditor(index));
+          card.querySelector(".remove-monster-entry-card").addEventListener("click", () => {
+            monsterEntryData.splice(index, 1);
+            renderMonsterEntryCards();
+            updateMonsterAttackReference();
+            persistMonsterDraft();
+            setStatus("Entry removed");
+          });
+          list.appendChild(fragment);
+        });
+        monsterEntryLists.forEach((list) => { list.closest(".monster-entry-group").hidden = list.children.length === 0; });
+        const monsterEntryEmpty = document.querySelector("#monster-entry-empty");
+        if (monsterEntryEmpty) monsterEntryEmpty.hidden = monsterEntryData.length > 0;
+      };
+
+      const refreshMonsterEntryEditor = () => {
+        const isTrait = monsterEntryEditorGroup.value === "traits";
+        monsterEntryEditorRecharge.closest(".field").hidden = isTrait;
+        monsterEntryEditorAttack.closest(".field").hidden = isTrait;
+        monsterEntryEditorAttackFields.hidden = isTrait || !monsterEntryEditorAttack.checked;
+        if (!monsterEntryEditorAttack.checked) {
+          monsterEntryEditorBonus.value = "";
+          monsterEntryEditorDamageBonus.value = "";
+          return;
+        }
+        const preview = computeMonsterEntryBonuses({ attack: true, attackKind: monsterEntryEditorKind.value, attackAbility: monsterEntryEditorAbility.value });
+        monsterEntryEditorBonus.value = preview.attackBonus;
+        monsterEntryEditorDamageBonus.value = preview.attackDamageBonus;
+      };
+
+      const openMonsterEntryEditor = (index = null) => {
+        editingMonsterEntryIndex = index;
+        const entry = index === null ? {} : monsterEntryData[index];
+        monsterEntryEditorGroup.value = entry.group || "traits";
+        monsterEntryEditorName.value = entry.name || "";
+        monsterEntryEditorRecharge.value = entry.recharge || "";
+        monsterEntryEditorAttack.checked = Boolean(entry.attack);
+        monsterEntryEditorDescription.value = entry.description || "";
+        monsterEntryEditorKind.value = entry.attackKind === "save" ? "save" : "attack";
+        monsterEntryEditorAbility.value = entry.attackAbility || "STR";
+        monsterEntryEditorDamage.value = entry.attackDamage || "";
+        monsterEntryEditorDamageType.value = entry.attackDamageType || "";
+        monsterEntryEditorRange.value = entry.attackRange || "";
+        refreshMonsterAbilitySelectors();
+        refreshMonsterEntryEditor();
+        monsterEntryEditor.hidden = false;
+        monsterEntryEditorName.focus();
+      };
+
+      const closeMonsterEntryEditor = () => {
+        editingMonsterEntryIndex = null;
+        monsterEntryEditor.hidden = true;
+      };
+
+      const saveMonsterEntryFromEditor = () => {
+        const isTrait = monsterEntryEditorGroup.value === "traits";
+        const entry = computeMonsterEntryBonuses({
+          group: monsterEntryEditorGroup.value,
+          name: monsterEntryEditorName.value.trim() || "Untitled",
+          description: monsterEntryEditorDescription.value,
+          recharge: isTrait ? "" : monsterEntryEditorRecharge.value.trim(),
+          attack: !isTrait && monsterEntryEditorAttack.checked,
+          attackKind: monsterEntryEditorKind.value,
+          attackAbility: monsterEntryEditorAbility.value,
+          attackDamage: monsterEntryEditorDamage.value,
+          attackDamageBonus: "",
+          attackDamageType: monsterEntryEditorDamageType.value,
+          attackRange: monsterEntryEditorRange.value
+        });
+        const isEdit = editingMonsterEntryIndex !== null;
+        if (isEdit) monsterEntryData[editingMonsterEntryIndex] = entry;
+        else monsterEntryData.push(entry);
+        renderMonsterEntryCards();
+        updateMonsterAttackReference();
+        closeMonsterEntryEditor();
+        persistMonsterDraft();
+        setStatus(isEdit ? "Entry updated" : "Entry added");
       };
 
       const monsterAttackGroupLabels = { "actions": "Action", "bonus-actions": "Bonus action", "reactions": "Reaction", "legendary-actions": "Legendary action" };
@@ -1414,33 +1716,23 @@
       const updateMonsterAttackReference = () => {
         const reference = document.querySelector("#monster-attack-reference");
         if (!reference) return;
-        const attacks = [];
-        monsterEntryLists.forEach((list) => {
-          if (list.dataset.monsterGroup === "traits") return;
-          list.querySelectorAll(".monster-entry").forEach((row) => {
-            const toggle = row.querySelector(".monster-entry-attack");
-            if (!toggle || !toggle.checked) return;
-            const fields = row.querySelector(".monster-entry-attack-fields");
+        const attacks = monsterEntryData
+          .filter((entry) => entry.attack && entry.group !== "traits")
+          .map((entry) => {
             const details = [];
-            if (fields) {
-              const bonus = fields.querySelector(".monster-attack-bonus").value.trim();
-              const isSave = fields.querySelector(".monster-attack-kind").value === "save";
-              if (bonus) details.push(isSave ? `DC ${bonus}` : `${bonus} to hit`);
-              const damage = composeDamage(fields.querySelector(".monster-attack-damage").value, fields.querySelector(".monster-attack-damage-bonus").value).trim();
-              const damageType = fields.querySelector(".monster-attack-damage-type").value.trim();
-              if (damage) details.push(damageType ? `${damage} ${damageType}` : damage);
-              const range = fields.querySelector(".monster-attack-range").value.trim();
-              if (range) details.push(range);
-            }
-            const recharge = row.querySelector(".monster-entry-recharge")?.value.trim();
-            attacks.push({
-              group: list.dataset.monsterGroup,
-              name: `${row.querySelector(".monster-entry-name input").value.trim() || "Untitled attack"}${recharge ? ` (Recharge ${recharge})` : ""}`,
-              description: row.querySelector(".monster-entry-description textarea").value.trim(),
+            if (entry.attackBonus) details.push(entry.attackKind === "save" ? `DC ${entry.attackBonus}` : `${entry.attackBonus} to hit`);
+            const damage = composeDamage(entry.attackDamage, entry.attackDamageBonus).trim();
+            const damageType = String(entry.attackDamageType || "").trim();
+            if (damage) details.push(damageType ? `${damage} ${damageType}` : damage);
+            if (entry.attackRange) details.push(String(entry.attackRange).trim());
+            const recharge = String(entry.recharge || "").trim();
+            return {
+              group: entry.group,
+              name: `${String(entry.name || "").trim() || "Untitled attack"}${recharge ? ` (Recharge ${recharge})` : ""}`,
+              description: String(entry.description || "").trim(),
               details: details.join(" · ")
-            });
+            };
           });
-        });
         reference.replaceChildren();
         if (!attacks.length) {
           const empty = document.createElement("p");
@@ -1496,32 +1788,77 @@
       };
 
       const monsterAbilityModifier = (ability) => {
-        const scoreInput = monsterSheet.querySelector(`[name="monster-${String(ability).toLowerCase()}"]`);
+        const key = String(ability || "").trim();
+        const scoreInput = monsterSheet.querySelector(`[name="monster-${key.toLowerCase()}"]`);
         const score = Number(scoreInput?.value);
-        return Number.isFinite(score) ? Math.floor((score - 10) / 2) : null;
+        if (Number.isFinite(score)) return Math.floor((score - 10) / 2);
+        const custom = monsterCustomEntries().find((entry) => entry.key === key.toUpperCase());
+        return custom ? Math.floor((custom.score - 10) / 2) : null;
+      };
+
+      const monsterCustomContainer = monsterSheet.querySelector("[data-monster-custom-abilities]");
+      const monsterCustomAbilityTemplate = document.querySelector("#monster-custom-ability-template");
+      const monsterCustomRows = () => [...monsterSheet.querySelectorAll("[data-monster-custom-abilities] .custom-ability-row")];
+      const monsterCustomKey = (row) => {
+        const raw = row.querySelector(".custom-ability-abbr").value.trim().toUpperCase();
+        return raw ? raw.slice(0, 3) : "";
+      };
+      const monsterCustomEntries = () => monsterCustomRows().map((row) => ({ row, key: monsterCustomKey(row), score: Number(row.querySelector(".custom-ability-score").value) || 0 }));
+      const refreshMonsterAbilitySelectors = () => {
+        const customKeys = [...new Set(monsterCustomEntries().map((entry) => entry.key).filter(Boolean))];
+        monsterSheet.querySelectorAll(".monster-attack-ability, [name=\"monster-spellcasting-ability\"]").forEach((select) => {
+          const current = select.value;
+          [...select.options].forEach((option) => { if (option.value && !baseAbilityOptions.includes(option.value)) option.remove(); });
+          customKeys.forEach((key) => {
+            const option = document.createElement("option");
+            option.value = key;
+            option.textContent = key;
+            select.appendChild(option);
+          });
+          if ([...select.options].some((option) => option.value === current)) select.value = current;
+        });
+      };
+      const addMonsterCustomAbility = (data = {}) => {
+        if (!monsterCustomContainer) return;
+        const row = monsterCustomAbilityTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".custom-ability-abbr").value = data.abbr || "";
+        if (data.value !== undefined && `${data.value}`.trim() !== "") row.querySelector(".custom-ability-score").value = data.value;
+        row.querySelector(".custom-ability-save").checked = data.saveProficient === true;
+        row.dataset.abilityKey = monsterCustomKey(row);
+        row.querySelector(".custom-ability-score").addEventListener("input", () => {
+          updateMonsterModifiers();
+          updateMonsterAttackBonuses();
+        });
+        row.querySelector(".custom-ability-save").addEventListener("change", () => {
+          updateMonsterModifiers();
+          persistMonsterDraft();
+        });
+        row.querySelector(".custom-ability-abbr").addEventListener("input", () => {
+          const oldKey = row.dataset.abilityKey || "";
+          const newKey = monsterCustomKey(row);
+          row.dataset.abilityKey = newKey;
+          const holders = oldKey ? [...monsterSheet.querySelectorAll(".monster-attack-ability, [name=\"monster-spellcasting-ability\"]")].filter((select) => select.value === oldKey) : [];
+          refreshMonsterAbilitySelectors();
+          holders.forEach((select) => { select.value = newKey; });
+          if (oldKey && newKey && oldKey !== newKey) {
+            monsterEntryData.forEach((entry) => { if (entry.attackAbility === oldKey) entry.attackAbility = newKey; });
+            renderMonsterEntryCards();
+          }
+          updateMonsterModifiers();
+          updateMonsterAttackBonuses();
+        });
+        row.querySelector(".remove-custom-field").addEventListener("click", () => {
+          row.remove();
+          refreshMonsterAbilitySelectors();
+          persistMonsterDraft();
+        });
+        monsterCustomContainer.appendChild(row);
+        refreshMonsterAbilitySelectors();
       };
 
       const updateMonsterAttackBonuses = () => {
-        const proficiency = getMonsterProficiency();
-        monsterEntryLists.forEach((list) => {
-          if (list.dataset.monsterGroup === "traits") return;
-          list.querySelectorAll(".monster-entry").forEach((row) => {
-            const toggle = row.querySelector(".monster-entry-attack");
-            const fields = row.querySelector(".monster-entry-attack-fields");
-            if (!toggle || !fields) return;
-            const bonusInput = fields.querySelector(".monster-attack-bonus");
-            const damageBonusInput = fields.querySelector(".monster-attack-damage-bonus");
-            if (!toggle.checked) {
-              bonusInput.value = "";
-              damageBonusInput.value = "";
-              return;
-            }
-            const isSave = fields.querySelector(".monster-attack-kind").value === "save";
-            const modifier = monsterAbilityModifier(fields.querySelector(".monster-attack-ability").value);
-            bonusInput.value = modifier === null || proficiency === null ? "" : isSave ? `${modifier + 8 + proficiency}` : `+${modifier + proficiency}`;
-            damageBonusInput.value = modifier === null || isSave ? "" : `${modifier >= 0 ? "+" : ""}${modifier}`;
-          });
-        });
+        monsterEntryData = monsterEntryData.map((entry) => computeMonsterEntryBonuses(entry));
+        renderMonsterEntryCards();
         updateMonsterAttackReference();
       };
 
@@ -1575,6 +1912,15 @@
         pbInput.value = proficiency === null ? "" : `+${proficiency}`;
       };
 
+      const updateMonsterSpellcastingStats = () => {
+        const dcInput = monsterSheet.querySelector('[name="monster-spell-save-dc"]');
+        if (!dcInput) return;
+        const ability = monsterSheet.querySelector('[name="monster-spellcasting-ability"]')?.value || "";
+        const modifier = ability ? monsterAbilityModifier(ability) : null;
+        const proficiency = getMonsterProficiency();
+        dcInput.value = modifier === null ? "" : String(8 + modifier + (proficiency === null ? 0 : proficiency));
+      };
+
       const updateMonsterModifiers = () => {
         ["str", "dex", "con", "int", "wis", "cha"].forEach((ability) => {
           const scoreInput = monsterSheet.querySelector(`[name="monster-${ability}"]`);
@@ -1585,12 +1931,24 @@
             modifierInput.value = `${modifier >= 0 ? "+" : ""}${modifier}`;
           }
         });
+        const proficiency = getMonsterProficiency();
+        monsterCustomRows().forEach((row) => {
+          const score = Number(row.querySelector(".custom-ability-score").value) || 0;
+          const modifier = Math.floor((score - 10) / 2);
+          const modOutput = row.querySelector(".custom-ability-mod");
+          if (modOutput) modOutput.value = `${modifier >= 0 ? "+" : ""}${modifier}`;
+          const saveInput = row.querySelector(".custom-ability-save");
+          const saveOutput = row.querySelector(".custom-ability-save-bonus");
+          const total = modifier + (saveInput?.checked && proficiency !== null ? proficiency : 0);
+          if (saveOutput) saveOutput.textContent = `${total >= 0 ? "+" : ""}${total}`;
+        });
         updateMonsterHp();
         updateMonsterProficiencyBonus();
         updateMonsterXpReward();
         updateMonsterAttackBonuses();
         updateMonsterInitiative();
         updateMonsterSaveBonuses();
+        updateMonsterSpellcastingStats();
       };
 
       const applyMonster = (data) => {
@@ -1607,13 +1965,33 @@
         });
         const dieSizeSelect = monsterSheet.querySelector('[name="monster-hit-die-size"]');
         if (dieSizeSelect && !dieSizeSelect.value) dieSizeSelect.value = "10";
-        monsterEntryLists.forEach((list) => list.replaceChildren());
-        (Array.isArray(data.entries) ? data.entries : []).forEach((entry) => addMonsterEntry(entry.group || "traits", entry));
+        if (monsterCustomContainer) monsterCustomContainer.replaceChildren();
+        (Array.isArray(data.customAbilities) ? data.customAbilities : []).forEach((entry) => addMonsterCustomAbility(entry));
+        const monsterSpellAbilitySelect = monsterSheet.querySelector('[name="monster-spellcasting-ability"]');
+        if (monsterSpellAbilitySelect && data.fields?.["monster-spellcasting-ability"]) monsterSpellAbilitySelect.value = data.fields["monster-spellcasting-ability"];
+        monsterEntryData = (Array.isArray(data.entries) ? data.entries : []).map((entry) => ({
+          group: entry.group || "traits",
+          name: entry.name || "",
+          description: entry.description || "",
+          recharge: entry.recharge || "",
+          attack: Boolean(entry.attack),
+          attackKind: entry.attackKind === "save" ? "save" : "attack",
+          attackAbility: entry.attackAbility || "STR",
+          attackBonus: entry.attackBonus || "",
+          attackDamage: entry.attackDamage || "",
+          attackDamageBonus: entry.attackDamageBonus || "",
+          attackDamageType: entry.attackDamageType || "",
+          attackRange: entry.attackRange || ""
+        }));
+        renderMonsterEntryCards();
         applyTheme(data.theme || document.querySelector('[name="monster-theme"]').value || "streetlamp");
         document.querySelector('[name="monster-theme"]').value = data.theme || "streetlamp";
         applyModifierColor(data.modifierColor || "default", "monster");
         npcToggle.checked = data.npcEnabled === true;
         updateNpcVisibility();
+        monsterSpellToggle.checked = data.spellcastingEnabled === true;
+        updateMonsterSpellcastingVisibility();
+        renderMonsterSpellcasting(data.spellcasting || {});
         updateMonsterModifiers();
         updateMonsterAttackReference();
       };
@@ -1636,6 +2014,7 @@
       };
 
       const syncManualOverrides = () => {
+        updateProficiencyBonus();
         const autoHealth = document.querySelector('[name="auto-health"]').checked;
         const autoModifiers = document.querySelector('[name="auto-modifiers"]').checked;
         const autoSpellcasting = document.querySelector('[name="auto-spellcasting"]').checked;
@@ -1654,7 +2033,7 @@
           output.contentEditable = String(!autoModifiers);
           output.setAttribute("aria-readonly", String(autoModifiers));
         });
-        document.querySelectorAll(".skill-bonus").forEach((input) => {
+        document.querySelectorAll(".skill-bonus, .tool-bonus, .weapon-bonus").forEach((input) => {
           input.readOnly = autoModifiers;
           input.setAttribute("aria-readonly", String(autoModifiers));
         });
@@ -1662,6 +2041,19 @@
           input.readOnly = autoSpellcasting;
           input.setAttribute("aria-readonly", String(autoSpellcasting));
         });
+      };
+
+      const updateProficiencyBonus = () => {
+        const input = document.querySelector('[name="proficiency-bonus"]');
+        const toggle = document.querySelector('[name="auto-proficiency"]');
+        if (!input || !toggle) return;
+        const auto = toggle.checked;
+        input.readOnly = auto;
+        input.setAttribute("aria-readonly", String(auto));
+        if (!auto) return;
+        const level = Number.parseInt(document.querySelector('[name="level"]').value, 10);
+        const bonus = Number.isFinite(level) && level >= 1 ? Math.floor((level - 1) / 4) + 2 : null;
+        input.value = bonus === null ? "" : `${bonus}`;
       };
 
       const updateModifiers = () => {
@@ -1678,18 +2070,38 @@
           const saveBonus = modifier + (saveInput?.checked ? proficiencyBonus : 0);
           if (saveOutput) saveOutput.textContent = `${saveBonus >= 0 ? "+" : ""}${saveBonus}`;
         });
-        document.querySelectorAll(".skill-row").forEach((row) => {
-          const abilityMap = { STR: "strength", DEX: "dexterity", CON: "constitution", INT: "intelligence", WIS: "wisdom", CHA: "charisma" };
-          const ability = abilityMap[row.querySelector(".skill-ability").value];
-          const score = Number(document.querySelector(`[name="${ability}"]`).value) || 0;
+        document.querySelectorAll('[data-custom-fields-for="abilities"] .custom-ability-row').forEach((row) => {
+          const score = Number(row.querySelector(".custom-ability-score").value) || 0;
           const modifier = Math.floor((score - 10) / 2);
+          const modOutput = row.querySelector(".custom-ability-mod");
+          if (modOutput) modOutput.value = `${modifier >= 0 ? "+" : ""}${modifier}`;
+          const saveInput = row.querySelector(".custom-ability-save");
+          const saveOutput = row.querySelector(".custom-ability-save-bonus");
+          const saveBonus = modifier + (saveInput?.checked ? proficiencyBonus : 0);
+          if (saveOutput) saveOutput.textContent = `${saveBonus >= 0 ? "+" : ""}${saveBonus}`;
+        });
+        document.querySelectorAll(".skill-row").forEach((row) => {
+          const ability = row.querySelector(".skill-ability").value;
+          const modifier = characterAbilityModifier(ability) ?? 0;
           const proficient = row.querySelector(".skill-proficient").checked;
           const expertise = row.querySelector(".skill-expertise").checked;
           const altEnabled = row.querySelector(".skill-alt-enabled");
-          const altAbility = altEnabled?.checked ? abilityMap[row.querySelector(".skill-alt-ability").value] : null;
-          const altModifier = altAbility ? Math.floor(((Number(document.querySelector(`[name="${altAbility}"]`).value) || 0) - 10) / 2) : 0;
+          const altAbility = altEnabled?.checked ? row.querySelector(".skill-alt-ability").value : null;
+          const altModifier = altAbility ? (characterAbilityModifier(altAbility) ?? 0) : 0;
           const bonus = modifier + altModifier + (proficient ? proficiencyBonus * (expertise ? 2 : 1) : 0);
           row.querySelector(".skill-bonus").value = `${bonus >= 0 ? "+" : ""}${bonus}`;
+        });
+        document.querySelectorAll(".tool-row, .weapon-row").forEach((row) => {
+          const isWeapon = row.classList.contains("weapon-row");
+          const ability = row.querySelector(isWeapon ? ".weapon-ability" : ".tool-ability").value;
+          const bonusInput = row.querySelector(isWeapon ? ".weapon-bonus" : ".tool-bonus");
+          if (!ability) {
+            bonusInput.value = "";
+            return;
+          }
+          const modifier = characterAbilityModifier(ability) ?? 0;
+          const bonus = modifier + proficiencyBonus;
+          bonusInput.value = `${bonus >= 0 ? "+" : ""}${bonus}`;
         });
         const initiativeInput = document.querySelector('[name="initiative"]');
         if (initiativeInput) {
@@ -1740,6 +2152,69 @@
         npcPanel.hidden = !npcToggle.checked;
       };
 
+      const normalizeMonsterSpell = (spell) => typeof spell === "string"
+        ? { name: spell, source: "", page: "" }
+        : { name: spell?.name || "", source: spell?.source || "", page: spell?.page || "" };
+
+      const addMonsterSpell = (container, spell = {}) => {
+        if (!container) return;
+        const entry = normalizeMonsterSpell(spell);
+        const row = monsterSpellTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".monster-spell-name").value = entry.name;
+        row.querySelector(".monster-spell-source").value = entry.source;
+        row.querySelector(".monster-spell-page").value = entry.page;
+        row.querySelector(".remove-monster-spell").addEventListener("click", () => {
+          row.remove();
+          persistMonsterDraft();
+        });
+        container.appendChild(row);
+      };
+
+      const addMonsterPerDayGroup = (group = {}) => {
+        if (!monsterPerDayList) return;
+        const row = monsterPerDayTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".monster-per-day-count").value = group.count ?? "";
+        const spellList = row.querySelector("[data-per-day-spells]");
+        (Array.isArray(group.spells) ? group.spells : []).forEach((spell) => addMonsterSpell(spellList, spell));
+        row.querySelector(".remove-monster-per-day").addEventListener("click", () => {
+          row.remove();
+          persistMonsterDraft();
+        });
+        row.querySelector("[data-per-day-add]").addEventListener("click", () => {
+          addMonsterSpell(spellList);
+          spellList.lastElementChild?.querySelector(".monster-spell-name")?.focus();
+          persistMonsterDraft();
+        });
+        monsterPerDayList.appendChild(row);
+      };
+
+      const collectMonsterSpellcasting = () => ({
+        atWill: [...(monsterAtwillList?.querySelectorAll(".monster-spell-row") || [])].map((row) => ({
+          name: row.querySelector(".monster-spell-name").value,
+          source: row.querySelector(".monster-spell-source").value,
+          page: row.querySelector(".monster-spell-page").value
+        })).filter((spell) => spell.name.trim()),
+        perDay: [...(monsterPerDayList?.querySelectorAll(".monster-per-day-group") || [])].map((group) => ({
+          count: group.querySelector(".monster-per-day-count").value,
+          spells: [...group.querySelectorAll(".monster-spell-row")].map((row) => ({
+            name: row.querySelector(".monster-spell-name").value,
+            source: row.querySelector(".monster-spell-source").value,
+            page: row.querySelector(".monster-spell-page").value
+          })).filter((spell) => spell.name.trim())
+        }))
+      });
+
+      const renderMonsterSpellcasting = (spellcasting = {}) => {
+        if (monsterAtwillList) monsterAtwillList.replaceChildren();
+        if (monsterPerDayList) monsterPerDayList.replaceChildren();
+        (Array.isArray(spellcasting.atWill) ? spellcasting.atWill : []).forEach((spell) => addMonsterSpell(monsterAtwillList, spell));
+        (Array.isArray(spellcasting.perDay) ? spellcasting.perDay : []).forEach((group) => addMonsterPerDayGroup(group));
+      };
+
+      const updateMonsterSpellcastingVisibility = () => {
+        if (monsterSpellcastingPanel) monsterSpellcastingPanel.hidden = !(monsterSpellToggle?.checked);
+      };
+
       const updateSpellSlots = () => {
         const fullCaster = document.querySelector('[name="caster-progression"]').value === "full";
         document.querySelectorAll(".spell-slot-field").forEach((field) => {
@@ -1749,13 +2224,11 @@
 
       const updateSpellcastingStats = () => {
         if (!document.querySelector('[name="auto-spellcasting"]').checked) return;
-        const abilityMap = { STR: "strength", DEX: "dexterity", CON: "constitution", INT: "intelligence", WIS: "wisdom", CHA: "charisma" };
         const ability = document.querySelector('[name="spellcasting-ability"]').value;
-        const score = abilityMap[ability] ? Number(document.querySelector(`[name="${abilityMap[ability]}"]`).value) || 0 : 0;
-        const modifier = Math.floor((score - 10) / 2);
+        const modifier = ability ? characterAbilityModifier(ability) : null;
         const proficiency = Number(document.querySelector('[name="proficiency-bonus"]').value) || 0;
-        document.querySelector('[name="spell-save-dc"]').value = ability ? String(8 + modifier + proficiency) : "";
-        document.querySelector('[name="spell-attack-bonus"]').value = ability ? `${modifier + proficiency >= 0 ? "+" : ""}${modifier + proficiency}` : "";
+        document.querySelector('[name="spell-save-dc"]').value = modifier === null ? "" : String(8 + modifier + proficiency);
+        document.querySelector('[name="spell-attack-bonus"]').value = modifier === null ? "" : `${modifier + proficiency >= 0 ? "+" : ""}${modifier + proficiency}`;
       };
 
       const addSpell = (spell = {}) => {
@@ -1860,6 +2333,76 @@
         ["Stealth", "DEX"], ["Survival", "WIS"]
       ];
 
+      const standardTools = [
+        ["Thieves' tools", "DEX"], ["Musical instrument", ""], ["Navigator's tools", "WIS"], ["Vehicles (land)", ""]
+      ];
+
+      const standardWeapons = [];
+
+      const toolList = document.querySelector("#tool-list");
+      const toolTemplate = document.querySelector("#tool-template");
+
+      const syncToolRow = (row) => {
+        row.querySelector(".tool-cell-bonus").hidden = row.querySelector(".tool-ability").value === "";
+      };
+
+      const addTool = (name = "", ability = "") => {
+        const row = toolTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".tool-name").value = name;
+        row.querySelector(".tool-ability").value = ability;
+        syncToolRow(row);
+        row.querySelector(".remove-tool").addEventListener("click", () => {
+          row.remove();
+          persistDraft();
+        });
+        row.querySelector(".tool-ability").addEventListener("change", () => {
+          syncToolRow(row);
+          updateModifiers();
+          persistDraft();
+        });
+        toolList.appendChild(row);
+        refreshAbilitySelectors();
+        row.querySelector(".tool-ability").value = ability;
+      };
+
+      const collectTools = () => [...toolList.querySelectorAll(".tool-row")].map((row) => ({
+        name: row.querySelector(".tool-name").value,
+        ability: row.querySelector(".tool-ability").value,
+        bonus: row.querySelector(".tool-bonus").value
+      }));
+
+      const weaponList = document.querySelector("#weapon-list");
+      const weaponTemplate = document.querySelector("#weapon-template");
+
+      const syncWeaponRow = (row) => {
+        row.querySelector(".tool-cell-bonus").hidden = row.querySelector(".weapon-ability").value === "";
+      };
+
+      const addWeapon = (name = "", ability = "") => {
+        const row = weaponTemplate.content.cloneNode(true).firstElementChild;
+        row.querySelector(".weapon-name").value = name;
+        row.querySelector(".weapon-ability").value = ability;
+        syncWeaponRow(row);
+        row.querySelector(".remove-weapon").addEventListener("click", () => {
+          row.remove();
+          persistDraft();
+        });
+        row.querySelector(".weapon-ability").addEventListener("change", () => {
+          syncWeaponRow(row);
+          updateModifiers();
+          persistDraft();
+        });
+        weaponList.appendChild(row);
+        refreshAbilitySelectors();
+        row.querySelector(".weapon-ability").value = ability;
+      };
+
+      const collectWeapons = () => [...weaponList.querySelectorAll(".weapon-row")].map((row) => ({
+        name: row.querySelector(".weapon-name").value,
+        ability: row.querySelector(".weapon-ability").value,
+        bonus: row.querySelector(".weapon-bonus").value
+      }));
+
       const syncArmorProficiencies = () => {
         const light = document.querySelector('[name="armor-light"]');
         const medium = document.querySelector('[name="armor-medium"]');
@@ -1888,6 +2431,9 @@
           persistDraft();
         });
         skillList.appendChild(row);
+        refreshAbilitySelectors();
+        row.querySelector(".skill-ability").value = ability;
+        if (altEnabled) row.querySelector(".skill-alt-ability").value = altAbility;
       };
 
       const collectSkills = () => [...skillList.querySelectorAll(".skill-row")].map((row) => ({
@@ -1982,11 +2528,52 @@
         return `${d} ${b[0]} ${b.slice(1)}`;
       };
 
+      const customAbilityRows = () => [...document.querySelectorAll('[data-custom-fields-for="abilities"] .custom-ability-row')];
+      const customAbilityKey = (row) => {
+        const raw = (row.querySelector(".custom-ability-abbr").value.trim() || row.querySelector(".custom-ability-name").value.trim()).toUpperCase();
+        return raw ? raw.slice(0, 3) : "";
+      };
+      const customAbilityEntries = () => customAbilityRows().map((row) => ({ row, key: customAbilityKey(row), score: Number(row.querySelector(".custom-ability-score").value) || 0 }));
+      const syncAbilityKeys = (row) => {
+        const key = customAbilityKey(row);
+        row.dataset.abilityKey = key;
+        row.querySelector(".custom-ability-mod").dataset.modFor = key;
+        row.querySelector(".custom-ability-save-bonus").dataset.saveFor = key;
+      };
+      const baseAbilityOptions = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
+      const refreshAbilitySelectors = () => {
+        const customKeys = [...new Set(customAbilityEntries().map((entry) => entry.key).filter(Boolean))];
+        document.querySelectorAll("#attack-ability, #armor-ability, #armor-ability-b, #armor-bonus-ability, #armor-req-ability, #spellcasting-ability, .skill-ability, .skill-alt-ability, .tool-ability, .weapon-ability").forEach((select) => {
+          const current = select.value;
+          [...select.options].forEach((option) => { if (option.value && !baseAbilityOptions.includes(option.value)) option.remove(); });
+          customKeys.forEach((key) => {
+            const option = document.createElement("option");
+            option.value = key;
+            option.textContent = key;
+            select.appendChild(option);
+          });
+          if ([...select.options].some((option) => option.value === current)) select.value = current;
+        });
+      };
+      const remapAbilityData = (oldKey, newKey) => {
+        if (!oldKey || !newKey || oldKey === newKey) return;
+        attacks.forEach((attack) => { if (attack.ability === oldKey) attack.ability = newKey; });
+        armors.forEach((armor) => {
+          if (armor.ability === oldKey) armor.ability = newKey;
+          if (armor.abilityB === oldKey) armor.abilityB = newKey;
+          if (armor.bonusAbility === oldKey) armor.bonusAbility = newKey;
+          if (armor.reqAbility === oldKey) armor.reqAbility = newKey;
+        });
+      };
+
       const characterAbilityModifier = (ability) => {
         const abilityFields = { STR: "strength", DEX: "dexterity", CON: "constitution", INT: "intelligence", WIS: "wisdom", CHA: "charisma" };
-        const scoreInput = document.querySelector(`[name="${abilityFields[ability] || ""}"]`);
-        const score = Number(scoreInput?.value);
-        return Number.isFinite(score) ? Math.floor((score - 10) / 2) : null;
+        if (abilityFields[ability]) {
+          const score = Number(document.querySelector(`[name="${abilityFields[ability]}"]`)?.value);
+          return Number.isFinite(score) ? Math.floor((score - 10) / 2) : null;
+        }
+        const custom = customAbilityEntries().find((entry) => entry.key === String(ability || "").trim().toUpperCase());
+        return custom ? Math.floor((custom.score - 10) / 2) : null;
       };
 
       const attackBonusFor = (attack) => {
@@ -2033,6 +2620,10 @@
       const armorEmpty = document.querySelector("#armor-empty-state");
       const armorNameInput = document.querySelector("#armor-name");
       const armorTypeInput = document.querySelector("#armor-type");
+      const armorBonusInput = document.querySelector("#armor-bonus");
+      const armorBonusField = document.querySelector("#armor-bonus-field");
+      const armorBonusAbilityInput = document.querySelector("#armor-bonus-ability");
+      const armorBonusAbilityField = document.querySelector("#armor-bonus-ability-field");
       const armorModeInput = document.querySelector("#armor-mode");
       const armorFixedAcInput = document.querySelector("#armor-fixed-ac");
       const armorAbilityInput = document.querySelector("#armor-ability");
@@ -2041,7 +2632,8 @@
       const armorCapField = document.querySelector("#armor-cap-field");
       const armorAcPreview = document.querySelector("#armor-ac-preview");
       const armorStealthInput = document.querySelector("#armor-stealth");
-      const armorDonDoffInput = document.querySelector("#armor-dondoff");
+      const armorDonInput = document.querySelector("#armor-don");
+      const armorDoffInput = document.querySelector("#armor-doff");
       const armorReqToggle = document.querySelector("#armor-req-toggle");
       const armorReqAbilityInput = document.querySelector("#armor-req-ability");
       const armorReqScoreInput = document.querySelector("#armor-req-score");
@@ -2051,8 +2643,23 @@
       const armorReqFields = document.querySelector("#armor-req-fields");
       const armorModeText = { fixed: "Fixed AC", ability: "Ability", abilityCapped: "Ability (capped)", dual: "Dual ability" };
 
+      const isBonusArmor = (type) => type === "Shield" || type === "AC Bonus";
+      const signedBonus = (value) => { const n = Number.parseInt(value, 10); return Number.isFinite(n) ? (n < 0 ? `${n}` : `+${n}`) : `${value}`; };
+      const scoreModifierLabel = (score) => { const n = Number.isFinite(Number(score)) ? Number(score) : 10; const mod = Math.floor((n - 10) / 2); return `${mod >= 0 ? "+" : ""}${mod}`; };
+
+      const equippedBaseAC = () => {
+        const equippedArmor = armors.find((entry) => entry.equipped && !isBonusArmor(entry.type));
+        const base = equippedArmor && equippedArmor.ac ? Number.parseInt(equippedArmor.ac, 10) : 10;
+        return Number.isFinite(base) ? base : 10;
+      };
+
       const computeArmorAC = (armor, getModifier) => {
         const mod = (ability) => { const value = getModifier(ability); return Number.isFinite(value) ? value : 0; };
+        if (isBonusArmor(armor.type)) {
+          const bonus = Number.parseInt(armor.bonus, 10);
+          if (!Number.isFinite(bonus)) return null;
+          return bonus + (armor.bonusAbility && armor.bonusAbility !== "none" ? mod(armor.bonusAbility) : 0);
+        }
         if (armor.mode === "ability") return 10 + mod(armor.ability);
         if (armor.mode === "abilityCapped") { const cap = Number.parseInt(armor.cap, 10); return 10 + Math.min(mod(armor.ability), Number.isFinite(cap) ? cap : 2); }
         if (armor.mode === "dual") return 10 + mod(armor.ability) + mod(armor.abilityB);
@@ -2060,40 +2667,55 @@
         return Number.isFinite(fixed) ? fixed : null;
       };
 
-      const normalizeArmor = (armor = {}) => ({
-        name: armor.name || "",
-        type: ["Light", "Medium", "Heavy", "Other"].includes(armor.type) ? armor.type : "Light",
-        mode: ["fixed", "ability", "abilityCapped", "dual"].includes(armor.mode) ? armor.mode : "fixed",
-        fixedAc: armor.fixedAc || "",
-        cap: armor.cap || "2",
-        ability: armor.ability || lastArmorAbility,
-        abilityB: armor.abilityB || "CON",
-        reqEnabled: armor.reqEnabled === true,
-        reqAbility: armor.reqAbility || "STR",
-        reqScore: armor.reqScore || "",
-        equipped: armor.equipped === true,
-        stealth: ["neutral", "disadvantage", "advantage"].includes(armor.stealth) ? armor.stealth : "neutral",
-        dondoff: armor.dondoff || "",
-        ac: "", modeText: "", stealthText: "", reqText: ""
-      });
+      const normalizeArmor = (armor = {}) => {
+        const type = isBonusArmor(armor.type) ? "Shield" : armor.type;
+        const legacyTimes = armor.don || armor.doff ? [] : `${armor.dondoff || ""}`.split("/");
+        return {
+          name: armor.name || "",
+          type: ["Light", "Medium", "Heavy", "Shield", "Other"].includes(type) ? type : "Light",
+          bonus: armor.bonus === undefined || armor.bonus === null || `${armor.bonus}`.trim() === "" ? (type === "Shield" ? "2" : "") : `${armor.bonus}`,
+          bonusAbility: ["none", "STR", "DEX", "CON", "INT", "WIS", "CHA"].includes(armor.bonusAbility) ? armor.bonusAbility : "none",
+          mode: ["fixed", "ability", "abilityCapped", "dual"].includes(armor.mode) ? armor.mode : "fixed",
+          fixedAc: armor.fixedAc || "",
+          cap: armor.cap || "2",
+          ability: armor.ability || lastArmorAbility,
+          abilityB: armor.abilityB || "CON",
+          reqEnabled: armor.reqEnabled === true,
+          reqAbility: armor.reqAbility || "STR",
+          reqScore: armor.reqScore || "",
+          equipped: armor.equipped === true,
+          stealth: ["neutral", "disadvantage", "advantage"].includes(armor.stealth) ? armor.stealth : "neutral",
+          don: armor.don || (legacyTimes[0] || "").trim(),
+          doff: armor.doff || (legacyTimes[1] || "").trim(),
+          ac: "", modeText: "", stealthText: "", reqText: ""
+        };
+      };
 
       const refreshArmorEditor = () => {
+        const isBonus = armorTypeInput.value === "Shield";
         const mode = armorModeInput.value;
-        armorFixedField.hidden = mode !== "fixed";
-        armorAbilityField.hidden = !(mode === "ability" || mode === "abilityCapped");
-        armorAbilityBField.hidden = mode !== "dual";
-        armorCapField.hidden = mode !== "abilityCapped";
+        armorModeInput.closest(".field").hidden = isBonus;
+        armorBonusField.hidden = !isBonus;
+        armorBonusAbilityField.hidden = !isBonus;
+        armorFixedField.hidden = isBonus || mode !== "fixed";
+        armorAbilityField.hidden = isBonus || !(mode === "ability" || mode === "abilityCapped");
+        armorAbilityBField.hidden = isBonus || mode !== "dual";
+        armorCapField.hidden = isBonus || mode !== "abilityCapped";
         armorReqFields.hidden = !armorReqToggle.checked;
+        if (isBonus) {
+          const bonus = computeArmorAC({ type: armorTypeInput.value, bonus: armorBonusInput.value || "2", bonusAbility: armorBonusAbilityInput.value }, characterAbilityModifier);
+          armorAcPreview.value = bonus === null ? "" : `${equippedBaseAC() + bonus}`;
+          return;
+        }
         const ac = computeArmorAC({ mode, fixedAc: armorFixedAcInput.value, cap: armorCapInput.value, ability: armorAbilityInput.value, abilityB: armorAbilityBInput.value }, characterAbilityModifier);
         armorAcPreview.value = ac === null ? "" : `${ac}`;
       };
 
       const updateArmorCard = (card, armor) => {
         const parts = [];
-        if (armor.ac) parts.push(`AC ${armor.ac}`);
+        if (armor.ac) parts.push(isBonusArmor(armor.type) ? `AC ${signedBonus(armor.ac)}` : `AC ${armor.ac}`);
         if (armor.stealthText) parts.push(armor.stealthText);
         if (armor.reqText) parts.push(armor.reqText);
-        if (armor.dondoff) parts.push(`Don/doff ${armor.dondoff}`);
         card.querySelector(".armor-title").textContent = armor.name || "Unnamed armor";
         card.querySelector(".armor-line").textContent = parts.join(" · ") || "Set an AC to finish this piece.";
         card.querySelector(".armor-type-tag").textContent = armor.type;
@@ -2103,17 +2725,28 @@
         equippedTag.hidden = !armor.equipped;
         equippedTag.textContent = "Equipped";
         card.querySelector(".equip-armor").textContent = armor.equipped ? "Unequip" : "Equip";
+        const donTag = card.querySelector(".armor-don-tag");
+        const doffTag = card.querySelector(".armor-doff-tag");
+        donTag.hidden = !armor.don;
+        donTag.textContent = `Don ${armor.don}`;
+        doffTag.hidden = !armor.doff;
+        doffTag.textContent = `Doff ${armor.doff}`;
       };
 
       const updateEquippedAC = () => {
-        const equipped = armors.find((armor) => armor.equipped);
         const input = document.querySelector('[name="armor-class"]');
         if (!input) return;
-        if (equipped && equipped.ac) {
-          input.value = equipped.ac;
+        const equippedArmor = armors.find((armor) => armor.equipped && !isBonusArmor(armor.type));
+        const equippedShield = armors.find((armor) => armor.equipped && isBonusArmor(armor.type));
+        const base = equippedArmor && equippedArmor.ac ? Number.parseInt(equippedArmor.ac, 10) : null;
+        const bonus = equippedShield && equippedShield.ac ? Number.parseInt(equippedShield.ac, 10) : null;
+        const total = base === null && bonus === null ? null : (base === null ? 10 : base) + (bonus || 0);
+        if (total !== null) {
+          input.value = `${total}`;
           input.readOnly = true;
           input.setAttribute("aria-readonly", "true");
         } else {
+          if (input.readOnly) input.value = "";
           input.readOnly = false;
           input.removeAttribute("aria-readonly");
         }
@@ -2123,7 +2756,7 @@
         armors.forEach((armor) => {
           const ac = computeArmorAC(armor, characterAbilityModifier);
           armor.ac = ac === null ? "" : `${ac}`;
-          armor.modeText = armor.mode === "abilityCapped" && Number.isFinite(Number.parseInt(armor.cap, 10)) ? `Ability (max +${Number.parseInt(armor.cap, 10)})` : armorModeText[armor.mode] || "Fixed AC";
+          armor.modeText = isBonusArmor(armor.type) ? `Bonus ${armor.bonus || 0}${armor.bonusAbility && armor.bonusAbility !== "none" ? ` (${armor.bonusAbility})` : ""}` : armor.mode === "abilityCapped" && Number.isFinite(Number.parseInt(armor.cap, 10)) ? `Ability (max +${Number.parseInt(armor.cap, 10)})` : armorModeText[armor.mode] || "Fixed AC";
           armor.stealthText = armor.stealth === "disadvantage" ? "Disadvantage on Stealth" : armor.stealth === "advantage" ? "Advantage on Stealth" : "";
           armor.reqText = armor.reqEnabled ? `Requires ${armor.reqAbility} ${armor.reqScore}` : "";
         });
@@ -2140,7 +2773,11 @@
           const card = fragment.querySelector(".armor-card");
           updateArmorCard(card, armor);
           card.querySelector(".equip-armor").addEventListener("click", () => {
-            armors.forEach((entry, entryIndex) => { entry.equipped = entryIndex === index ? !armor.equipped : false; });
+            const bonusSlot = isBonusArmor(armor.type);
+            armors.forEach((entry, entryIndex) => {
+              if (entryIndex === index) entry.equipped = !armor.equipped;
+              else if (isBonusArmor(entry.type) === bonusSlot) entry.equipped = false;
+            });
             updateArmorACs();
             renderArmors();
             persistDraft();
@@ -2169,13 +2806,16 @@
         editingArmorIndex = index;
         const armor = index === null ? {} : armors[index];
         armorNameInput.value = armor.name || "";
-        armorTypeInput.value = armor.type || "Light";
+        armorTypeInput.value = isBonusArmor(armor.type) ? "Shield" : (armor.type || "Light");
+        armorBonusInput.value = isBonusArmor(armor.type) ? (armor.bonus || "2") : "";
+        armorBonusAbilityInput.value = armor.bonusAbility || "none";
         armorModeInput.value = armor.mode || "fixed";
         armorFixedAcInput.value = armor.fixedAc || "";
         armorAbilityInput.value = armor.ability || "DEX";
         armorAbilityBInput.value = armor.abilityB || "CON";
         armorStealthInput.value = armor.stealth || "neutral";
-        armorDonDoffInput.value = armor.dondoff || "";
+        armorDonInput.value = armor.don || "";
+        armorDoffInput.value = armor.doff || "";
         armorReqToggle.checked = armor.reqEnabled === true;
         armorReqAbilityInput.value = armor.reqAbility || "STR";
         armorReqScoreInput.value = armor.reqScore || "";
@@ -2190,12 +2830,15 @@
         armorEditor.hidden = true;
         armorNameInput.value = "";
         armorTypeInput.value = "Light";
+        armorBonusInput.value = "";
+        armorBonusAbilityInput.value = "none";
         armorModeInput.value = "fixed";
         armorFixedAcInput.value = "";
         armorAbilityInput.value = "DEX";
         armorAbilityBInput.value = "CON";
         armorStealthInput.value = "neutral";
-        armorDonDoffInput.value = "";
+        armorDonInput.value = "";
+        armorDoffInput.value = "";
         armorReqToggle.checked = false;
         armorReqAbilityInput.value = "STR";
         armorReqScoreInput.value = "";
@@ -2206,6 +2849,8 @@
       const collectArmors = () => armors.map((armor) => ({
         name: armor.name,
         type: armor.type,
+        bonus: armor.bonus,
+        bonusAbility: armor.bonusAbility,
         mode: armor.mode,
         fixedAc: armor.fixedAc,
         cap: armor.cap,
@@ -2215,7 +2860,8 @@
         reqAbility: armor.reqAbility,
         reqScore: armor.reqScore,
         stealth: armor.stealth,
-        dondoff: armor.dondoff,
+        don: armor.don,
+        doff: armor.doff,
         equipped: armor.equipped,
         ac: armor.ac,
         modeText: armor.modeText,
@@ -2223,28 +2869,77 @@
         reqText: armor.reqText
       }));
 
-      const addCustomField = (section, name = "", value = "") => {
+      const addCustomField = (section, data = {}) => {
         const container = document.querySelector(`[data-custom-fields-for="${section}"]`);
         if (!container) return;
-        const row = customFieldTemplate.content.cloneNode(true).firstElementChild;
-        row.querySelector(".custom-field-name").value = name;
-        row.querySelector(".custom-field-value").value = value;
+        const kind = data.kind || (section === "abilities" ? "ability" : "field");
+        let row;
+        if (kind === "ability") {
+          row = customAbilityTemplate.content.cloneNode(true).firstElementChild;
+          row.querySelector(".custom-ability-name").value = data.name || "";
+          row.querySelector(".custom-ability-abbr").value = data.abbr || "";
+          if (data.value !== undefined && `${data.value}`.trim() !== "") row.querySelector(".custom-ability-score").value = data.value;
+          row.querySelector(".custom-ability-save").checked = data.saveProficient === true;
+          syncAbilityKeys(row);
+          row.querySelector(".custom-ability-score").addEventListener("input", () => {
+            updateModifiers();
+            updateCharacterAttackBonuses();
+            updateArmorACs();
+            updateSpellcastingStats();
+          });
+          row.querySelector(".custom-ability-save").addEventListener("change", updateModifiers);
+          row.querySelector(".custom-ability-abbr").addEventListener("input", () => {
+            const oldKey = row.dataset.abilityKey || "";
+            const newKey = customAbilityKey(row);
+            syncAbilityKeys(row);
+            const holders = oldKey ? [...document.querySelectorAll(".skill-ability, .skill-alt-ability, .tool-ability, .weapon-ability, #attack-ability, #armor-ability, #armor-ability-b, #armor-bonus-ability, #armor-req-ability, #spellcasting-ability")].filter((select) => select.value === oldKey) : [];
+            refreshAbilitySelectors();
+            remapAbilityData(oldKey, newKey);
+            holders.forEach((select) => { select.value = newKey; });
+            updateModifiers();
+            updateCharacterAttackBonuses();
+            updateArmorACs();
+            updateSpellcastingStats();
+          });
+        } else {
+          const template = section === "background" ? customFieldTextareaTemplate : customFieldTemplate;
+          row = template.content.cloneNode(true).firstElementChild;
+          row.querySelector(".custom-field-name").value = data.name || "";
+          row.querySelector(".custom-field-value").value = data.value ?? "";
+        }
         row.querySelector(".remove-custom-field").addEventListener("click", () => {
           row.remove();
+          refreshAbilitySelectors();
           persistDraft();
         });
         container.appendChild(row);
+        if (kind === "ability") refreshAbilitySelectors();
       };
 
-      const collectCustomFields = () => [...document.querySelectorAll("[data-custom-fields-for]")].flatMap((container) => [...container.querySelectorAll(".custom-field-row")].map((row) => ({
-        section: container.dataset.customFieldsFor,
-        name: row.querySelector(".custom-field-name").value,
-        value: row.querySelector(".custom-field-value").value
-      })));
+      const collectCustomFields = () => [...document.querySelectorAll("[data-custom-fields-for]")].flatMap((container) => [...container.children].filter((row) => row.matches(".custom-field-row, .custom-ability-row")).map((row) => {
+        const section = container.dataset.customFieldsFor;
+        if (row.classList.contains("custom-ability-row")) {
+          return {
+            section,
+            kind: "ability",
+            name: row.querySelector(".custom-ability-name").value,
+            value: row.querySelector(".custom-ability-score").value,
+            abbr: row.querySelector(".custom-ability-abbr").value,
+            saveProficient: row.querySelector(".custom-ability-save").checked
+          };
+        }
+        return {
+          section,
+          kind: "field",
+          name: row.querySelector(".custom-field-name").value,
+          value: row.querySelector(".custom-field-value").value
+        };
+      }));
 
       const renderCustomFields = (customFields = []) => {
         document.querySelectorAll("[data-custom-fields-for]").forEach((container) => container.replaceChildren());
-        customFields.forEach((field) => addCustomField(field.section, field.name, field.value));
+        customFields.forEach((field) => addCustomField(field.section, { kind: "field", ...field }));
+        refreshAbilitySelectors();
       };
 
       const collectSheet = () => {
@@ -2262,7 +2957,7 @@
         document.querySelectorAll("[data-mod-for]").forEach((output) => { manualModifiers[output.dataset.modFor] = output.value; });
         const manualSaves = {};
         document.querySelectorAll("[data-save-for]").forEach((output) => { manualSaves[output.dataset.saveFor] = output.textContent; });
-        return { version: 1, fields, features, attacks: collectAttacks(), armors: collectArmors(), skills: collectSkills(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells(), manualModifiers, manualSaves };
+        return { version: 1, fields, features, attacks: collectAttacks(), armors: collectArmors(), skills: collectSkills(), tools: collectTools(), weapons: collectWeapons(), currencies: collectCurrencies(), customFields: collectCustomFields(), spells: collectSpells(), manualModifiers, manualSaves };
       };
 
       const applyTheme = (themeName) => {
@@ -2283,7 +2978,7 @@
       const resetCharacterFields = () => {
         sheet.reset();
         document.querySelectorAll('#configuration [name]:not([name="monster-theme"]):not([name="monster-modifier-color"])').forEach((input) => {
-          if (input.type === "checkbox") input.checked = ["auto-health", "auto-modifiers", "auto-spellcasting"].includes(input.name);
+          if (input.type === "checkbox") input.checked = ["auto-health", "auto-modifiers", "auto-proficiency", "auto-spellcasting"].includes(input.name);
           else if (input.tagName === "SELECT") input.selectedIndex = 0;
           else input.value = "";
         });
@@ -2318,6 +3013,28 @@
         ];
         currencies.forEach((currency) => addCurrency(currency.name, currency.amount));
         renderCustomFields(Array.isArray(data.customFields) ? data.customFields : []);
+        const spellAbilitySelect = document.querySelector('[name="spellcasting-ability"]');
+        if (spellAbilitySelect && data.fields?.["spellcasting-ability"]) spellAbilitySelect.value = data.fields["spellcasting-ability"];
+        (Array.isArray(data.skills) ? data.skills : []).forEach((skill, index) => {
+          const row = skillList.querySelectorAll(".skill-row")[index];
+          if (!row) return;
+          row.querySelector(".skill-ability").value = skill.ability || "STR";
+          if (skill.altEnabled && skill.altAbility) row.querySelector(".skill-alt-ability").value = skill.altAbility;
+        });
+        toolList.replaceChildren();
+        if (Array.isArray(data.tools)) {
+          data.tools.forEach((tool) => addTool(tool.name || "", tool.ability || ""));
+        } else if (String(data.fields?.["tool-proficiencies"] || "").trim()) {
+          String(data.fields["tool-proficiencies"]).split(",").map((name) => name.trim()).filter(Boolean).forEach((name) => addTool(name, ""));
+        } else {
+          standardTools.forEach(([name, ability]) => addTool(name, ability));
+        }
+        weaponList.replaceChildren();
+        if (Array.isArray(data.weapons)) {
+          data.weapons.forEach((weapon) => addWeapon(weapon.name || "", weapon.ability || ""));
+        } else if (String(data.fields?.["weapon-proficiencies"] || "").trim()) {
+          String(data.fields["weapon-proficiencies"]).split(",").map((name) => name.trim()).filter(Boolean).forEach((name) => addWeapon(name, ""));
+        }
         attackList.replaceChildren();
         setAttacks(Array.isArray(data.attacks) ? data.attacks : []);
         setArmors(Array.isArray(data.armors) ? data.armors : []);
@@ -2352,6 +3069,30 @@
         return JSON.parse(new TextDecoder().decode(bytes));
       };
 
+      const monsterSpellcastingPdfLines = (data) => {
+        if (!data.spellcastingEnabled) return [];
+        const fields = data.fields || {};
+        const ability = String(fields["monster-spellcasting-ability"] || "").trim().toUpperCase();
+        const dc = String(fields["monster-spell-save-dc"] || "").trim();
+        const notes = String(fields["monster-spellcasting-notes"] || "").trim();
+        const spellRef = (spell) => {
+          const entry = typeof spell === "string" ? { name: spell, source: "", page: "" } : spell;
+          const name = String(entry.name || "").trim();
+          if (!name) return "";
+          const parts = [String(entry.source || "").trim(), String(entry.page || "").trim()].filter(Boolean);
+          return parts.length ? `${name} (${parts.join(" ")})` : name;
+        };
+        const atWill = (data.spellcasting?.atWill || []).map(spellRef).filter(Boolean);
+        const perDay = (data.spellcasting?.perDay || [])
+          .map((group) => ({ count: String(group.count || "").trim(), spells: (group.spells || []).map(spellRef).filter(Boolean) }))
+          .filter((group) => group.spells.length);
+        const header = `SPELLCASTING${ability ? ` (${ability}${dc ? `, spell save DC ${dc}` : ""})` : ""}`;
+        const lines = [];
+        if (notes) lines.push(notes);
+        if (atWill.length) lines.push(`At will: ${atWill.join(", ")}`);
+        perDay.forEach((group) => lines.push(`${group.count || "?"}/day: ${group.spells.join(", ")}`));
+        return lines.length || notes ? [header, ...lines, ""] : [""];
+      };
       const makeMonsterPdf = (data) => {
         const fields = data.fields || {};
         const cr = fields["monster-cr"];
@@ -2362,10 +3103,14 @@
         const lairXp = lairCr ? monsterCrData.find(([key]) => key === lairCr)?.[1] : "";
         const crLabel = cr ? `CR ${cr}${crXp ? ` (${crXp} XP${lairXp ? `; lair: ${lairXp} XP` : ""})` : ""}` : "—";
         const signedInt = (value) => { const n = Number.parseInt(value, 10); return Number.isFinite(n) ? n : 0; };
-        const saveLine = ["str", "dex", "con", "int", "wis", "cha"]
-          .filter((ability) => fields[`monster-${ability}-save-proficient`] === "on" || fields[`monster-${ability}-save-proficient`] === true)
-          .map((ability) => `${ability.toUpperCase()} +${signedInt(fields[`monster-${ability}-mod`]) + signedInt(fields["monster-proficiency-bonus"])}`)
-          .join(", ");
+        const saveLine = [
+          ...["str", "dex", "con", "int", "wis", "cha"]
+            .filter((ability) => fields[`monster-${ability}-save-proficient`] === "on" || fields[`monster-${ability}-save-proficient`] === true)
+            .map((ability) => `${ability.toUpperCase()} +${signedInt(fields[`monster-${ability}-mod`]) + signedInt(fields["monster-proficiency-bonus"])}`),
+          ...(data.customAbilities || [])
+            .filter((entry) => entry.saveProficient)
+            .map((entry) => `${String(entry.abbr || entry.name || "CUS").toUpperCase().slice(0, 3)} +${Math.floor(((signedInt(entry.value) || 10) - 10) / 2) + signedInt(fields["monster-proficiency-bonus"])}`)
+        ].join(", ");
         const lines = [
           fields["monster-name"] || "Unnamed monster",
           `${fields["monster-size"] || "Medium"} ${fields["monster-type"] || "creature"} · ${fields["monster-alignment"] || "Unaligned"} · ${crLabel}`,
@@ -2381,8 +3126,12 @@
           "",
           "ABILITY SCORES",
           ...["str", "dex", "con", "int", "wis", "cha"].map((ability) => `${ability.toUpperCase()} ${fields[`monster-${ability}`] || "—"} (${fields[`monster-${ability}-mod`] || "+0"})`),
+          ...(data.customAbilities || []).map((entry) => {
+            const modifier = Math.floor(((signedInt(entry.value) || 10) - 10) / 2);
+            return `${String(entry.abbr || entry.name || "Custom").toUpperCase().slice(0, 3)} ${entry.value || "—"} (${modifier >= 0 ? "+" : ""}${modifier})`;
+          }),
           ...(saveLine ? [`SAVING THROWS  ${saveLine}`] : []),
-          "",
+          ...monsterSpellcastingPdfLines(data),
           ...(data.entries || []).flatMap((entry) => {
             const title = `${entry.name || "Untitled"}${entry.recharge ? ` (Recharge ${entry.recharge})` : ""}${entry.attack ? " [Attack]" : ""}`;
             if (!entry.attack) return [entry.group.toUpperCase(), title, entry.description || ""];
@@ -2505,7 +3254,7 @@
           ] : []),
           ...((data.armors || []).some((armor) => String(armor.name || "").trim()) ? [
             ...section("ARMOR"),
-            ...(data.armors || []).map((armor) => [armor.name, armor.equipped ? "Equipped" : "", armor.ac ? `AC ${armor.ac}` : "", armor.type, armor.modeText, armor.stealthText, armor.reqText, armor.dondoff ? `Don/doff ${armor.dondoff}` : ""].filter((part) => String(part || "").trim()).join(" · "))
+            ...(data.armors || []).map((armor) => [armor.name, armor.equipped ? "Equipped" : "", armor.ac ? (isBonusArmor(armor.type) ? `AC ${signedBonus(armor.ac)}` : `AC ${armor.ac}`) : "", armor.type, armor.modeText, armor.stealthText, armor.reqText, armor.don ? `Don ${armor.don}` : "", armor.doff ? `Doff ${armor.doff}` : ""].filter((part) => String(part || "").trim()).join(" · "))
           ] : []),
           `Armor: ${pdfValue(["armor-light", "armor-medium", "armor-heavy", "armor-shields"].filter((name) => fields[name] === "on").map((name) => name.replace("armor-", "")).join(", "))}`,
           `Saving throw proficiencies: ${pdfValue(["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"].filter((name) => fields[`${name}-save-proficient`] === "on").join(", "))}`,
@@ -2513,10 +3262,25 @@
           ...data.features.flatMap((feature) => [pdfValue(feature.title), `${pdfValue(feature.source)} · ${pdfValue(feature.uses)}`, pdfValue(feature.description), ""]),
           "SKILL PROFICIENCIES",
           ...(data.skills || []).map((skill) => `${pdfValue(skill.name)}: ${pdfValue(skill.ability)} ${pdfValue(skill.bonus)}${skill.proficient ? skill.expertise ? " (Expertise)" : " (Proficient)" : ""}`),
-          `Weapon proficiencies: ${pdfValue(fields["weapon-proficiencies"])}`,
-          `Tool proficiencies: ${pdfValue(fields["tool-proficiencies"])}`,
+          ...((data.weapons || []).filter((weapon) => String(weapon.name || "").trim()).length ? [
+            `Weapon proficiencies: ${(data.weapons || []).filter((weapon) => String(weapon.name || "").trim()).map((weapon) => {
+              const name = pdfValue(weapon.name);
+              const ability = String(weapon.ability || "").trim().toUpperCase();
+              const bonus = String(weapon.bonus || "").trim();
+              if (!ability) return name;
+              return `${name}: ${ability} ${bonus}`;
+            }).join(", ")}`
+          ] : [`Weapon proficiencies: ${pdfValue(fields["weapon-proficiencies"])}`]),
+          ...((data.tools || []).filter((tool) => String(tool.name || "").trim()).length ? [
+            `Tool proficiencies: ${(data.tools || []).filter((tool) => String(tool.name || "").trim()).map((tool) => {
+              const name = pdfValue(tool.name);
+              const ability = String(tool.ability || "").trim().toUpperCase();
+              const bonus = String(tool.bonus || "").trim();
+              if (!ability) return name;
+              return `${name}: ${ability} ${bonus}`;
+            }).join(", ")}`
+          ] : [`Tool proficiencies: ${pdfValue(fields["tool-proficiencies"])}`]),
           ...section("CHARACTER BACKGROUND"),
-          `First impression: ${pdfValue(fields["first-impression"])}`,
           `Appearance: ${pdfValue(fields.appearance)}`,
           `Languages: ${pdfValue(fields.languages)}`,
           `Background story: ${pdfValue(fields["background-story"])}`,
@@ -2531,7 +3295,7 @@
           ...section("INVENTORY & CURRENCY"),
           `Inventory: ${pdfValue(fields.inventory)}`,
           ...(data.currencies || []).map((currency) => `${pdfValue(currency.name)}: ${pdfValue(currency.amount)}`),
-          ...(data.customFields || []).map((field) => `${pdfValue(field.name)}: ${pdfValue(field.value)}`),
+          ...(data.customFields || []).map((field) => field.kind === "ability" ? `${pdfValue(field.name)}${field.abbr ? ` (${field.abbr})` : ""}: ${pdfValue(field.value)} (${scoreModifierLabel(field.value)})` : `${pdfValue(field.name)}: ${pdfValue(field.value)}`),
           ...section("NOTES"),
           ...(fields.notes || "null").split(/\r?\n/).map(pdfValue)
         ];
@@ -2706,6 +3470,8 @@
         const armor = normalizeArmor({
           name: armorNameInput.value.trim() || "Unnamed armor",
           type: armorTypeInput.value,
+          bonus: armorBonusInput.value.trim(),
+          bonusAbility: armorBonusAbilityInput.value,
           mode: armorModeInput.value,
           fixedAc: armorFixedAcInput.value.trim(),
           cap: armorCapInput.value.trim(),
@@ -2715,11 +3481,12 @@
           reqAbility: armorReqAbilityInput.value,
           reqScore: armorReqScoreInput.value.trim(),
           stealth: armorStealthInput.value,
-          dondoff: armorDonDoffInput.value.trim()
+          don: armorDonInput.value.trim(),
+          doff: armorDoffInput.value.trim()
         });
         armor.equipped = isEdit ? armors[editingArmorIndex].equipped : false;
         lastArmorAbility = armor.ability;
-        if (armor.equipped) armors.forEach((existing) => { existing.equipped = false; });
+        if (armor.equipped) armors.forEach((existing) => { if (isBonusArmor(existing.type) === isBonusArmor(armor.type)) existing.equipped = false; });
         if (isEdit) armors[editingArmorIndex] = armor;
         else armors.push(armor);
         updateArmorACs();
@@ -2728,7 +3495,7 @@
         persistDraft();
         setStatus(isEdit ? "Armor updated" : "Armor added");
       });
-      [armorModeInput, armorAbilityInput, armorAbilityBInput, armorFixedAcInput, armorCapInput, armorReqToggle, armorReqAbilityInput, armorReqScoreInput].forEach((input) => {
+      [armorTypeInput, armorModeInput, armorBonusInput, armorBonusAbilityInput, armorAbilityInput, armorAbilityBInput, armorFixedAcInput, armorCapInput, armorReqToggle, armorReqAbilityInput, armorReqScoreInput].forEach((input) => {
         input.addEventListener("input", refreshArmorEditor);
         input.addEventListener("change", refreshArmorEditor);
       });
@@ -2739,6 +3506,16 @@
       document.querySelector("#add-skill").addEventListener("click", () => {
         addSkill();
         skillList.lastElementChild.querySelector(".skill-name").focus();
+        persistDraft();
+      });
+      document.querySelector("#add-tool").addEventListener("click", () => {
+        addTool();
+        toolList.lastElementChild?.querySelector(".tool-name")?.focus();
+        persistDraft();
+      });
+      document.querySelector("#add-weapon").addEventListener("click", () => {
+        addWeapon();
+        weaponList.lastElementChild?.querySelector(".weapon-name")?.focus();
         persistDraft();
       });
       document.querySelector("#add-currency").addEventListener("click", () => {
@@ -2754,7 +3531,7 @@
       document.querySelectorAll("[data-add-custom-field]").forEach((button) => button.addEventListener("click", () => {
         addCustomField(button.dataset.addCustomField);
         const container = document.querySelector(`[data-custom-fields-for="${button.dataset.addCustomField}"]`);
-        container.lastElementChild.querySelector(".custom-field-name").focus();
+        container.lastElementChild.querySelector(".custom-field-name, .custom-ability-name")?.focus();
         persistDraft();
       }));
       document.querySelector("#save-feature").addEventListener("click", () => {
@@ -2831,8 +3608,14 @@
       });
       document.querySelectorAll(".score").forEach((input) => input.addEventListener("input", updateModifiers));
       document.querySelectorAll('[name="level"], [name="hit-dice-size"]').forEach((input) => input.addEventListener("input", updateHealth));
+      document.querySelector('[name="level"]').addEventListener("input", () => {
+        updateProficiencyBonus();
+        updateModifiers();
+        updateCharacterAttackBonuses();
+        updateSpellcastingStats();
+      });
       document.querySelector('[name="health-mode"]').addEventListener("change", updateHealth);
-      document.querySelectorAll('[name="auto-health"], [name="auto-modifiers"], [name="auto-spellcasting"]').forEach((input) => input.addEventListener("change", () => {
+      document.querySelectorAll('[name="auto-health"], [name="auto-modifiers"], [name="auto-proficiency"], [name="auto-spellcasting"]').forEach((input) => input.addEventListener("change", () => {
         syncManualOverrides();
         updateModifiers();
         updateHealth();
@@ -2873,6 +3656,21 @@
         updateNpcVisibility();
         persistMonsterDraft();
       });
+      monsterSpellToggle.addEventListener("change", () => {
+        updateMonsterSpellcastingVisibility();
+        persistMonsterDraft();
+      });
+      document.querySelector('[name="monster-spellcasting-ability"]').addEventListener("change", updateMonsterSpellcastingStats);
+      document.querySelector("#add-monster-atwill").addEventListener("click", () => {
+        addMonsterSpell(monsterAtwillList);
+        monsterAtwillList.lastElementChild?.querySelector(".monster-spell-name")?.focus();
+        persistMonsterDraft();
+      });
+      document.querySelector("#add-monster-per-day").addEventListener("click", () => {
+        addMonsterPerDayGroup();
+        monsterPerDayList.lastElementChild?.querySelector(".monster-per-day-count")?.focus();
+        persistMonsterDraft();
+      });
       const positionScrapPanel = () => {
         if (scrapPanel.hidden) return;
         scrapPanel.style.top = `${document.querySelector(".topbar").getBoundingClientRect().bottom + 10}px`;
@@ -2892,7 +3690,10 @@
         updateSpellSlots();
         persistDraft();
       });
-      document.querySelectorAll(".score, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("input", updateSpellcastingStats));
+      document.querySelectorAll(".score, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("input", () => {
+        updateModifiers();
+        updateSpellcastingStats();
+      }));
       document.querySelectorAll(".save-proficient, .skill-proficient, .skill-expertise, .skill-ability, [name=\"proficiency-bonus\"]").forEach((input) => input.addEventListener("change", updateModifiers));
       skillList.addEventListener("change", (event) => {
         if (event.target.classList.contains("skill-alt-enabled")) {
@@ -2903,13 +3704,18 @@
       });
       characterTab.addEventListener("click", () => setMakerTab("character"));
       monsterTab.addEventListener("click", () => setMakerTab("monster"));
-      document.querySelectorAll(".add-monster-entry").forEach((button) => button.addEventListener("click", () => {
-        const group = button.dataset.monsterGroup;
-        addMonsterEntry(group);
-        const list = document.querySelector(`[data-monster-group="${group}"]`);
-        list.lastElementChild.querySelector(".monster-entry-name input").focus();
+      document.querySelector("#add-monster-entry").addEventListener("click", () => openMonsterEntryEditor());
+      document.querySelector("#cancel-monster-entry").addEventListener("click", closeMonsterEntryEditor);
+      document.querySelector("#save-monster-entry").addEventListener("click", saveMonsterEntryFromEditor);
+      [monsterEntryEditorGroup, monsterEntryEditorAttack, monsterEntryEditorKind, monsterEntryEditorAbility].forEach((input) => {
+        input.addEventListener("change", refreshMonsterEntryEditor);
+        input.addEventListener("input", refreshMonsterEntryEditor);
+      });
+      document.querySelector("#add-monster-ability").addEventListener("click", () => {
+        addMonsterCustomAbility();
+        monsterCustomContainer?.lastElementChild?.querySelector(".custom-ability-name")?.focus();
         persistMonsterDraft();
-      }));
+      });
       monsterSheet.querySelectorAll('[name^="monster-"]').forEach((input) => input.addEventListener("input", () => {
         if (input.name.match(/^monster-(str|dex|con|int|wis|cha)$/)) updateMonsterModifiers();
         if (input.name.match(/^monster-(hit-dice|hit-die-size|hp-bonus)$/)) updateMonsterHp();
@@ -2917,6 +3723,7 @@
           updateMonsterProficiencyBonus();
           updateMonsterXpReward();
           updateMonsterAttackBonuses();
+          updateMonsterSpellcastingStats();
         }
         if (input.name === "monster-lair") updateMonsterXpReward();
         persistMonsterDraft();
@@ -2977,7 +3784,14 @@
         if (!window.confirm(monsterActive ? "Clear the whole stat block, including traits and actions?" : "Clear all fields and remove every feature?")) return;
         if (monsterActive) {
           monsterSheet.reset();
-          monsterEntryLists.forEach((list) => list.replaceChildren());
+          if (monsterCustomContainer) monsterCustomContainer.replaceChildren();
+          refreshMonsterAbilitySelectors();
+          renderMonsterSpellcasting();
+          monsterSpellToggle.checked = false;
+          updateMonsterSpellcastingVisibility();
+          closeMonsterEntryEditor();
+          monsterEntryData = [];
+          renderMonsterEntryCards();
           npcToggle.checked = false;
           updateNpcVisibility();
           localStorage.removeItem(monsterDraftKey);
@@ -2997,6 +3811,9 @@
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         skillList.replaceChildren();
         standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
+        toolList.replaceChildren();
+        standardTools.forEach(([name, ability]) => addTool(name, ability));
+        weaponList.replaceChildren();
         setAttacks([]);
         setArmors([]);
         currencyList.replaceChildren();
@@ -3015,7 +3832,11 @@
       try {
         const draft = JSON.parse(localStorage.getItem(draftKey) || "null");
         if (draft) applySheet(draft);
-        else standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
+        else {
+          standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
+          standardTools.forEach(([name, ability]) => addTool(name, ability));
+          standardWeapons.forEach(([name, ability]) => addWeapon(name, ability));
+        }
       } catch { setStatus("Could not restore browser draft"); }
       try {
         const monsterDraft = JSON.parse(localStorage.getItem(monsterDraftKey) || "null");
@@ -3032,6 +3853,7 @@
       updateHitDieRules();
       updateSpellcastingVisibility();
       updateNpcVisibility();
+      updateMonsterSpellcastingVisibility();
       try { scrapNotes.value = localStorage.getItem(scrapKey) || ""; } catch { setStatus("Could not restore scrap sheet"); }
     })();
   </script>
