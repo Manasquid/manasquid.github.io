@@ -1003,9 +1003,8 @@
               <button class="button primary" id="save-attack" type="button">Save attack</button>
             </div>
           </div>
-          <div class="attack-list" id="attack-list" aria-live="polite">
-            <div class="empty-state" id="attack-empty-state">No attacks yet. Add your first attack to start building the sheet.</div>
-          </div>
+          <div class="attack-list" id="attack-list" aria-live="polite"></div>
+          <div class="empty-state" id="attack-empty-state">No attacks yet. Add your first attack to start building the sheet.</div>
         </div>
       </section>
 
@@ -1038,9 +1037,8 @@
               <button class="button primary" id="save-armor" type="button">Save armor</button>
             </div>
           </div>
-          <div class="armor-list" id="armor-list" aria-live="polite">
-            <div class="empty-state" id="armor-empty-state">No armor yet. Add your first piece to start building the sheet.</div>
-          </div>
+          <div class="armor-list" id="armor-list" aria-live="polite"></div>
+          <div class="empty-state" id="armor-empty-state">No armor yet. Add your first piece to start building the sheet.</div>
         </div>
       </section>
 
@@ -1086,6 +1084,7 @@
             <div class="tool-list" id="tool-list"></div>
             <div class="proficiency-actions"><button class="button" id="add-tool" type="button">+ Add tool</button></div>
           </div>
+          <div class="field full"><label for="languages">Languages</label><textarea id="languages" name="languages" placeholder="e.g. Common, Elvish"></textarea></div>
           <div class="custom-fields"><span class="field-label">Custom proficiency fields</span><div class="custom-field-list" data-custom-fields-for="proficiencies"></div><button class="button" data-add-custom-field="proficiencies" type="button">+ Add proficiency field</button></div>
         </div>
       </section>
@@ -1096,7 +1095,6 @@
         </div>
         <div class="panel-body background-grid">
           <div class="field full"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Look, clothing, and mannerisms."></textarea></div>
-          <div class="field full"><label for="languages">Languages</label><textarea id="languages" name="languages" placeholder="e.g. Common, Elvish"></textarea></div>
           <div class="field full"><label for="background-story">Background story</label><textarea id="background-story" name="background-story" placeholder="Where they came from and what shaped them."></textarea></div>
           <div class="field full custom-fields"><span class="field-label">Custom background fields</span><div class="custom-field-list" data-custom-fields-for="background"></div><button class="button" data-add-custom-field="background" type="button">+ Add background field</button></div>
         </div>

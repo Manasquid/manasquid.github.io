@@ -1,4 +1,4 @@
-const CACHE = "manasquid-sheet-v3";
+const CACHE = "manasquid-sheet-v4";
 const ASSETS = [
   "./",
   "./index.html",
