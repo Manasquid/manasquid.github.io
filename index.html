@@ -439,7 +439,7 @@
       min-width: 1.9rem;
       padding: 0;
       font-size: .85rem;
-      color: var(--bonus);
+      color: var(--danger);
       flex-shrink: 0;
       align-self: end;
       justify-self: center;
@@ -519,7 +519,7 @@
     .monster-entry-list { display: grid; gap: .65rem; }
     .monster-entry { display: grid; grid-template-columns: minmax(10rem, .8fr) minmax(0, 2fr) auto; gap: .55rem; align-items: start; }
     .monster-entry textarea { min-height: 4rem; }
-    .monster-entry .remove-monster-entry { color: var(--bonus); }
+    .monster-entry .remove-monster-entry { color: var(--danger); }
     .monster-entry .remove-monster-entry { margin-top: 1.35rem; }
     .monster-entry-name-cell { display: grid; gap: .3rem; align-content: start; }
     .monster-entry-attack-toggle { display: flex; align-items: center; gap: .4rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; white-space: nowrap; }
@@ -531,7 +531,7 @@
     .monster-lair-toggle { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .72rem; font-weight: 650; letter-spacing: .02em; text-transform: none; }
     .monster-lair-toggle input { width: 1rem; height: 1rem; accent-color: var(--accent); }
     .attack-list { display: grid; gap: .75rem; }
-    .feature-actions .remove-attack { color: var(--bonus); }
+    .feature-actions .remove-attack { color: var(--danger); }
     .monster-attack-list { display: grid; gap: .6rem; }
     .monster-attack-item { display: grid; gap: .35rem; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--surface-soft); }
     .monster-attack-item-head { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
@@ -645,7 +645,7 @@
     .feature-meta { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .7rem; }
     .tag { display: inline-flex; align-items: center; min-height: 1.45rem; padding: .15rem .45rem; border: 1px solid var(--line-strong); border-radius: .3rem; color: var(--field-text); font-size: .7rem; }
     .feature-actions { display: flex; align-items: start; gap: .35rem; }
-    .feature-actions .remove-feature { color: var(--bonus); }
+    .feature-actions .remove-feature { color: var(--danger); }
     .empty-state { padding: 2rem 1rem; border: 1px dashed var(--line-strong); border-radius: .5rem; color: var(--muted); text-align: center; }
     .feature-editor { display: grid; gap: 1rem; margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--accent); border-radius: .55rem; background: var(--accent-soft); }
     .feature-editor[hidden] { display: none; }
@@ -746,7 +746,7 @@
     }
   </style>
 </head>
-<body>
+<body data-theme="office">
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ 5.5e sheet maker</span></a>
@@ -786,7 +786,7 @@
       <summary class="panel-heading"><span><h2>Configurations</h2><p id="config-description">Settings for the character sheet.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option character-only"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
-        <label class="config-option character-only"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
+        <label class="config-option character-only"><span class="field-label">Theme preset</span><select name="theme"><option value="office" selected>Office</option><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
         <label class="config-option monster-only"><span class="field-label">Theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
         <label class="config-option character-only"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="default" selected>Theme default</option><option value="red">Red</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
         <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="default" selected>Theme default</option><option value="red">Red</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
@@ -1991,7 +1991,7 @@
 
       const applyTheme = (themeName) => {
         const validThemes = new Set(["streetlamp", "ember", "depths", "starlight", "monochrome", "office", "void", "venom", "parchment", "radiation", "neontech", "sunset", "moonwalk", "beeswax", "rosethorn", "teapot", "forge", "sharp"]);
-        const theme = validThemes.has(themeName) ? themeName : "streetlamp";
+        const theme = validThemes.has(themeName) ? themeName : "office";
         document.body.dataset.theme = theme;
       };
 
@@ -2011,7 +2011,7 @@
           else if (input.tagName === "SELECT") input.selectedIndex = 0;
           else input.value = "";
         });
-        applyTheme("streetlamp");
+        applyTheme("office");
         applyModifierColor("default");
       };
 
@@ -2026,7 +2026,7 @@
             input.value = data.fields[input.name];
           }
         });
-        applyTheme(data.fields.theme || "streetlamp");
+        applyTheme(data.fields.theme || "office");
         applyModifierColor(data.fields["modifier-color"] || "default");
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
         data.features.forEach((feature) => makeFeature(feature.title, feature.description, feature.source, feature.uses));
@@ -2665,6 +2665,7 @@
           updateNpcVisibility();
           localStorage.removeItem(monsterDraftKey);
           applyTheme("streetlamp");
+          document.querySelector('[name="monster-theme"]').value = "streetlamp";
           applyModifierColor("red", "monster");
           updateMonsterModifiers();
           updateMonsterAttackReference();
@@ -2672,7 +2673,8 @@
           return;
         }
         sheet.reset();
-        applyTheme("sunset");
+        applyTheme("office");
+        document.querySelector('[name="theme"]').value = "office";
         spellcasterToggle.checked = false;
         npcToggle.checked = false;
         featureList.querySelectorAll(".feature-card").forEach((card) => card.remove());
