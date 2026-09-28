@@ -2341,10 +2341,6 @@
         ["Stealth", "DEX"], ["Survival", "WIS"]
       ];
 
-      const standardTools = [
-        ["Thieves' tools", "DEX"], ["Musical instrument", ""], ["Navigator's tools", "WIS"], ["Vehicles (land)", ""]
-      ];
-
       const standardWeapons = [];
 
       const toolList = document.querySelector("#tool-list");
@@ -3041,8 +3037,6 @@
           data.tools.forEach((tool) => addTool(tool.name || "", tool.ability || ""));
         } else if (String(data.fields?.["tool-proficiencies"] || "").trim()) {
           String(data.fields["tool-proficiencies"]).split(",").map((name) => name.trim()).filter(Boolean).forEach((name) => addTool(name, ""));
-        } else {
-          standardTools.forEach(([name, ability]) => addTool(name, ability));
         }
         weaponList.replaceChildren();
         if (Array.isArray(data.weapons)) {
@@ -3829,7 +3823,6 @@
         skillList.replaceChildren();
         standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
         toolList.replaceChildren();
-        standardTools.forEach(([name, ability]) => addTool(name, ability));
         weaponList.replaceChildren();
         setAttacks([]);
         setArmors([]);
@@ -3851,7 +3844,6 @@
         if (draft) applySheet(draft);
         else {
           standardSkills.forEach(([name, ability]) => addSkill(name, ability, "", false, false, false));
-          standardTools.forEach(([name, ability]) => addTool(name, ability));
           standardWeapons.forEach(([name, ability]) => addWeapon(name, ability));
         }
       } catch { setStatus("Could not restore browser draft"); }
