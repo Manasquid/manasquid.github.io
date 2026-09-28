@@ -95,10 +95,10 @@
       --accent-soft: #2d1f33;
       --field-text: #bef2ff;
       --field-placeholder: #d8f3ff;
-      --button-strong-text: #2d1b12;
+      --button-strong-text: #beb78d;
       --button-strong-hover: #f4d8a0;
       --topbar-bg: rgba(18, 13, 26, .94);
-      --bonus: #ff8147;
+      --bonus: #9effef;
     }
     body[data-theme="monochrome"] {
       --bg: #0a0a0d;
@@ -149,10 +149,10 @@
       --accent-soft: #25022c;
       --field-text: #f0d1f8;
       --field-placeholder: #8a99a5;
-      --button-strong-text: #05070a;
+      --button-strong-text: #e9d0fd;
       --button-strong-hover: #edf4f9;
       --topbar-bg: rgba(5, 7, 10, .94);
-      --bonus: #c50c7e;
+      --bonus: #870da5;
     }
     body[data-theme="venom"] {
       --bg: #071d1e;
@@ -193,20 +193,20 @@
     body[data-theme="radiation"] {
       --bg: #040a08;
       --surface: #0d1b12;
-      --surface-raised: #163225;
-      --surface-soft: #102214;
-      --line: #355c3e;
+      --surface-raised: #4b4713;
+      --surface-soft: #6e7420;
+      --line: #4d7035;
       --line-strong: #5d8d5d;
-      --text: #8fe39d;
-      --muted: #c8f8b4;
-      --accent: #d5f26d;
+      --text: #f4ff5e;
+      --muted: #effc3f;
+      --accent: #d9ff51;
       --accent-soft: #1a2617;
       --field-text: #f5dc6d;
-      --field-placeholder: #8da27a;
+      --field-placeholder: #c1ce9e;
       --button-strong-text: #0d120f;
       --button-strong-hover: #e7f57d;
       --topbar-bg: rgba(4, 10, 8, .94);
-      --bonus: #d9d758;
+      --bonus: #9dff00;
     }
     body[data-theme="neontech"] {
       --bg: #02050a;
@@ -224,25 +224,25 @@
       --button-strong-text: #040914;
       --button-strong-hover: #69f0ff;
       --topbar-bg: rgba(2, 5, 10, .94);
-      --bonus: #ff5ac7;
+      --bonus: #ff91da;
     }
     body[data-theme="sunset"] {
-      --bg: #321b2a;
+      --bg: #543158;
       --surface: #4d2940;
-      --surface-raised: #673650;
-      --surface-soft: #42243a;
+      --surface-raised: #67365c;
+      --surface-soft: #5a345e;
       --line: #8c5878;
       --line-strong: #b77b9b;
       --text: #ffc4a3;
       --muted: #ffe1cb;
-      --accent: #ffb36b;
+      --accent: #ffc445;
       --accent-soft: #5a2e38;
       --field-text: #ffe5a8;
       --field-placeholder: #d09ba2;
       --button-strong-text: #32151c;
       --button-strong-hover: #ffd095;
       --topbar-bg: rgba(50, 27, 42, .94);
-      --bonus: #ff8585;
+      --bonus: #ffaf37;
     }
     body[data-theme="moonwalk"] {
       --bg: #18191d;
@@ -365,7 +365,7 @@
     body[data-modifier-color="Purple"] { --bonus: #a126ff; }
     body[data-modifier-color="Rose"] { --bonus: #ff586e; }
     body[data-modifier-color="Maroon"] { --bonus: #7e1920; }
-    body[data-modifier-color="red"] { --bonus: #fa1e1e; }
+    body[data-modifier-color="Red"] { --bonus: #fa1e1e; }
 
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
@@ -768,7 +768,7 @@
 
   <aside class="scrap-panel" id="scrap-panel" hidden>
     <label class="field-label" for="scrap-notes">Scrap sheet</label>
-    <textarea id="scrap-notes" placeholder="Dice rolls, initiative orders, NPC names, reminders — anything you need at the table."></textarea>
+    <textarea id="scrap-notes" placeholder="Quick notes and reminders."></textarea>
   </aside>
 
   <main class="shell" id="top">
@@ -846,7 +846,7 @@
       <div class="sheet-grid">
         <section class="panel" aria-labelledby="abilities-heading">
           <div class="panel-heading">
-            <div><h2 id="abilities-heading">Ability scores</h2><p>Enter the score from your character creation method.</p></div>
+            <div><h2 id="abilities-heading">Ability scores</h2><p>The six ability scores.</p></div>
           </div>
           <div class="panel-body">
             <div class="ability-grid">
@@ -899,7 +899,7 @@
 
       <section class="panel" id="features" aria-labelledby="features-heading">
         <div class="panel-heading">
-          <div><h2 id="features-heading">Features &amp; traits</h2><p>Add class features, species traits, feats, and anything else you need at the table.</p></div>
+          <div><h2 id="features-heading">Features &amp; traits</h2><p>Class features, species traits, and feats.</p></div>
           <button class="button primary add-feature" id="add-feature" type="button">+ Add feature</button>
         </div>
         <div class="panel-body">
@@ -907,7 +907,7 @@
             <div class="feature-editor-grid">
               <div class="field"><label for="feature-name">Feature name</label><input id="feature-name" placeholder="e.g. Action Surge"></div>
               <div class="field"><label for="feature-source">Source</label><input id="feature-source" placeholder="e.g. Fighter, species, feat"></div>
-              <div class="field full"><label for="feature-description">Description</label><textarea id="feature-description" rows="3" placeholder="What does this feature do? Include its activation, range, and effect."></textarea></div>
+              <div class="field full"><label for="feature-description">Description</label><textarea id="feature-description" rows="3" placeholder="What the feature does."></textarea></div>
               <div class="field"><label for="feature-uses">Uses / recharge</label><input id="feature-uses" placeholder="e.g. 1 / Short Rest"></div>
             </div>
             <div class="feature-editor-actions">
@@ -923,7 +923,7 @@
 
       <section class="panel" aria-labelledby="proficiencies-heading">
         <div class="panel-heading">
-          <div><h2 id="proficiencies-heading">Proficiencies</h2><p>Track standard skills and add custom skills for any setting.</p></div>
+          <div><h2 id="proficiencies-heading">Proficiencies</h2><p>Skills, weapons, tools, and languages.</p></div>
         </div>
         <div class="panel-body">
           <div class="proficiency-header" aria-hidden="true"><span>Skill</span><span>Ability</span><span>+ 2nd</span><span>2nd ability</span><span>Proficiency</span><span>Expertise</span><span>Bonus</span><span></span></div>
@@ -939,24 +939,24 @@
 
       <section class="panel" aria-labelledby="background-heading">
         <div class="panel-heading">
-          <div><h2 id="background-heading">Character background</h2><p>Capture the story, look, and details that make this character yours.</p></div>
+          <div><h2 id="background-heading">Character background</h2><p>The character's story and details.</p></div>
         </div>
         <div class="panel-body background-grid">
-          <div class="field full"><label for="first-impression">Initial description</label><textarea id="first-impression" name="first-impression" placeholder="What are other players first introduced to?"></textarea></div>
-          <div class="field full"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Describe their look, clothing, mannerisms, and distinguishing traits."></textarea></div>
+          <div class="field full"><label for="first-impression">Initial description</label><textarea id="first-impression" name="first-impression" placeholder="How others first see the character."></textarea></div>
+          <div class="field full"><label for="appearance">Appearance</label><textarea id="appearance" name="appearance" placeholder="Look, clothing, and mannerisms."></textarea></div>
           <div class="field full"><label for="languages">Languages</label><textarea id="languages" name="languages" placeholder="e.g. Common, Elvish"></textarea></div>
-          <div class="field full"><label for="background-story">Background story</label><textarea id="background-story" name="background-story" placeholder="Where did they come from? What shaped them, and what are they seeking?"></textarea></div>
+          <div class="field full"><label for="background-story">Background story</label><textarea id="background-story" name="background-story" placeholder="Where they came from and what shaped them."></textarea></div>
           <div class="field full custom-fields"><span class="field-label">Custom background fields</span><div class="custom-field-list" data-custom-fields-for="background"></div><button class="button" data-add-custom-field="background" type="button">+ Add background field</button></div>
         </div>
       </section>
 
       <section class="panel" aria-labelledby="inventory-heading">
         <div class="panel-heading">
-          <div><h2 id="inventory-heading">Inventory &amp; currency</h2><p>Track carried items and currencies for any setting.</p></div>
+          <div><h2 id="inventory-heading">Inventory &amp; currency</h2><p>Carried items and currencies.</p></div>
         </div>
         <div class="panel-body">
           <div class="inventory-grid">
-            <div class="field"><label for="inventory">Inventory</label><textarea id="inventory" name="inventory" class="notes" placeholder="Weapons, armor, adventuring gear, treasures, and other carried items..."></textarea></div>
+            <div class="field"><label for="inventory">Inventory</label><textarea id="inventory" name="inventory" class="notes" placeholder="Weapons, armor, gear, and treasure."></textarea></div>
             <div>
               <div class="currency-heading"><span class="field-label">Currencies</span><button class="button" id="add-currency" type="button">+ Add currency</button></div>
               <div class="currency-list" id="currency-list"></div>
@@ -968,7 +968,7 @@
 
       <section class="panel spellcasting-panel" id="spellcasting" aria-labelledby="spellcasting-heading" hidden>
         <div class="panel-heading">
-          <div><h2 id="spellcasting-heading">Spellcasting</h2><p>Track the casting details and spells for this character.</p></div>
+          <div><h2 id="spellcasting-heading">Spellcasting</h2><p>Spells and casting details.</p></div>
         </div>
         <div class="panel-body">
           <div class="fields">
@@ -988,7 +988,7 @@
               <label class="spell-slot-field" data-slot-level="9"><span class="field-label">9th level</span><input name="spell-slot-9" type="number" min="0" placeholder="0"></label>
             </div></div>
             <div class="field full"><span class="field-label">Spells</span><div class="spell-list" id="spell-list"></div><button class="button" id="add-spell" type="button">+ Add spell</button></div>
-            <div class="field full"><label for="spellcasting-notes">Spellcasting notes</label><textarea id="spellcasting-notes" name="spellcasting-notes" placeholder="Components, focus, ritual casting, concentration reminders, and other details."></textarea></div>
+            <div class="field full"><label for="spellcasting-notes">Spellcasting notes</label><textarea id="spellcasting-notes" name="spellcasting-notes" placeholder="Casting notes and reminders."></textarea></div>
           </div>
         </div>
       </section>
@@ -1024,16 +1024,16 @@
           <div class="field"><label for="monster-cr">Challenge rating</label><select id="monster-cr" name="monster-cr"><option value="">Select CR</option></select></div>
           <div class="field"><label for="monster-proficiency-bonus">Proficiency bonus</label><input id="monster-proficiency-bonus" name="monster-proficiency-bonus" type="text" readonly aria-readonly="true" placeholder="+2"></div>
           <div class="field"><span class="monster-xp-label-row"><label for="monster-xp-reward">XP reward</label><label class="monster-lair-toggle"><input name="monster-lair" type="checkbox"> In lair (+1 CR)</label></span><input id="monster-xp-reward" name="monster-xp-reward" readonly aria-readonly="true" placeholder="e.g. 1,800 XP"></div>
-          <div class="field full"><label for="monster-description">Description</label><textarea id="monster-description" name="monster-description" placeholder="Describe the creature's role, habitat, or first impression."></textarea></div>
+          <div class="field full"><label for="monster-description">Description</label><textarea id="monster-description" name="monster-description" placeholder="Role, habitat, and appearance."></textarea></div>
         </div>
       </section>
       <section class="panel npc-panel" id="npc-details" aria-labelledby="npc-details-heading" hidden>
-        <div class="panel-heading"><div><h2 id="npc-details-heading">NPC details</h2><p>Story hooks and table-only information for using this creature as a recurring NPC.</p></div></div>
+        <div class="panel-heading"><div><h2 id="npc-details-heading">NPC details</h2><p>Details for a recurring NPC.</p></div></div>
         <div class="panel-body fields">
-          <div class="field wide"><label for="npc-alignment">Alignment details</label><textarea id="npc-alignment" name="npc-alignment" placeholder="e.g. Lawful neutral, but bends the rules for friends"></textarea></div>
-          <div class="field wide"><label for="npc-goals">Goals</label><textarea id="npc-goals" name="npc-goals" placeholder="What do they want, and what will they do to get it?"></textarea></div>
+          <div class="field wide"><label for="npc-alignment">Alignment details</label><textarea id="npc-alignment" name="npc-alignment" placeholder="e.g. Lawful neutral"></textarea></div>
+          <div class="field wide"><label for="npc-goals">Goals</label><textarea id="npc-goals" name="npc-goals" placeholder="What do they want?"></textarea></div>
           <div class="field wide"><label for="npc-personality">Personality</label><textarea id="npc-personality" name="npc-personality" placeholder="Mannerisms, traits, ideals, bonds, and flaws."></textarea></div>
-          <div class="field wide"><label for="npc-secret">Secret</label><textarea id="npc-secret" name="npc-secret" placeholder="What are they hiding, and what happens when it comes out?"></textarea></div>
+          <div class="field wide"><label for="npc-secret">Secret</label><textarea id="npc-secret" name="npc-secret" placeholder="What are they hiding?"></textarea></div>
         </div>
       </section>
       <div class="sheet-grid">
@@ -1053,7 +1053,7 @@
           </div>
         </section>
         <section class="panel" aria-labelledby="monster-abilities-heading">
-          <div class="panel-heading"><div><h2 id="monster-abilities-heading">Ability scores</h2><p>Enter scores and modifiers in one place.</p></div></div>
+          <div class="panel-heading"><div><h2 id="monster-abilities-heading">Ability scores</h2><p>Scores and modifiers.</p></div></div>
           <div class="panel-body"><div class="monster-ability-grid">
             <label class="monster-ability"><span class="ability-name">STR</span><input name="monster-str" type="number" min="1" max="40" value="10" aria-label="Strength score"><span class="ability-mod-wrap"><input name="monster-str-mod" placeholder="+0" aria-label="Strength modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-str-save-proficient" type="checkbox" aria-label="Strength save proficiency"> Save <strong data-msave-for="str">+0</strong></span></label>
             <label class="monster-ability"><span class="ability-name">DEX</span><input name="monster-dex" type="number" min="1" max="40" value="10" aria-label="Dexterity score"><span class="ability-mod-wrap"><input name="monster-dex-mod" placeholder="+0" aria-label="Dexterity modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-dex-save-proficient" type="checkbox" aria-label="Dexterity save proficiency"> Save <strong data-msave-for="dex">+0</strong></span></label>
@@ -1069,7 +1069,7 @@
         <div class="panel-body"><div class="monster-attack-list" id="monster-attack-reference"></div></div>
       </section>
       <section class="panel" aria-labelledby="monster-details-heading">
-        <div class="panel-heading"><div><h2 id="monster-details-heading">Skills, senses &amp; equipment</h2><p>Track proficiencies, senses, languages, and carried equipment separately from core combat numbers.</p></div></div>
+        <div class="panel-heading"><div><h2 id="monster-details-heading">Skills, senses &amp; equipment</h2><p>Skills, senses, languages, and equipment.</p></div></div>
         <div class="panel-body fields">
           <div class="field wide"><label for="monster-skills">Skills</label><textarea id="monster-skills" name="monster-skills" placeholder="Perception +6, Stealth +5"></textarea></div>
           <div class="field wide"><label for="monster-senses">Senses</label><textarea id="monster-senses" name="monster-senses" placeholder="Darkvision 60 ft., passive Perception 16"></textarea></div>
@@ -1078,7 +1078,7 @@
         </div>
       </section>
       <section class="panel" id="monster-features" aria-labelledby="monster-features-heading">
-        <div class="panel-heading"><div><h2 id="monster-features-heading">Traits, actions &amp; reactions</h2><p>Add the rules text that makes this creature unique.</p></div></div>
+        <div class="panel-heading"><div><h2 id="monster-features-heading">Traits, actions &amp; reactions</h2><p>Rules text for the stat block.</p></div></div>
         <div class="panel-body">
           <div class="monster-entry-groups">
             <div class="monster-entry-group"><h3>Traits</h3><div class="monster-entry-list" data-monster-group="traits"></div><button class="button add-monster-entry" data-monster-group="traits" type="button">+ Add trait</button></div>
@@ -1090,7 +1090,7 @@
         </div>
       </section>
       <section class="panel" aria-labelledby="monster-notes-heading">
-        <div class="panel-heading"><div><h2 id="monster-notes-heading">Encounter notes</h2><p>Keep tactics, loot, and GM reminders with the stat block.</p></div></div>
+        <div class="panel-heading"><div><h2 id="monster-notes-heading">Encounter notes</h2><p>Tactics, loot, and notes.</p></div></div>
         <div class="panel-body"><textarea class="notes" name="monster-notes" placeholder="Tactics, environment, treasure, or encounter notes."></textarea></div>
       </section>
     </form>
