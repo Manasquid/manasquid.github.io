@@ -708,6 +708,7 @@
       .skill-row > .skill-cell-bonus { grid-column: 3; grid-row: 1; }
       .skill-row > .skill-cell-ability { grid-column: 1; grid-row: 2; }
       .skill-row > .skill-cell-toggle { grid-column: 2; grid-row: 2; }
+      .skill-row > .skill-cell-toggle .field-label { text-align: center; }
       .skill-row > .skill-cell-alt { grid-column: 3; grid-row: 2; }
       .skill-row > .skill-cell-prof { grid-column: 1; grid-row: 3; }
       .skill-row > .skill-cell-exp { grid-column: 2; grid-row: 3; }
@@ -795,7 +796,7 @@
 
     <section class="panel storage-panel character-only" aria-labelledby="storage-heading">
       <div class="panel-heading">
-        <div><h2 id="storage-heading">Save &amp; transfer characters</h2><p>Keep versions in this browser or move a complete sheet between devices.</p></div>
+        <div><h2 id="storage-heading">Save &amp; transfer characters</h2><p>Export &amp; import options.</p></div>
         <div class="storage-tools">
           <button class="button" id="print-sheet" type="button">Download PDF</button>
           <button class="button" id="export-sheet" type="button">Download JSON</button>
@@ -816,7 +817,7 @@
     <form class="sheet" id="character-sheet">
       <section class="panel" aria-labelledby="identity-heading">
         <div class="panel-heading">
-          <div><h2 id="identity-heading">Character identity</h2><p>The basics of who is at the table.</p></div>
+          <div><h2 id="identity-heading">Character identity</h2><p>The basic information about the character.</p></div>
         </div>
         <div class="panel-body fields">
           <div class="field wide"><label for="character-name">Character name</label><input id="character-name" name="character-name" placeholder="e.g. Manasquid" autocomplete="off"></div>
@@ -852,7 +853,7 @@
 
         <section class="panel" aria-labelledby="combat-heading">
           <div class="panel-heading">
-            <div><h2 id="combat-heading">Combat snapshot</h2><p>Quick numbers for the table.</p></div>
+            <div><h2 id="combat-heading">Combat snapshot</h2><p>Quickstats for combat.</p></div>
           </div>
           <div class="panel-body">
             <div class="combat-grid">
@@ -877,7 +878,7 @@
 
       <section class="panel" aria-labelledby="attacks-heading">
         <div class="panel-heading">
-          <div><h2 id="attacks-heading">Attack reference</h2><p>Keep weapon and spell attacks handy for quick access in combat.</p></div>
+          <div><h2 id="attacks-heading">Attack reference</h2><p>Quickstats for attacks.</p></div>
           <button class="button primary" id="add-attack" type="button">+ Add attack</button>
         </div>
         <div class="panel-body">
@@ -986,7 +987,7 @@
     <form class="sheet maker-panel" id="monster-sheet" hidden>
       <section class="panel monster-storage-panel" aria-labelledby="monster-storage-heading">
         <div class="panel-heading">
-          <div><h2 id="monster-storage-heading">Save &amp; transfer stat blocks</h2><p>Export a monster as JSON or an importable PDF, keep versions in this browser, or import without affecting your character sheet.</p></div>
+          <div><h2 id="monster-storage-heading">Save &amp; transfer stat blocks</h2><p>Export &amp; import options.</p></div>
           <div class="storage-tools">
             <button class="button" id="print-monster" type="button">Download PDF</button>
             <button class="button" id="export-monster" type="button">Download JSON</button>
@@ -1004,7 +1005,7 @@
         </div>
       </section>
       <section class="panel" aria-labelledby="monster-identity-heading">
-        <div class="panel-heading"><div><h2 id="monster-identity-heading">Monster identity</h2><p>Build a reusable stat block for creatures, enemies, and allies.</p></div></div>
+        <div class="panel-heading"><div><h2 id="monster-identity-heading">Monster identity</h2><p>The basic information about the monster.</p></div></div>
         <div class="panel-body fields">
           <div class="field wide"><label for="monster-name">Name</label><input id="monster-name" name="monster-name" placeholder="e.g. Tidepool Behemoth"></div>
           <div class="field"><label for="monster-size">Size</label><select id="monster-size" name="monster-size"><option>Small</option><option selected>Medium</option><option>Large</option><option>Huge</option><option>Gargantuan</option></select></div>
@@ -1027,7 +1028,7 @@
       </section>
       <div class="sheet-grid">
         <section class="panel" aria-labelledby="monster-defense-heading">
-          <div class="panel-heading"><div><h2 id="monster-defense-heading">Defenses &amp; movement</h2><p>Core numbers for encounters.</p></div></div>
+          <div class="panel-heading"><div><h2 id="monster-defense-heading">Defenses &amp; movement</h2><p>Quickstats for combat.</p></div></div>
           <div class="panel-body fields">
             <div class="field"><label for="monster-ac">Armor class</label><input id="monster-ac" name="monster-ac" type="number" placeholder="15"></div>
             <div class="field"><label for="monster-hp">Hit points</label><input id="monster-hp" name="monster-hp" type="number" readonly aria-readonly="true" placeholder="85"></div>
@@ -1054,7 +1055,7 @@
         </section>
       </div>
       <section class="panel" aria-labelledby="monster-attacks-heading">
-        <div class="panel-heading"><div><h2 id="monster-attacks-heading">Attack reference</h2><p>Actions flagged as attacks, gathered for quick access in combat.</p></div></div>
+        <div class="panel-heading"><div><h2 id="monster-attacks-heading">Attack reference</h2><p>Quickstats for attacks.</p></div></div>
         <div class="panel-body"><div class="monster-attack-list" id="monster-attack-reference"></div></div>
       </section>
       <section class="panel" aria-labelledby="monster-details-heading">
