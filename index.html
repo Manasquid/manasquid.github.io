@@ -26,7 +26,7 @@
       --success: #93c99b;
       --danger: #e68d8d;
       --shadow: 0 16px 45px rgba(0, 0, 0, .22);
-      --bonus: #ff5d5d;
+      --bonus: #fa1e1e;
     }
     body[data-theme="streetlamp"] {
       --bg: #111318;
@@ -352,17 +352,20 @@
       --topbar-bg: rgba(8, 9, 11, .94);
       --bonus: #ff4b55;
     }
-    body[data-modifier-color="amber"] { --bonus: #ffba5c; }
-    body[data-modifier-color="copper"] { --bonus: #cb7a52; }
-    body[data-modifier-color="gold"] { --bonus: #ffd166; }
-    body[data-modifier-color="cream"] { --bonus: #f7e8c7; }
-    body[data-modifier-color="cyan"] { --bonus: #8fe3ff; }
-    body[data-modifier-color="blue"] { --bonus: #4d8dff; }
-    body[data-modifier-color="green"] { --bonus: #8fe39d; }
-    body[data-modifier-color="lime"] { --bonus: #c9f26d; }
-    body[data-modifier-color="purple"] { --bonus: #8038b8; }
-    body[data-modifier-color="rose"] { --bonus: #ff8a9a; }
-    body[data-modifier-color="maroon"] { --bonus: #b13a42; }
+    
+    body[data-modifier-color="Scarlet"] { --bonus: #f5471b; }
+    body[data-modifier-color="Orange"] { --bonus: #ff9011; }
+    body[data-modifier-color="Amber"] { --bonus: #faba30; }
+    body[data-modifier-color="Yellow"] { --bonus: #ffea2b; }
+    body[data-modifier-color="Lime"] { --bonus: #bdfd27; }
+    body[data-modifier-color="Green"] { --bonus: #2efd27; }
+    body[data-modifier-color="Turquoise"] { --bonus: #64fc7d; }
+    body[data-modifier-color="Cyan"] { --bonus: #69d9ff; }
+    body[data-modifier-color="Blue"] { --bonus: #146aff; }
+    body[data-modifier-color="Purple"] { --bonus: #a126ff; }
+    body[data-modifier-color="Rose"] { --bonus: #ff586e; }
+    body[data-modifier-color="Maroon"] { --bonus: #7e1920; }
+    body[data-modifier-color="red"] { --bonus: #fa1e1e; }
 
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
@@ -785,8 +788,8 @@
         <label class="config-option character-only"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
         <label class="config-option character-only"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
         <label class="config-option monster-only"><span class="field-label">Theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
-        <label class="config-option character-only"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
-        <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="red">Red (default)</option><option value="amber">Amber</option><option value="copper">Copper</option><option value="gold">Gold</option><option value="cream">Cream</option><option value="cyan">Cyan</option><option value="blue">Blue</option><option value="green">Green</option><option value="lime">Lime</option><option value="purple">Purple</option><option value="rose">Rose</option><option value="maroon">Maroon</option></select></label>
+        <label class="config-option character-only"><span class="field-label">Modifier text</span><select name="modifier-color"><option value="red">Red (default)</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
+        <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="red">Red (default)</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
         <div class="config-option character-only"><span class="field-label">Automatic calculations</span><label class="config-checkbox"><input name="auto-health" type="checkbox" checked> Health totals</label><label class="config-checkbox"><input name="auto-modifiers" type="checkbox" checked> Modifiers, saves &amp; skills</label><label class="config-checkbox"><input name="auto-spellcasting" type="checkbox" checked> Spell save DC &amp; attack</label></div>
         <div class="config-option character-only"><span class="field-label">Hit die size</span><label class="config-checkbox"><input name="allow-odd-hit-dice" type="checkbox"> Allow odd-numbered hit dice</label></div>
       <div class="config-option character-only"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="spellcaster" type="checkbox"> Spellcaster</label></div>
@@ -1896,7 +1899,7 @@
       };
 
       const applyModifierColor = (modifierColor, target = "character") => {
-        const validColors = new Set(["red", "amber", "copper", "gold", "cream", "cyan", "blue", "green", "lime", "purple", "rose", "maroon"]);
+        const validColors = new Set(["red", "Scarlet", "Orange", "Amber", "Yellow", "Lime", "Green", "Turquoise", "Cyan", "Blue", "Purple", "Rose", "Maroon"]);
         const color = validColors.has(modifierColor) ? modifierColor : "red";
         document.body.dataset.modifierColor = color;
         const modifierSelect = document.querySelector(target === "monster" ? '[name="monster-modifier-color"]' : '[name="modifier-color"]');
