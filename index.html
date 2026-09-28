@@ -1025,7 +1025,7 @@
               <div class="field" id="armor-ability-field" hidden><label for="armor-ability">Ability</label><select id="armor-ability"><option selected>DEX</option><option>STR</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
               <div class="field" id="armor-ability-b-field" hidden><label for="armor-ability-b">Second ability</label><select id="armor-ability-b"><option selected>CON</option><option>STR</option><option>DEX</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
               <div class="field" id="armor-cap-field" hidden><label for="armor-cap">Ability cap</label><input id="armor-cap" type="number" placeholder="2"></div>
-              <div class="field"><label for="armor-base-ac">Base AC</label><input id="armor-base-ac" type="number" placeholder="e.g. 12"></div>
+              <div class="field"><label for="armor-base-ac">Base AC</label><input id="armor-base-ac" type="number" placeholder="Default 10"></div>
               <div class="field"><label for="armor-ac-preview">Total AC</label><input id="armor-ac-preview" readonly aria-readonly="true" placeholder="—"></div>
               <div class="field"><label for="armor-stealth">Stealth</label><select id="armor-stealth"><option value="neutral" selected>Neutral</option><option value="disadvantage">Disadvantage</option><option value="advantage">Advantage</option></select></div>
               <div class="field"><label for="armor-don">Don</label><input id="armor-don" placeholder="e.g. 1 min."></div>
@@ -2669,9 +2669,11 @@
           if (!Number.isFinite(bonus)) return null;
           return bonus + (armor.bonusAbility && armor.bonusAbility !== "none" ? mod(armor.bonusAbility) : 0);
         }
-        if (armor.mode === "ability") return 10 + mod(armor.ability);
-        if (armor.mode === "abilityCapped") { const cap = Number.parseInt(armor.cap, 10); return 10 + Math.min(mod(armor.ability), Number.isFinite(cap) ? cap : 2); }
-        if (armor.mode === "dual") return 10 + mod(armor.ability) + mod(armor.abilityB);
+        const baseEntry = Number.parseInt(armor.baseAc, 10);
+        const base = Number.isFinite(baseEntry) ? baseEntry : 10;
+        if (armor.mode === "ability") return base + mod(armor.ability);
+        if (armor.mode === "abilityCapped") { const cap = Number.parseInt(armor.cap, 10); return base + Math.min(mod(armor.ability), Number.isFinite(cap) ? cap : 2); }
+        if (armor.mode === "dual") return base + mod(armor.ability) + mod(armor.abilityB);
         const fixed = Number.parseInt(armor.fixedAc, 10);
         return Number.isFinite(fixed) ? fixed : null;
       };
@@ -2717,7 +2719,7 @@
           armorAcPreview.value = bonus === null ? "" : `${equippedBaseAC() + bonus}`;
           return;
         }
-        const ac = computeArmorAC({ mode, fixedAc: armorFixedAcInput.value, cap: armorCapInput.value, ability: armorAbilityInput.value, abilityB: armorAbilityBInput.value }, characterAbilityModifier);
+        const ac = computeArmorAC({ mode, baseAc: armorBaseAcInput.value, fixedAc: armorFixedAcInput.value, cap: armorCapInput.value, ability: armorAbilityInput.value, abilityB: armorAbilityBInput.value }, characterAbilityModifier);
         armorAcPreview.value = ac === null ? "" : `${ac}`;
       };
 
@@ -3512,13 +3514,14 @@
         persistDraft();
         setStatus(isEdit ? "Armor updated" : "Armor added");
       });
-      [armorTypeInput, armorModeInput, armorBonusInput, armorBonusAbilityInput, armorAbilityInput, armorAbilityBInput, armorFixedAcInput, armorCapInput, armorReqToggle, armorReqAbilityInput, armorReqScoreInput].forEach((input) => {
+      [armorTypeInput, armorModeInput, armorBonusInput, armorBonusAbilityInput, armorAbilityInput, armorAbilityBInput, armorFixedAcInput, armorCapInput, armorBaseAcInput, armorReqToggle, armorReqAbilityInput, armorReqScoreInput].forEach((input) => {
         input.addEventListener("input", refreshArmorEditor);
         input.addEventListener("change", refreshArmorEditor);
       });
       document.querySelectorAll('.score, [name="proficiency-bonus"]').forEach((input) => input.addEventListener("input", () => {
         updateCharacterAttackBonuses();
         updateArmorACs();
+        refreshArmorEditor();
       }));
       document.querySelector("#add-skill").addEventListener("click", () => {
         addSkill();
