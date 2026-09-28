@@ -764,7 +764,7 @@
     <div class="page-heading">
       <div>
         <h1>Character sheet</h1>
-        <p class="lede">Build a D&amp;D 5.5e character and keep every feature in one place.</p>
+        <p class="lede">D&amp;D 5.5e customizable character sheet</p>
       </div>
       <div class="sheet-actions character-only">
         <a class="button" href="#features">Jump to features</a>
@@ -779,7 +779,7 @@
     </div>
 
     <details class="panel config-panel" id="configuration">
-      <summary class="panel-heading"><span><h2>Configuration</h2><p>Adjust optional rules and health tracking behavior.</p></span></summary>
+      <summary class="panel-heading"><span><h2>Configurations</h2><p id="config-description">Settings for the character sheet.</p></span></summary>
       <div class="panel-body config-options">
         <label class="config-option character-only"><span class="field-label">Health mode</span><select name="health-mode"><option value="manual">Manual</option><option value="calculated">Fixed</option></select></label>
         <label class="config-option character-only"><span class="field-label">Theme preset</span><select name="theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
@@ -1497,7 +1497,8 @@
         characterTab.setAttribute("aria-selected", String(!monsterActive));
         monsterTab.setAttribute("aria-selected", String(monsterActive));
         document.querySelector("h1").textContent = monsterActive ? "Monster stat block maker" : "Character sheet";
-        document.querySelector(".lede").textContent = monsterActive ? "Build encounter-ready creatures and keep every rule in one place." : "Build a D&D 5.5e character and keep every feature in one place.";
+        document.querySelector(".lede").textContent = monsterActive ? "D&D 5.5e Monster statblock maker" : "D&D 5.5e customizable character sheet";
+        document.querySelector("#config-description").textContent = monsterActive ? "Settings for the monster statblock." : "Settings for the character sheet.";
         document.querySelector("#save-character").textContent = "Save / transfer";
         document.querySelector("#clear-sheet").textContent = monsterActive ? "Clear stat block" : "Clear sheet";
       };
