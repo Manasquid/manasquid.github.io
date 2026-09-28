@@ -2087,7 +2087,15 @@
         return decodeSheet(match[1]);
       };
 
-      const pdfEscape = (value) => String(value).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+      const pdfEscape = (value) => String(value)
+        .replace(/[—–]/g, "-")
+        .replace(/·/g, "/")
+        .replace(/[‘’]/g, "'")
+        .replace(/[“”]/g, "\"")
+        .replace(/…/g, "...")
+        .replace(/×/g, "x")
+        .replace(/[^\x20-\x7E]/g, "")
+        .replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
       const getHitDice = (fields) => {
         const level = Number.parseInt(fields.level, 10);
         const size = String(fields["hit-dice-size"] || "").trim();
