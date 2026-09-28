@@ -947,7 +947,6 @@
               <div class="field" id="armor-ability-b-field" hidden><label for="armor-ability-b">Second ability</label><select id="armor-ability-b"><option selected>CON</option><option>STR</option><option>DEX</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
               <div class="field"><label for="armor-ac-preview">Total AC</label><input id="armor-ac-preview" readonly aria-readonly="true" placeholder="—"></div>
               <div class="field"><label for="armor-stealth">Stealth</label><select id="armor-stealth"><option value="neutral" selected>Neutral</option><option value="disadvantage">Disadvantage</option><option value="advantage">Advantage</option></select></div>
-              <div class="field"><label class="config-checkbox"><input id="armor-equip-toggle" type="checkbox"> Equipped (sets your AC)</label></div>
               <div class="field"><label class="config-checkbox"><input id="armor-req-toggle" type="checkbox"> Has ability requirement</label></div>
               <div class="field" id="armor-req-fields" hidden><span class="field-label">Requirement</span><div class="armor-req-row"><select id="armor-req-ability" aria-label="Required ability"><option selected>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select><input id="armor-req-score" type="number" placeholder="13" aria-label="Required score"></div></div>
             </div>
@@ -2018,6 +2017,7 @@
       }));
 
       let armors = [];
+      let lastArmorAbility = "DEX";
       let editingArmorIndex = null;
       const armorTemplate = document.querySelector("#armor-template");
       const armorList = document.querySelector("#armor-list");
@@ -2034,7 +2034,6 @@
       const armorReqToggle = document.querySelector("#armor-req-toggle");
       const armorReqAbilityInput = document.querySelector("#armor-req-ability");
       const armorReqScoreInput = document.querySelector("#armor-req-score");
-      const armorEquipToggle = document.querySelector("#armor-equip-toggle");
       const armorFixedField = document.querySelector("#armor-fixed-field");
       const armorAbilityField = document.querySelector("#armor-ability-field");
       const armorAbilityBField = document.querySelector("#armor-ability-b-field");
@@ -2055,7 +2054,7 @@
         type: ["Light", "Medium", "Heavy"].includes(armor.type) ? armor.type : "Light",
         mode: ["fixed", "ability", "abilityCapped", "dual"].includes(armor.mode) ? armor.mode : "fixed",
         fixedAc: armor.fixedAc || "",
-        ability: armor.ability || "DEX",
+        ability: armor.ability || lastArmorAbility,
         abilityB: armor.abilityB || "CON",
         reqEnabled: armor.reqEnabled === true,
         reqAbility: armor.reqAbility || "STR",
@@ -2164,7 +2163,7 @@
         armorReqToggle.checked = armor.reqEnabled === true;
         armorReqAbilityInput.value = armor.reqAbility || "STR";
         armorReqScoreInput.value = armor.reqScore || "";
-        armorEquipToggle.checked = armor.equipped === true;
+        armorAbilityInput.value = armor.ability || lastArmorAbility;
         refreshArmorEditor();
         armorEditor.hidden = false;
         armorNameInput.focus();
@@ -2183,7 +2182,7 @@
         armorReqToggle.checked = false;
         armorReqAbilityInput.value = "STR";
         armorReqScoreInput.value = "";
-        armorEquipToggle.checked = false;
+        armorAbilityInput.value = lastArmorAbility;
         refreshArmorEditor();
       };
 
@@ -2695,9 +2694,10 @@
           reqEnabled: armorReqToggle.checked,
           reqAbility: armorReqAbilityInput.value,
           reqScore: armorReqScoreInput.value.trim(),
-          stealth: armorStealthInput.value,
-          equipped: armorEquipToggle.checked
+          stealth: armorStealthInput.value
         });
+        armor.equipped = isEdit ? armors[editingArmorIndex].equipped : false;
+        lastArmorAbility = armor.ability;
         if (armor.equipped) armors.forEach((existing) => { existing.equipped = false; });
         if (isEdit) armors[editingArmorIndex] = armor;
         else armors.push(armor);
