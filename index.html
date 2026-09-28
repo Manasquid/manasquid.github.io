@@ -1018,10 +1018,9 @@
             <div class="feature-editor-grid">
               <div class="field"><label for="armor-name">Armor name</label><input id="armor-name" placeholder="e.g. Chain Shirt"></div>
               <div class="field"><label for="armor-type">Armor type</label><select id="armor-type"><option selected>Light</option><option>Medium</option><option>Heavy</option><option>Shield</option><option>Other</option></select></div>
-              <div class="field"><label for="armor-mode">AC formula</label><select id="armor-mode"><option value="fixed" selected>Fixed</option><option value="ability">Ability</option><option value="abilityCapped">Ability (capped)</option><option value="dual">Dual ability</option></select></div>
+              <div class="field"><label for="armor-mode">AC formula</label><select id="armor-mode"><option value="fixed" selected>Flat AC</option><option value="ability">Base + Ability</option><option value="abilityCapped">Base + Ability (capped)</option><option value="dual">Base + Dual ability</option></select></div>
               <div class="field" id="armor-bonus-field" hidden><label for="armor-bonus">AC bonus</label><input id="armor-bonus" type="number" placeholder="2"></div>
               <div class="field" id="armor-bonus-ability-field" hidden><label for="armor-bonus-ability">Bonus ability</label><select id="armor-bonus-ability"><option value="none" selected>None</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
-              <div class="field" id="armor-fixed-field" hidden><label for="armor-fixed-ac">Fixed AC</label><input id="armor-fixed-ac" type="number" placeholder="16"></div>
               <div class="field" id="armor-ability-field" hidden><label for="armor-ability">Ability</label><select id="armor-ability"><option selected>DEX</option><option>STR</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
               <div class="field" id="armor-ability-b-field" hidden><label for="armor-ability-b">Second ability</label><select id="armor-ability-b"><option selected>CON</option><option>STR</option><option>DEX</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
               <div class="field" id="armor-cap-field" hidden><label for="armor-cap">Ability cap</label><input id="armor-cap" type="number" placeholder="2"></div>
@@ -2633,8 +2632,6 @@
       const armorBonusAbilityInput = document.querySelector("#armor-bonus-ability");
       const armorBonusAbilityField = document.querySelector("#armor-bonus-ability-field");
       const armorModeInput = document.querySelector("#armor-mode");
-      const armorFixedAcInput = document.querySelector("#armor-fixed-ac");
-      const armorAbilityInput = document.querySelector("#armor-ability");
       const armorAbilityBInput = document.querySelector("#armor-ability-b");
       const armorCapInput = document.querySelector("#armor-cap");
       const armorCapField = document.querySelector("#armor-cap-field");
@@ -2646,11 +2643,10 @@
       const armorReqToggle = document.querySelector("#armor-req-toggle");
       const armorReqAbilityInput = document.querySelector("#armor-req-ability");
       const armorReqScoreInput = document.querySelector("#armor-req-score");
-      const armorFixedField = document.querySelector("#armor-fixed-field");
       const armorAbilityField = document.querySelector("#armor-ability-field");
       const armorAbilityBField = document.querySelector("#armor-ability-b-field");
       const armorReqFields = document.querySelector("#armor-req-fields");
-      const armorModeText = { fixed: "Fixed AC", ability: "Ability", abilityCapped: "Ability (capped)", dual: "Dual ability" };
+      const armorModeText = { fixed: "Flat AC", ability: "Base + Ability", abilityCapped: "Base + Ability (capped)", dual: "Base + Dual ability" };
 
       const isBonusArmor = (type) => type === "Shield" || type === "AC Bonus";
       const signedBonus = (value) => { const n = Number.parseInt(value, 10); return Number.isFinite(n) ? (n < 0 ? `${n}` : `+${n}`) : `${value}`; };
@@ -2674,20 +2670,20 @@
         if (armor.mode === "ability") return base + mod(armor.ability);
         if (armor.mode === "abilityCapped") { const cap = Number.parseInt(armor.cap, 10); return base + Math.min(mod(armor.ability), Number.isFinite(cap) ? cap : 2); }
         if (armor.mode === "dual") return base + mod(armor.ability) + mod(armor.abilityB);
-        const fixed = Number.parseInt(armor.fixedAc, 10);
-        return Number.isFinite(fixed) ? fixed : null;
+        return base;
       };
 
       const normalizeArmor = (armor = {}) => {
         const type = isBonusArmor(armor.type) ? "Shield" : armor.type;
+        const mode = ["fixed", "ability", "abilityCapped", "dual"].includes(armor.mode) ? armor.mode : "fixed";
         const legacyTimes = armor.don || armor.doff ? [] : `${armor.dondoff || ""}`.split("/");
         return {
           name: armor.name || "",
           type: ["Light", "Medium", "Heavy", "Shield", "Other"].includes(type) ? type : "Light",
           bonus: armor.bonus === undefined || armor.bonus === null || `${armor.bonus}`.trim() === "" ? (type === "Shield" ? "2" : "") : `${armor.bonus}`,
           bonusAbility: ["none", "STR", "DEX", "CON", "INT", "WIS", "CHA"].includes(armor.bonusAbility) ? armor.bonusAbility : "none",
-          mode: ["fixed", "ability", "abilityCapped", "dual"].includes(armor.mode) ? armor.mode : "fixed",
-          fixedAc: armor.fixedAc || "",
+          mode,
+          baseAc: armor.baseAc || (mode === "fixed" ? armor.fixedAc : "") || "",
           cap: armor.cap || "2",
           ability: armor.ability || lastArmorAbility,
           abilityB: armor.abilityB || "CON",
@@ -2709,7 +2705,6 @@
         armorModeInput.closest(".field").hidden = isBonus;
         armorBonusField.hidden = !isBonus;
         armorBonusAbilityField.hidden = !isBonus;
-        armorFixedField.hidden = isBonus || mode !== "fixed";
         armorAbilityField.hidden = isBonus || !(mode === "ability" || mode === "abilityCapped");
         armorAbilityBField.hidden = isBonus || mode !== "dual";
         armorCapField.hidden = isBonus || mode !== "abilityCapped";
@@ -2719,7 +2714,7 @@
           armorAcPreview.value = bonus === null ? "" : `${equippedBaseAC() + bonus}`;
           return;
         }
-        const ac = computeArmorAC({ mode, baseAc: armorBaseAcInput.value, fixedAc: armorFixedAcInput.value, cap: armorCapInput.value, ability: armorAbilityInput.value, abilityB: armorAbilityBInput.value }, characterAbilityModifier);
+        const ac = computeArmorAC({ mode, baseAc: armorBaseAcInput.value, cap: armorCapInput.value, ability: armorAbilityInput.value, abilityB: armorAbilityBInput.value }, characterAbilityModifier);
         armorAcPreview.value = ac === null ? "" : `${ac}`;
       };
 
@@ -2744,7 +2739,7 @@
         doffTag.hidden = !armor.doff;
         doffTag.textContent = `Doff ${armor.doff}`;
         const baseTag = card.querySelector(".armor-base-tag");
-        baseTag.hidden = !armor.baseAc;
+        baseTag.hidden = !armor.baseAc || armor.mode === "fixed";
         baseTag.textContent = `Base AC ${armor.baseAc}`;
       };
 
@@ -2771,7 +2766,7 @@
         armors.forEach((armor) => {
           const ac = computeArmorAC(armor, characterAbilityModifier);
           armor.ac = ac === null ? "" : `${ac}`;
-          armor.modeText = isBonusArmor(armor.type) ? `Bonus ${armor.bonus || 0}${armor.bonusAbility && armor.bonusAbility !== "none" ? ` (${armor.bonusAbility})` : ""}` : armor.mode === "abilityCapped" && Number.isFinite(Number.parseInt(armor.cap, 10)) ? `Ability (max +${Number.parseInt(armor.cap, 10)})` : armorModeText[armor.mode] || "Fixed AC";
+          armor.modeText = isBonusArmor(armor.type) ? `Bonus ${armor.bonus || 0}${armor.bonusAbility && armor.bonusAbility !== "none" ? ` (${armor.bonusAbility})` : ""}` : armor.mode === "abilityCapped" && Number.isFinite(Number.parseInt(armor.cap, 10)) ? `Base + Ability (max +${Number.parseInt(armor.cap, 10)})` : armorModeText[armor.mode] || "Flat AC";
           armor.stealthText = armor.stealth === "disadvantage" ? "Disadvantage on Stealth" : armor.stealth === "advantage" ? "Advantage on Stealth" : "";
           armor.reqText = armor.reqEnabled ? `Requires ${armor.reqAbility} ${armor.reqScore}` : "";
         });
@@ -2825,7 +2820,7 @@
         armorBonusInput.value = isBonusArmor(armor.type) ? (armor.bonus || "2") : "";
         armorBonusAbilityInput.value = armor.bonusAbility || "none";
         armorModeInput.value = armor.mode || "fixed";
-        armorFixedAcInput.value = armor.fixedAc || "";
+        armorBaseAcInput.value = armor.baseAc || "";
         armorAbilityInput.value = armor.ability || "DEX";
         armorAbilityBInput.value = armor.abilityB || "CON";
         armorStealthInput.value = armor.stealth || "neutral";
@@ -2849,7 +2844,7 @@
         armorBonusInput.value = "";
         armorBonusAbilityInput.value = "none";
         armorModeInput.value = "fixed";
-        armorFixedAcInput.value = "";
+        armorBaseAcInput.value = "";
         armorAbilityInput.value = "DEX";
         armorAbilityBInput.value = "CON";
         armorStealthInput.value = "neutral";
@@ -2869,7 +2864,7 @@
         bonus: armor.bonus,
         bonusAbility: armor.bonusAbility,
         mode: armor.mode,
-        fixedAc: armor.fixedAc,
+        baseAc: armor.baseAc,
         cap: armor.cap,
         ability: armor.ability,
         abilityB: armor.abilityB,
@@ -3491,7 +3486,7 @@
           bonus: armorBonusInput.value.trim(),
           bonusAbility: armorBonusAbilityInput.value,
           mode: armorModeInput.value,
-          fixedAc: armorFixedAcInput.value.trim(),
+          baseAc: armorBaseAcInput.value.trim(),
           cap: armorCapInput.value.trim(),
           ability: armorAbilityInput.value,
           abilityB: armorAbilityBInput.value,
@@ -3514,7 +3509,7 @@
         persistDraft();
         setStatus(isEdit ? "Armor updated" : "Armor added");
       });
-      [armorTypeInput, armorModeInput, armorBonusInput, armorBonusAbilityInput, armorAbilityInput, armorAbilityBInput, armorFixedAcInput, armorCapInput, armorBaseAcInput, armorReqToggle, armorReqAbilityInput, armorReqScoreInput].forEach((input) => {
+      [armorTypeInput, armorModeInput, armorBonusInput, armorBonusAbilityInput, armorAbilityInput, armorAbilityBInput, armorBaseAcInput, armorCapInput, armorReqToggle, armorReqAbilityInput, armorReqScoreInput].forEach((input) => {
         input.addEventListener("input", refreshArmorEditor);
         input.addEventListener("change", refreshArmorEditor);
       });
