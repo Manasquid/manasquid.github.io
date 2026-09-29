@@ -2135,7 +2135,9 @@
         }
         const constitutionModifier = Math.floor((constitution - 10) / 2);
         const averageAfterFirstLevel = Math.ceil((dieSize + 1) / 2);
-        maxHp.value = Math.max(0, level * (averageAfterFirstLevel + constitutionModifier));
+        const firstLevelHp = dieSize + constitutionModifier;
+        const higherLevelHp = level * (averageAfterFirstLevel + constitutionModifier);
+        maxHp.value = Math.max(0, level === 1 ? firstLevelHp : higherLevelHp);
       };
 
       const updateHitDieRules = () => {
