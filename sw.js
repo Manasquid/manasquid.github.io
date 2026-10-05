@@ -1,7 +1,13 @@
-const CACHE = "manasquid-sheet-v5";
+const CACHE = "manasquid-sheet-v8";
 const ASSETS = [
   "./",
   "./index.html",
+  "./monster.html",
+  "./corkboard.html",
+  "./maker.css",
+  "./maker-common.js",
+  "./character.js",
+  "./monster.js",
   "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png"
@@ -30,10 +36,10 @@ self.addEventListener("fetch", (event) => {
       fetch(event.request)
         .then((response) => {
           const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put("./index.html", copy));
+          caches.open(CACHE).then((cache) => cache.put(event.request, copy));
           return response;
         })
-        .catch(() => caches.match("./index.html"))
+        .catch(() => caches.match(event.request).then((hit) => hit || caches.match("./index.html")))
     );
     return;
   }

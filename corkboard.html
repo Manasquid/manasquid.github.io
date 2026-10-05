@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="An Outer Wilds-style plot corkboard: drag plot points, connect them, and edit everything.">
+  <meta name="theme-color" content="#0d1822">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Plot Corkboard · Manasquid</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111318;
+      --surface: #1a1d24;
+      --surface-raised: #232731;
+      --surface-soft: #20242d;
+      --line: #363b48;
+      --line-strong: #4b5363;
+      --text: #d9962c;
+      --muted: #e1a84d;
+      --accent: #ffca6a;
+      --accent-soft: #2d281e;
+      --field-text: #ffd78d;
+      --field-placeholder: #77808e;
+      --button-strong-text: #20170b;
+      --button-strong-hover: #e9c982;
+      --topbar-bg: rgba(17, 19, 24, .94);
+      --success: #93c99b;
+      --danger: #e68d8d;
+      --shadow: 0 16px 45px rgba(0, 0, 0, .22);
+      --link-color: #6b7688;
+      --grid-dot: rgba(217, 150, 44, .13);
+    }
+    /* Theme palettes (same presets as the sheet maker in maker.css) */
+    body[data-theme="streetlamp"] { --bg: #151120; --surface: #1a1f2b; --surface-raised: #232731; --surface-soft: #20242d; --line: #363b48; --line-strong: #4b5363; --text: #d9962c; --muted: #e1a84d; --accent: #ffca6a; --accent-soft: #2d281e; --field-text: #ffd78d; --field-placeholder: #77808e; --button-strong-text: #20170b; --button-strong-hover: #e9c982; --topbar-bg: rgba(17, 19, 24, .94); --danger: #e6685f; }
+    body[data-theme="ember"] { --bg: #1a1010; --surface: #2a1717; --surface-raised: #341d1d; --surface-soft: #291515; --line: #503333; --line-strong: #6d4d4d; --text: #ffaf77; --muted: #ffc894; --accent: #ffb15e; --accent-soft: #3d1d18; --field-text: #ffd0a5; --field-placeholder: #d4a394; --button-strong-text: #2b120f; --button-strong-hover: #ffca8b; --topbar-bg: rgba(41, 17, 17, .94); --danger: #ff9580; }
+    body[data-theme="depths"] { --bg: #0d1822; --surface: #142331; --surface-raised: #1d2e3e; --surface-soft: #1a2a36; --line: #35516e; --line-strong: #5d7895; --text: #8dc4ff; --muted: #abd9ff; --accent: #62d0ff; --accent-soft: #132734; --field-text: #dff7ff; --field-placeholder: #8ea9c4; --button-strong-text: #0d1a27; --button-strong-hover: #9fe0ff; --topbar-bg: rgba(13, 24, 34, .94); --danger: #de8a9b; }
+    body[data-theme="starlight"] { --bg: #05000c; --surface: #32173a; --surface-raised: #2d1138; --surface-soft: #350352; --line: #533c5d; --line-strong: #825a82; --text: #8ec9fa; --muted: #ecf19c; --accent: #260749; --accent-soft: #2d1f33; --field-text: #bef2ff; --field-placeholder: #d8f3ff; --button-strong-text: #beb78d; --button-strong-hover: #f4d8a0; --topbar-bg: rgba(18, 13, 26, .94); --danger: #d78ce0; }
+    body[data-theme="monochrome"] { --bg: #0a0a0d; --surface: #17181d; --surface-raised: #20232a; --surface-soft: #12141a; --line: #3d4047; --line-strong: #636b73; --text: #f4f4f5; --muted: #dfe2e6; --accent: #f2f2f2; --accent-soft: #1d1d20; --field-text: #ffffff; --field-placeholder: #a4abb3; --button-strong-text: #0a0a0d; --button-strong-hover: #ececec; --topbar-bg: rgba(10, 10, 13, .94); --danger: #cfcfcf; }
+    body[data-theme="office"] { --bg: #f2f4f7; --surface: #ffffff; --surface-raised: #eef2f8; --surface-soft: #f7f9fb; --line: #d0d8e2; --line-strong: #aebccf; --text: #1f2430; --muted: #4a5363; --accent: #1b2330; --accent-soft: #edf2f7; --field-text: #0c1320; --field-placeholder: #7d8697; --button-strong-text: #ffffff; --button-strong-hover: #3d495c; --topbar-bg: rgba(255, 255, 255, .94); --danger: #b3413c; --grid-dot: rgba(31, 36, 48, .18); }
+    body[data-theme="void"] { --bg: #0a0509; --surface: #160d13; --surface-raised: #221221; --surface-soft: #140b0f; --line: #422f36; --line-strong: #674d5b; --text: #e4aaff; --muted: #a97eb6; --accent: #440055; --accent-soft: #25022c; --field-text: #f0d1f8; --field-placeholder: #8a99a5; --button-strong-text: #e9d0fd; --button-strong-hover: #edf4f9; --topbar-bg: rgba(5, 7, 10, .94); --danger: #d98cc0; }
+    body[data-theme="venom"] { --bg: #071d1e; --surface: #0c2c2a; --surface-raised: #123933; --surface-soft: #0f2b2f; --line: #2b5e59; --line-strong: #4c8b7e; --text: #9ae2af; --muted: #d3f8d9; --accent: #7ef0b2; --accent-soft: #123a2f; --field-text: #c9ffd8; --field-placeholder: #8bb8a5; --button-strong-text: #0a1614; --button-strong-hover: #aaf6c5; --topbar-bg: rgba(7, 29, 30, .94); --danger: #e07a6a; }
+    body[data-theme="parchment"] { --bg: #d7b88d; --surface: #e7d1a4; --surface-raised: #f0dfbe; --surface-soft: #dcc79e; --line: #b58263; --line-strong: #8d4d43; --text: #5c2b2d; --muted: #7b3c39; --accent: #7a3a33; --accent-soft: #ead3b5; --field-text: #5c1d1f; --field-placeholder: #8d6b5d; --button-strong-text: #f8ead1; --button-strong-hover: #c36a59; --topbar-bg: rgba(215, 184, 141, .94); --danger: #a3402f; --grid-dot: rgba(92, 43, 45, .16); }
+    body[data-theme="radiation"] { --bg: #040a08; --surface: #0d1b12; --surface-raised: #4b4713; --surface-soft: #6e7420; --line: #4d7035; --line-strong: #5d8d5d; --text: #f4ff5e; --muted: #effc3f; --accent: #d9ff51; --accent-soft: #1a2617; --field-text: #f5dc6d; --field-placeholder: #c1ce9e; --button-strong-text: #0d120f; --button-strong-hover: #e7f57d; --topbar-bg: rgba(4, 10, 8, .94); --danger: #e0796b; }
+    body[data-theme="neontech"] { --bg: #02050a; --surface: #0f1220; --surface-raised: #171d2f; --surface-soft: #0c1320; --line: #3d4f7a; --line-strong: #5f7add; --text: #41e5ff; --muted: #ff7ae8; --accent: #c56bff; --accent-soft: #120d1d; --field-text: #dff9ff; --field-placeholder: #7fa4e8; --button-strong-text: #040914; --button-strong-hover: #69f0ff; --topbar-bg: rgba(2, 5, 10, .94); --danger: #ff5c7a; }
+    body[data-theme="sunset"] { --bg: #2b1b3d; --surface: #3a2450; --surface-raised: #4a2d63; --surface-soft: #33204a; --line: #6b4a8c; --line-strong: #8f68b5; --text: #ffd9b8; --muted: #ffe9d6; --accent: #ff7e5f; --accent-soft: #4a2440; --field-text: #ffe3c2; --field-placeholder: #b08ba8; --button-strong-text: #361634; --button-strong-hover: #ff9d6b; --topbar-bg: rgba(43, 27, 61, .94); --danger: #ff9d8a; }
+    body[data-theme="moonwalk"] { --bg: #18191d; --surface: #292b31; --surface-raised: #373a43; --surface-soft: #24262c; --line: #5a5e69; --line-strong: #858a98; --text: #d7d9df; --muted: #b4b9c5; --accent: #c5cad6; --accent-soft: #34323e; --field-text: #f3ead2; --field-placeholder: #8f96a5; --button-strong-text: #18191d; --button-strong-hover: #e4e7ef; --topbar-bg: rgba(24, 25, 29, .94); --danger: #d6b0b0; }
+    body[data-theme="beeswax"] { --bg: #d4a83f; --surface: #17130b; --surface-raised: #28200d; --surface-soft: #201a0c; --line: #67521e; --line-strong: #a6852e; --text: #f1d45f; --muted: #f7e6a2; --accent: #f0c83e; --accent-soft: #35280b; --field-text: #fff0b5; --field-placeholder: #b99e55; --button-strong-text: #211805; --button-strong-hover: #ffe36a; --topbar-bg: rgba(212, 168, 63, .94); --danger: #a3402f; --grid-dot: rgba(23, 19, 11, .2); }
+    body[data-theme="rosethorn"] { --bg: #080e0b; --surface: #111d15; --surface-raised: #0a130d; --surface-soft: #0c1d14; --line: #285238; --line-strong: #3d754d; --text: #ff2626; --muted: #a00505; --accent: #ff1830; --accent-soft: #800017; --field-text: #ff6b70; --field-placeholder: #8d9f88; --button-strong-text: #fff1dc; --button-strong-hover: #ff5261; --topbar-bg: rgba(7, 20, 14, .94); --danger: #ff5f6d; }
+    body[data-theme="teapot"] { --bg: #d9e0df; --surface: #fffdf5; --surface-raised: #f4f1e8; --surface-soft: #f9f7ef; --line: #5a62d1; --line-strong: #474fbb; --text: #3f459b; --muted: #5c607e; --accent: #8f90a8; --accent-soft: #e3ecf2; --field-text: #4f616f; --field-placeholder: #99a9aa; --button-strong-text: #fffaf0; --button-strong-hover: #7d84a8; --topbar-bg: rgba(217, 224, 223, .94); --danger: #b3413c; --grid-dot: rgba(63, 69, 155, .16); }
+    body[data-theme="forge"] { --bg: #100d0a; --surface: #1e1914; --surface-raised: #282119; --surface-soft: #191410; --line: #453b2e; --line-strong: #5f5140; --text: #f5b56a; --muted: #ffc97e; --accent: #ff6b1a; --accent-soft: #361d07; --field-text: #ffd9a0; --field-placeholder: #8a7a63; --button-strong-text: #241304; --button-strong-hover: #ffb964; --topbar-bg: rgba(22, 17, 12, .94); --danger: #e0554d; }
+    body[data-theme="sharp"] { --bg: #08090b; --surface: #17191d; --surface-raised: #24272d; --surface-soft: #111317; --line: #4a4d54; --line-strong: #777b84; --text: #f4f4f4; --muted: #d6d6d6; --accent: #e2343f; --accent-soft: #321318; --field-text: #ffffff; --field-placeholder: #8c9098; --button-strong-text: #ffffff; --button-strong-hover: #ff5058; --topbar-bg: rgba(8, 9, 11, .94); --danger: #e68d8d; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      overscroll-behavior: none;
+      background: var(--bg);
+      color: var(--text);
+      font: 400 .95rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    input, textarea { accent-color: var(--accent); }
+    h3, p { margin: 0; }
+
+    .topbar {
+      z-index: 10;
+      padding-top: env(safe-area-inset-top, 0px);
+      border-bottom: 1px solid var(--line);
+      background: var(--topbar-bg);
+      backdrop-filter: blur(14px);
+    }
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 4.25rem;
+      padding: .5rem max(1.25rem, calc((100% - 1240px) / 2));
+    }
+    .brand { display: flex; align-items: center; gap: .7rem; color: var(--text); font-weight: 750; letter-spacing: -.02em; text-decoration: none; }
+    .brand-mark { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 1px solid var(--accent); border-radius: .45rem; color: var(--accent); font-size: .75rem; }
+    .version { color: var(--muted); font-size: .78rem; font-weight: 500; }
+    .top-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
+    .status { color: var(--success); font-size: .78rem; }
+    .config-toggle[aria-expanded="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+    .config-strip {
+      border-top: 1px solid var(--line);
+      padding: .7rem max(1.25rem, calc((100% - 1240px) / 2)) .85rem;
+      display: grid;
+      gap: .55rem;
+    }
+    .config-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: .55rem 1.25rem; align-items: end; }
+    .config-option { display: grid; gap: .3rem; min-width: 0; }
+    .config-option select {
+      width: 100%;
+      height: 2.35rem;
+      padding: .3rem .5rem;
+      border: 1px solid var(--line);
+      border-radius: .4rem;
+      outline: none;
+      background: var(--surface-soft);
+      color: var(--field-text);
+    }
+    .config-option select:focus { border-color: var(--accent); }
+    .config-option .check-row { min-height: 2.35rem; }
+
+    .button, .icon-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line-strong);
+      border-radius: .45rem;
+      background: var(--surface-raised);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 650;
+      text-decoration: none;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .button { min-height: 2.45rem; padding: .5rem .85rem; }
+    .icon-button { width: 2.2rem; height: 2.2rem; padding: 0; }
+    .button:hover, .button:focus-visible, .icon-button:hover, .icon-button:focus-visible { border-color: var(--accent); background: var(--surface-soft); }
+    .button.primary { border-color: var(--accent); background: var(--accent); color: var(--button-strong-text); }
+    .button.primary:hover, .button.primary:focus-visible { background: var(--button-strong-hover); }
+    .button.subtle { border-color: transparent; background: transparent; color: var(--muted); }
+    .button.subtle:hover, .button.subtle:focus-visible { border-color: var(--line); color: var(--text); }
+    .button.danger { border-color: var(--danger); color: var(--danger); }
+    .button.danger:hover, .button.danger:focus-visible { background: rgba(230, 141, 141, .12); }
+
+    /* ---------- Board ---------- */
+    .board {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: grab;
+      background-image: radial-gradient(var(--grid-dot) 1px, transparent 1.3px);
+      background-size: 28px 28px;
+      background-position: 0 0;
+    }
+    .board.no-grid { background-image: none; }
+    .world { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+    #link-layer { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+    #links .link-hit { stroke: transparent; stroke-width: 16; fill: none; cursor: pointer; pointer-events: visibleStroke; }
+    #links .link-line { stroke: var(--link-color); stroke-width: 2; fill: none; pointer-events: none; }
+    #links .link.selected .link-line { stroke: var(--accent); stroke-width: 2.5; }
+    #links .link-label {
+      fill: var(--muted);
+      font-size: 12px;
+      font-family: inherit;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      paint-order: stroke;
+      stroke: var(--bg);
+      stroke-width: 4px;
+      pointer-events: none;
+    }
+    #links .link.selected .link-label { fill: var(--accent); }
+    #cb-arrow path { fill: var(--link-color); }
+    #cb-arrow-active path { fill: var(--accent); }
+    #temp-link { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 6; fill: none; pointer-events: none; }
+
+    .node {
+      position: absolute;
+      width: 13rem;
+      padding: .7rem .8rem .8rem;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--node-accent, var(--line-strong));
+      border-radius: .6rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      cursor: grab;
+    }
+    .node:active { cursor: grabbing; }
+    .node-title { margin: 0 0 .3rem; color: var(--text); font-size: .95rem; letter-spacing: -.02em; overflow-wrap: anywhere; }
+    .node-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      overflow: hidden;
+    }
+    .node.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft), var(--shadow); }
+    .node.link-target { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
+    .node.color-amber { --node-accent: #ffca6a; }
+    .node.color-cyan { --node-accent: #69d9ff; }
+    .node.color-green { --node-accent: #93c99b; }
+    .node.color-rose { --node-accent: #ff8da1; }
+    .node.color-purple { --node-accent: #b98dff; }
+    .node.color-slate { --node-accent: #aab4c5; }
+    .node-link-handle {
+      position: absolute;
+      top: -.7rem;
+      right: -.7rem;
+      width: 1.6rem;
+      height: 1.6rem;
+      padding: 0;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      background: var(--surface-raised);
+      color: var(--muted);
+      font-size: .55rem;
+      line-height: 1;
+      cursor: crosshair;
+    }
+    .node-link-handle:hover { border-color: var(--accent); color: var(--accent); }
+
+    .board-hint {
+      position: absolute;
+      left: 50%;
+      bottom: .8rem;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: calc(100% - 2rem);
+      padding: .35rem .8rem;
+      border: 1px solid var(--line);
+      border-radius: 2rem;
+      background: var(--topbar-bg);
+      color: var(--muted);
+      font-size: .72rem;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    /* ---------- Editors ---------- */
+    .editor {
+      position: fixed;
+      z-index: 12;
+      top: calc(env(safe-area-inset-top, 0px) + 5rem);
+      right: max(1.25rem, calc((100% - 1240px) / 2));
+      width: min(21rem, calc(100% - 2.5rem));
+      max-height: calc(100% - 7rem);
+      overflow: auto;
+      display: grid;
+      gap: .65rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: .75rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .editor-head { display: flex; align-items: center; justify-content: space-between; gap: .8rem; }
+    .editor-title { color: var(--text); font-size: .74rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
+    .editor-field { display: grid; gap: .35rem; }
+    .field-label { color: var(--text); font-size: .74rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: .4rem;
+      outline: none;
+      background: var(--surface-soft);
+      color: var(--field-text);
+    }
+    input { height: 2.55rem; padding: .45rem .65rem; }
+    textarea { min-height: 7.5rem; padding: .6rem .65rem; resize: vertical; }
+    input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(216, 174, 98, .14); }
+    input::placeholder, textarea::placeholder { color: var(--field-placeholder); }
+    .color-chips { display: flex; gap: .45rem; flex-wrap: wrap; }
+    .chip {
+      width: 1.8rem;
+      height: 1.8rem;
+      padding: 0;
+      border: 2px solid var(--line);
+      border-radius: 50%;
+      background: var(--surface-raised);
+      cursor: pointer;
+    }
+    .chip:hover { border-color: var(--line-strong); }
+    .chip.chip-amber { background: #ffca6a; }
+    .chip.chip-cyan { background: #69d9ff; }
+    .chip.chip-green { background: #93c99b; }
+    .chip.chip-rose { background: #ff8da1; }
+    .chip.chip-purple { background: #b98dff; }
+    .chip.chip-slate { background: #aab4c5; }
+    .chip.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+    .check-row { display: flex; align-items: center; gap: .5rem; color: var(--text); font-size: .85rem; }
+    .check-row input { width: auto; height: auto; }
+    .link-endpoints { color: var(--muted); font-size: .82rem; overflow-wrap: anywhere; }
+    .editor-row { display: flex; gap: .6rem; }
+    .editor-row .button { flex: 1; }
+    .icon-button:hover { border-color: var(--accent); color: var(--accent); background: var(--surface-soft); }
+
+    @media (max-width: 640px) {
+      .editor {
+        top: auto;
+        bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+        left: 1rem;
+        right: 1rem;
+        width: auto;
+        max-height: 58%;
+      }
+      .topbar-inner { flex-wrap: wrap; }
+      .version { display: none; }
+    }
+  </style>
+</head>
+<body data-theme="streetlamp">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ plot corkboard</span></div>
+      <div class="top-actions">
+        <a class="button subtle" href="./index.html">← Character sheet</a>
+        <span class="status" id="board-status" role="status"></span>
+        <button class="button primary" id="add-node" type="button">＋ Plot point</button>
+        <button class="button subtle" id="zoom-out" type="button" aria-label="Zoom out">−</button>
+        <button class="button subtle" id="zoom-in" type="button" aria-label="Zoom in">＋</button>
+        <button class="button subtle" id="fit-view" type="button">Fit view</button>
+        <button class="button subtle" id="export-board" type="button">Export</button>
+        <button class="button subtle" id="import-board" type="button">Import</button>
+        <input type="file" id="import-file" accept=".json,application/json" hidden>
+        <button class="button subtle" id="clear-board" type="button">Clear</button>
+        <button class="button subtle config-toggle" id="config-toggle" type="button" aria-expanded="true" aria-controls="config-strip">⚙ Options</button>
+      </div>
+    </div>
+    <div class="config-strip" id="config-strip">
+      <div class="config-options">
+        <label class="config-option"><span class="field-label">Theme</span>
+          <select id="config-theme">
+            <option value="office">Office</option>
+            <option value="streetlamp" selected>Streetlamp</option>
+            <option value="ember">Ember</option>
+            <option value="depths">Depths</option>
+            <option value="starlight">Starlight</option>
+            <option value="monochrome">Monochrome</option>
+            <option value="void">Void</option>
+            <option value="venom">Venom</option>
+            <option value="parchment">Parchment</option>
+            <option value="radiation">Radiation</option>
+            <option value="neontech">Neontech</option>
+            <option value="sunset">Sunset</option>
+            <option value="moonwalk">Moonwalk</option>
+            <option value="beeswax">Beeswax</option>
+            <option value="rosethorn">Rosethorn</option>
+            <option value="teapot">Teapot</option>
+            <option value="forge">Forge</option>
+            <option value="sharp">Sharp</option>
+          </select>
+        </label>
+        <label class="config-option"><span class="field-label">New point color</span>
+          <select id="config-color">
+            <option value="" selected>Theme default</option>
+            <option value="amber">Amber</option>
+            <option value="cyan">Cyan</option>
+            <option value="green">Green</option>
+            <option value="rose">Rose</option>
+            <option value="purple">Purple</option>
+            <option value="slate">Slate</option>
+          </select>
+        </label>
+        <label class="config-option"><span class="field-label">Grid size</span>
+          <select id="config-grid-size">
+            <option value="20">Small</option>
+            <option value="28" selected>Medium</option>
+            <option value="44">Large</option>
+          </select>
+        </label>
+        <div class="config-option"><span class="field-label">Board</span>
+          <label class="check-row"><input id="config-grid" type="checkbox" checked> Show grid</label>
+        </div>
+        <div class="config-option"><span class="field-label">Dragging</span>
+          <label class="check-row"><input id="config-snap" type="checkbox"> Snap points to grid</label>
+        </div>
+        <div class="config-option"><span class="field-label">New connections</span>
+          <label class="check-row"><input id="config-arrow" type="checkbox" checked> Arrow by default</label>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="board" id="board">
+    <div class="world" id="world">
+      <svg id="link-layer" aria-hidden="true">
+        <defs>
+          <marker id="cb-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"></path></marker>
+          <marker id="cb-arrow-active" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"></path></marker>
+        </defs>
+        <g id="links"></g>
+        <line id="temp-link" hidden></line>
+      </svg>
+      <div id="nodes"></div>
+    </div>
+    <div class="board-hint">Drag the board to pan · scroll to zoom · drag ● on a card to connect · click a line to edit it</div>
+  </div>
+
+  <aside class="editor" id="node-editor" hidden>
+    <div class="editor-head">
+      <span class="editor-title">Plot point</span>
+      <button class="icon-button" id="node-editor-close" type="button" aria-label="Close editor">×</button>
+    </div>
+    <label class="editor-field"><span class="field-label">Title</span><input id="editor-node-title" maxlength="80" placeholder="Plot point title"></label>
+    <label class="editor-field"><span class="field-label">Description</span><textarea id="editor-node-desc" placeholder="What happens here? Who's involved?"></textarea></label>
+    <div class="editor-field"><span class="field-label">Color</span><div class="color-chips" id="editor-node-colors"></div></div>
+    <button class="button danger" id="editor-node-delete" type="button">Delete plot point</button>
+  </aside>
+
+  <aside class="editor" id="link-editor" hidden>
+    <div class="editor-head">
+      <span class="editor-title">Connection</span>
+      <button class="icon-button" id="link-editor-close" type="button" aria-label="Close editor">×</button>
+    </div>
+    <p class="link-endpoints" id="link-endpoints"></p>
+    <label class="editor-field"><span class="field-label">Label</span><input id="editor-link-label" maxlength="60" placeholder="e.g. leads to, foreshadows…"></label>
+    <label class="check-row"><input id="editor-link-arrow" type="checkbox"> Show arrow</label>
+    <div class="editor-row">
+      <button class="button" id="editor-link-flip" type="button">Flip direction</button>
+      <button class="button danger" id="editor-link-delete" type="button">Remove</button>
+    </div>
+  </aside>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const STORAGE_KEY = "manasquid-plot-corkboard-v1";
+      const MIN_SCALE = 0.2;
+      const MAX_SCALE = 3;
+      const NODE_COLORS = ["", "amber", "cyan", "green", "rose", "purple", "slate"];
+      const THEMES = ["office", "streetlamp", "ember", "depths", "starlight", "monochrome", "void", "venom", "parchment", "radiation", "neontech", "sunset", "moonwalk", "beeswax", "rosethorn", "teapot", "forge", "sharp"];
+      const GRID_SIZES = [20, 28, 44];
+      const DEFAULT_CONFIG = { theme: "streetlamp", gridSize: 28, showGrid: true, snapToGrid: false, arrowDefault: true, pointColor: "", optionsOpen: true };
+      const SVG_NS = "http://www.w3.org/2000/svg";
+
+      const board = document.getElementById("board");
+      const world = document.getElementById("world");
+      const linkLayer = document.getElementById("link-layer");
+      const linksGroup = document.getElementById("links");
+      const tempLink = document.getElementById("temp-link");
+      const nodesHost = document.getElementById("nodes");
+      const statusEl = document.getElementById("board-status");
+      const nodeEditor = document.getElementById("node-editor");
+      const linkEditor = document.getElementById("link-editor");
+
+      const editorNodeTitle = document.getElementById("editor-node-title");
+      const editorNodeDesc = document.getElementById("editor-node-desc");
+      const editorNodeColors = document.getElementById("editor-node-colors");
+      const editorNodeDelete = document.getElementById("editor-node-delete");
+      const editorLinkEndpoints = document.getElementById("link-endpoints");
+      const editorLinkLabel = document.getElementById("editor-link-label");
+      const editorLinkArrow = document.getElementById("editor-link-arrow");
+
+      let state = { nodes: [], links: [] };
+      let view = { x: 0, y: 0, scale: 1 };
+      let config = { ...DEFAULT_CONFIG };
+      let selection = null;
+      let drag = null;
+      let pinch = null;
+      let linkRaf = 0;
+      const nodeEls = new Map();
+      const pointers = new Map();
+
+      const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+      const toNum = (v) => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
+      const uid = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2));
+      const byId = (id) => state.nodes.find((n) => n.id === id);
+      const linkById = (id) => state.links.find((l) => l.id === id);
+      const boardRect = () => board.getBoundingClientRect();
+
+      function setStatus(msg) { statusEl.textContent = msg; }
+      function debounce(fn, ms) {
+        let t = 0;
+        return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+      }
+      function writeSave() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ nodes: state.nodes, links: state.links, view, config }));
+          setStatus("Saved");
+        } catch { setStatus("Save failed — browser storage unavailable"); }
+      }
+      const save = debounce(writeSave, 400);
+      window.addEventListener("pagehide", writeSave);
+
+      /* ---------- Load / seed ---------- */
+      function loadState() {
+        let raw = null;
+        try { raw = localStorage.getItem(STORAGE_KEY); } catch { /* storage blocked */ }
+        if (!raw) return false;
+        try {
+          const parsed = JSON.parse(raw);
+          state = {
+            nodes: (Array.isArray(parsed.nodes) ? parsed.nodes : []).filter((n) => n && typeof n === "object").map((n) => ({
+              id: typeof n.id === "string" && n.id ? n.id : uid(),
+              title: typeof n.title === "string" ? n.title : "",
+              desc: typeof n.desc === "string" ? n.desc : "",
+              x: toNum(n.x),
+              y: toNum(n.y),
+              color: NODE_COLORS.includes(n.color) ? n.color : ""
+            })),
+            links: (Array.isArray(parsed.links) ? parsed.links : []).filter((l) => l && typeof l === "object" && typeof l.from === "string" && typeof l.to === "string").map((l) => ({
+              id: typeof l.id === "string" && l.id ? l.id : uid(),
+              from: l.from,
+              to: l.to,
+              label: typeof l.label === "string" ? l.label : "",
+              arrow: Boolean(l.arrow)
+            }))
+          };
+          if (parsed.config && typeof parsed.config === "object") loadConfig(parsed.config);
+          if (parsed.view && [parsed.view.x, parsed.view.y, parsed.view.scale].every(Number.isFinite) && parsed.view.scale > 0) {
+            view = { x: parsed.view.x, y: parsed.view.y, scale: clamp(parsed.view.scale, MIN_SCALE, MAX_SCALE) };
+            return true;
+          }
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      function loadConfig(saved) {
+        config = {
+          theme: THEMES.includes(saved.theme) ? saved.theme : DEFAULT_CONFIG.theme,
+          gridSize: GRID_SIZES.includes(Number(saved.gridSize)) ? Number(saved.gridSize) : DEFAULT_CONFIG.gridSize,
+          showGrid: saved.showGrid !== false,
+          snapToGrid: saved.snapToGrid === true,
+          arrowDefault: saved.arrowDefault !== false,
+          pointColor: NODE_COLORS.includes(saved.pointColor) ? saved.pointColor : DEFAULT_CONFIG.pointColor,
+          optionsOpen: saved.optionsOpen !== false
+        };
+      }
+
+      function applyConfig() {
+        document.body.dataset.theme = config.theme;
+        document.getElementById("config-theme").value = config.theme;
+        document.getElementById("config-color").value = config.pointColor;
+        document.getElementById("config-grid-size").value = String(config.gridSize);
+        document.getElementById("config-grid").checked = config.showGrid;
+        document.getElementById("config-snap").checked = config.snapToGrid;
+        document.getElementById("config-arrow").checked = config.arrowDefault;
+        document.getElementById("config-strip").hidden = !config.optionsOpen;
+        document.getElementById("config-toggle").setAttribute("aria-expanded", String(config.optionsOpen));
+        board.classList.toggle("no-grid", !config.showGrid);
+        applyView();
+      }
+
+      function seedState() {
+        const a = { id: uid(), title: "Act I — The Summons", desc: "The party receives a letter from an old patron and arrives in the river town of Brindle.", x: 40, y: 90, color: "amber" };
+        const b = { id: uid(), title: "The Missing Cartographer", desc: "Her workshop is ransacked. Half a map is pinned under a knife — the vault is real.", x: 470, y: 300, color: "cyan" };
+        const c = { id: uid(), title: "The Sunken Vault", desc: "Flooded cellar beneath the lighthouse. Whatever the cult wanted is still down there.", x: 900, y: 70, color: "rose" };
+        state = {
+          nodes: [a, b, c],
+          links: [
+            { id: uid(), from: a.id, to: b.id, label: "leads to", arrow: true },
+            { id: uid(), from: b.id, to: c.id, label: "half-map", arrow: true }
+          ]
+        };
+      }
+
+      /* ---------- Rendering ---------- */
+      function render() {
+        renderNodes();
+        renderLinks();
+      }
+
+      function renderNodes() {
+        nodesHost.replaceChildren();
+        nodeEls.clear();
+        for (const n of state.nodes) {
+          const el = buildNodeEl(n);
+          el.style.left = n.x + "px";
+          el.style.top = n.y + "px";
+          nodeEls.set(n.id, el);
+          nodesHost.appendChild(el);
+        }
+        renderSelection();
+      }
+
+      function buildNodeEl(n) {
+        const el = document.createElement("article");
+        el.className = "node" + (n.color ? " color-" + n.color : "");
+        el.dataset.id = n.id;
+        const handle = document.createElement("button");
+        handle.type = "button";
+        handle.className = "node-link-handle";
+        handle.title = "Drag onto another card to connect";
+        handle.setAttribute("aria-label", "Connect from " + (n.title || "untitled plot point"));
+        handle.textContent = "●";
+        const title = document.createElement("h3");
+        title.className = "node-title";
+        const desc = document.createElement("p");
+        desc.className = "node-desc";
+        title.textContent = n.title || "Untitled plot point";
+        desc.textContent = n.desc || "";
+        el.append(handle, title, desc);
+        return el;
+      }
+
+      function refreshNodeEl(n) {
+        const el = nodeEls.get(n.id);
+        if (!el) return;
+        el.querySelector(".node-title").textContent = n.title || "Untitled plot point";
+        el.querySelector(".node-desc").textContent = n.desc || "";
+        for (const c of NODE_COLORS) if (c) el.classList.remove("color-" + c);
+        if (n.color) el.classList.add("color-" + n.color);
+        queueLinks();
+      }
+
+      function nodeRect(n) {
+        const el = nodeEls.get(n.id);
+        return { x: n.x, y: n.y, w: el ? el.offsetWidth : 210, h: el ? el.offsetHeight : 90 };
+      }
+
+      // Point on rect border along the line from its center toward (tx, ty).
+      function borderPoint(rect, tx, ty, pad) {
+        const cx = rect.x + rect.w / 2;
+        const cy = rect.y + rect.h / 2;
+        const dx = tx - cx;
+        const dy = ty - cy;
+        const halfW = rect.w / 2 + pad;
+        const halfH = rect.h / 2 + pad;
+        let t = Infinity;
+        if (dx !== 0) t = Math.min(t, halfW / Math.abs(dx));
+        if (dy !== 0) t = Math.min(t, halfH / Math.abs(dy));
+        if (!Number.isFinite(t)) t = 1;
+        return { x: cx + dx * t, y: cy + dy * t };
+      }
+
+      function renderLinks() {
+        linkRaf = 0;
+        linksGroup.replaceChildren();
+        const fromSel = selection && selection.type === "link" ? selection.id : null;
+        const segments = [];
+        for (const l of state.links) {
+          const a = byId(l.from);
+          const b = byId(l.to);
+          if (!a || !b) continue;
+          const ra = nodeRect(a);
+          const rb = nodeRect(b);
+          segments.push({
+            link: l,
+            selected: l.id === fromSel,
+            start: borderPoint(ra, rb.x + rb.w / 2, rb.y + rb.h / 2, 6),
+            end: borderPoint(rb, ra.x + ra.w / 2, ra.y + ra.h / 2, 6)
+          });
+        }
+        // Size the SVG layer to the graph's bounding box so connections render
+        // in every browser (a zero-size overflow-visible SVG is not painted on
+        // some mobile browsers).
+        const points = [];
+        for (const s of segments) { points.push(s.start, s.end); }
+        if (tempSegment) points.push({ x: tempSegment.x1, y: tempSegment.y1 }, { x: tempSegment.x2, y: tempSegment.y2 });
+        if (!points.length) {
+          linkLayer.setAttribute("width", "0");
+          linkLayer.setAttribute("height", "0");
+          return;
+        }
+        const pad = 40;
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const p of points) {
+          minX = Math.min(minX, p.x);
+          minY = Math.min(minY, p.y);
+          maxX = Math.max(maxX, p.x);
+          maxY = Math.max(maxY, p.y);
+        }
+        minX -= pad; minY -= pad; maxX += pad; maxY += pad;
+        linkLayer.style.left = minX + "px";
+        linkLayer.style.top = minY + "px";
+        linkLayer.setAttribute("width", String(maxX - minX));
+        linkLayer.setAttribute("height", String(maxY - minY));
+        const ox = -minX;
+        const oy = -minY;
+        for (const s of segments) {
+          const g = document.createElementNS(SVG_NS, "g");
+          g.setAttribute("class", "link" + (s.selected ? " selected" : ""));
+          g.dataset.id = s.link.id;
+          const hit = document.createElementNS(SVG_NS, "line");
+          hit.setAttribute("class", "link-hit");
+          const vis = document.createElementNS(SVG_NS, "line");
+          vis.setAttribute("class", "link-line");
+          if (s.link.arrow) vis.setAttribute("marker-end", "url(#cb-arrow" + (s.selected ? "-active" : "") + ")");
+          for (const line of [hit, vis]) {
+            line.setAttribute("x1", s.start.x + ox);
+            line.setAttribute("y1", s.start.y + oy);
+            line.setAttribute("x2", s.end.x + ox);
+            line.setAttribute("y2", s.end.y + oy);
+          }
+          g.appendChild(hit);
+          g.appendChild(vis);
+          if (s.link.label) {
+            const text = document.createElementNS(SVG_NS, "text");
+            text.setAttribute("class", "link-label");
+            text.setAttribute("x", (s.start.x + s.end.x) / 2 + ox);
+            text.setAttribute("y", (s.start.y + s.end.y) / 2 + oy);
+            text.textContent = s.link.label;
+            g.appendChild(text);
+          }
+          linksGroup.appendChild(g);
+        }
+        if (tempSegment) {
+          tempLink.setAttribute("x1", tempSegment.x1 + ox);
+          tempLink.setAttribute("y1", tempSegment.y1 + oy);
+          tempLink.setAttribute("x2", tempSegment.x2 + ox);
+          tempLink.setAttribute("y2", tempSegment.y2 + oy);
+          tempLink.removeAttribute("hidden");
+        } else {
+          tempLink.setAttribute("hidden", "");
+        }
+      }
+
+      function queueLinks() {
+        if (linkRaf) return;
+        linkRaf = requestAnimationFrame(renderLinks);
+      }
+
+      function renderSelection() {
+        for (const el of world.querySelectorAll(".node.selected")) el.classList.remove("selected");
+        if (selection && selection.type === "node") nodeEls.get(selection.id)?.classList.add("selected");
+        renderLinks();
+      }
+
+      /* ---------- View (pan / zoom) ---------- */
+      function applyView() {
+        world.style.transform = "translate(" + view.x + "px," + view.y + "px) scale(" + view.scale + ")";
+        const gs = config.gridSize * view.scale;
+        board.style.backgroundSize = gs + "px " + gs + "px";
+        board.style.backgroundPosition = view.x + "px " + view.y + "px";
+      }
+
+      function zoomAt(px, py, factor) {
+        const newScale = clamp(view.scale * factor, MIN_SCALE, MAX_SCALE);
+        const k = newScale / view.scale;
+        view.x = px - (px - view.x) * k;
+        view.y = py - (py - view.y) * k;
+        view.scale = newScale;
+        applyView();
+        save();
+      }
+
+      function fitView() {
+        if (!state.nodes.length) {
+          view = { x: 0, y: 0, scale: 1 };
+          applyView();
+          return;
+        }
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const n of state.nodes) {
+          const r = nodeRect(n);
+          minX = Math.min(minX, r.x);
+          minY = Math.min(minY, r.y);
+          maxX = Math.max(maxX, r.x + r.w);
+          maxY = Math.max(maxY, r.y + r.h);
+        }
+        const pad = 70;
+        const r = boardRect();
+        view.scale = clamp(Math.min((r.width - pad * 2) / Math.max(1, maxX - minX), (r.height - pad * 2) / Math.max(1, maxY - minY)), MIN_SCALE, 1.5);
+        view.x = (r.width - (minX + maxX) * view.scale) / 2;
+        view.y = (r.height - (minY + maxY) * view.scale) / 2;
+        applyView();
+        save();
+      }
+
+      board.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const r = boardRect();
+        zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-(e.deltaY) * 0.0015));
+      }, { passive: false });
+
+      /* ---------- Pointer interactions ---------- */
+      board.addEventListener("pointerdown", (e) => {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        board.setPointerCapture(e.pointerId);
+        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pointers.size === 2) {
+          drag = null;
+          hideTempLink();
+          clearTargets();
+          const [p1, p2] = [...pointers.values()];
+          const r = boardRect();
+          pinch = {
+            d0: Math.hypot(p1.x - p2.x, p1.y - p2.y) || 1,
+            scale0: view.scale,
+            mid0: { x: (p1.x + p2.x) / 2 - r.left, y: (p1.y + p2.y) / 2 - r.top },
+            vx: view.x,
+            vy: view.y
+          };
+          return;
+        }
+        if (pinch) return;
+        const handle = e.target.closest(".node-link-handle");
+        const nodeEl = e.target.closest(".node");
+        const linkEl = e.target.closest(".link");
+        const start = { startX: e.clientX, startY: e.clientY, moved: false };
+        if (handle && nodeEl) drag = { mode: "connect", id: nodeEl.dataset.id, ...start };
+        else if (nodeEl) {
+          const n = byId(nodeEl.dataset.id);
+          if (n) drag = { mode: "node", id: n.id, ox: n.x, oy: n.y, ...start };
+          else drag = { mode: "pan", vx: view.x, vy: view.y, ...start };
+        }
+        else if (linkEl) drag = { mode: "link", id: linkEl.dataset.id, ...start };
+        else drag = { mode: "pan", vx: view.x, vy: view.y, ...start };
+      });
+
+      board.addEventListener("pointermove", (e) => {
+        if (!pointers.has(e.pointerId)) return;
+        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pinch && pointers.size >= 2) {
+          const [p1, p2] = [...pointers.values()];
+          const r = boardRect();
+          const d = Math.hypot(p1.x - p2.x, p1.y - p2.y) || 1;
+          const midX = (p1.x + p2.x) / 2 - r.left;
+          const midY = (p1.y + p2.y) / 2 - r.top;
+          const ns = clamp(pinch.scale0 * d / pinch.d0, MIN_SCALE, MAX_SCALE);
+          const k = ns / pinch.scale0;
+          view.scale = ns;
+          view.x = midX - (pinch.mid0.x - pinch.vx) * k;
+          view.y = midY - (pinch.mid0.y - pinch.vy) * k;
+          applyView();
+          return;
+        }
+        if (!drag) return;
+        const dx = e.clientX - drag.startX;
+        const dy = e.clientY - drag.startY;
+        if (!drag.moved && Math.hypot(dx, dy) > 4) drag.moved = true;
+        if (drag.mode === "pan") {
+          view.x = drag.vx + dx;
+          view.y = drag.vy + dy;
+          applyView();
+        } else if (drag.mode === "node") {
+          const n = byId(drag.id);
+          const el = nodeEls.get(drag.id);
+          if (!n || !el) return;
+          n.x = drag.ox + dx / view.scale;
+          n.y = drag.oy + dy / view.scale;
+          el.style.left = n.x + "px";
+          el.style.top = n.y + "px";
+          queueLinks();
+        } else if (drag.mode === "connect" && drag.moved) {
+          updateTempLink(e);
+          highlightTarget(e);
+        }
+      });
+
+      function endDrag(e) {
+        if (drag) {
+          const d = drag;
+          drag = null;
+          if (d.mode === "connect") {
+            hideTempLink();
+            clearTargets();
+            if (d.moved) {
+              const nodeEl = nodeAtPoint(e.clientX, e.clientY);
+              if (nodeEl && nodeEl.dataset.id !== d.id) createLink(d.id, nodeEl.dataset.id);
+            }
+          } else if (d.mode === "node") {
+            if (d.moved) {
+              if (config.snapToGrid) {
+                const n = byId(d.id);
+                if (n) {
+                  n.x = Math.round(n.x / config.gridSize) * config.gridSize;
+                  n.y = Math.round(n.y / config.gridSize) * config.gridSize;
+                  const el = nodeEls.get(d.id);
+                  if (el) { el.style.left = n.x + "px"; el.style.top = n.y + "px"; }
+                }
+              }
+              save();
+            } else openNodeEditor(d.id);
+          } else if (d.mode === "link") {
+            if (!d.moved) openLinkEditor(d.id);
+          } else if (d.mode === "pan" && !d.moved) {
+            closeEditors();
+            selection = null;
+            renderSelection();
+          }
+        }
+        pointers.delete(e.pointerId);
+        if (pinch && pointers.size < 2) {
+          pinch = null;
+          save();
+        }
+      }
+      board.addEventListener("pointerup", endDrag);
+      board.addEventListener("pointercancel", endDrag);
+
+      /* ---------- Connect mode ---------- */
+      let tempSegment = null;
+
+      function updateTempLink(e) {
+        const n = byId(drag.id);
+        if (!n) return;
+        const r = boardRect();
+        const p = { x: (e.clientX - r.left - view.x) / view.scale, y: (e.clientY - r.top - view.y) / view.scale };
+        const start = borderPoint(nodeRect(n), p.x, p.y, 8);
+        tempSegment = { x1: start.x, y1: start.y, x2: p.x, y2: p.y };
+        queueLinks();
+      }
+      function hideTempLink() {
+        tempSegment = null;
+        queueLinks();
+      }
+      function clearTargets() {
+        for (const el of world.querySelectorAll(".node.link-target")) el.classList.remove("link-target");
+      }
+      function highlightTarget(e) {
+        clearTargets();
+        const nodeEl = nodeAtPoint(e.clientX, e.clientY);
+        if (nodeEl && nodeEl.dataset.id !== drag.id) nodeEl.classList.add("link-target");
+      }
+
+      // Topmost node under a screen point: direct hit first, then a geometric
+      // rect test so drops still land when overlays (editors) cover the card.
+      function nodeAtPoint(clientX, clientY) {
+        const el = document.elementFromPoint(clientX, clientY);
+        const direct = el && el.closest(".node");
+        if (direct) return direct;
+        const r = boardRect();
+        const wx = (clientX - r.left - view.x) / view.scale;
+        const wy = (clientY - r.top - view.y) / view.scale;
+        for (let i = state.nodes.length - 1; i >= 0; i--) {
+          const rect = nodeRect(state.nodes[i]);
+          if (wx >= rect.x && wx <= rect.x + rect.w && wy >= rect.y && wy <= rect.y + rect.h) return nodeEls.get(state.nodes[i].id);
+        }
+        return null;
+      }
+
+      function createLink(fromId, toId) {
+        const dup = state.links.some((l) => (l.from === fromId && l.to === toId) || (l.from === toId && l.to === fromId));
+        if (dup) { setStatus("Those points are already connected"); return; }
+        state.links.push({ id: uid(), from: fromId, to: toId, label: "", arrow: config.arrowDefault });
+        renderLinks();
+        save();
+        setStatus("Connected");
+      }
+
+      /* ---------- Node editor ---------- */
+      function openNodeEditor(id) {
+        const n = byId(id);
+        if (!n) return;
+        selection = { type: "node", id };
+        nodeEditor.hidden = false;
+        linkEditor.hidden = true;
+        editorNodeTitle.value = n.title;
+        editorNodeDesc.value = n.desc || "";
+        renderColorChips(n.color);
+        renderSelection();
+        setStatus("Editing plot point");
+      }
+
+      function renderColorChips(active) {
+        editorNodeColors.replaceChildren();
+        for (const color of NODE_COLORS) {
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = "chip" + (color ? " chip-" + color : "") + (color === active ? " active" : "");
+          chip.title = color ? color[0].toUpperCase() + color.slice(1) : "Theme default";
+          chip.setAttribute("aria-label", chip.title);
+          if (!color) chip.style.borderColor = "var(--line-strong)";
+          chip.addEventListener("click", () => {
+            const n = selectedNode();
+            if (!n) return;
+            n.color = color;
+            refreshNodeEl(n);
+            renderColorChips(color);
+            save();
+          });
+          editorNodeColors.appendChild(chip);
+        }
+      }
+
+      const selectedNode = () => (selection && selection.type === "node" ? byId(selection.id) : null);
+      const selectedLink = () => (selection && selection.type === "link" ? linkById(selection.id) : null);
+
+      editorNodeTitle.addEventListener("input", () => {
+        const n = selectedNode();
+        if (!n) return;
+        n.title = editorNodeTitle.value;
+        refreshNodeEl(n);
+        save();
+      });
+      editorNodeDesc.addEventListener("input", () => {
+        const n = selectedNode();
+        if (!n) return;
+        n.desc = editorNodeDesc.value;
+        refreshNodeEl(n);
+        save();
+      });
+      editorNodeDelete.addEventListener("click", () => {
+        const n = selectedNode();
+        if (!n) return;
+        const name = n.title || "Untitled plot point";
+        if (!confirm('Delete "' + name + '" and its connections?')) return;
+        state.nodes = state.nodes.filter((x) => x.id !== n.id);
+        state.links = state.links.filter((l) => l.from !== n.id && l.to !== n.id);
+        closeEditors();
+        selection = null;
+        render();
+        save();
+        setStatus("Plot point deleted");
+      });
+      document.getElementById("node-editor-close").addEventListener("click", () => {
+        closeEditors();
+        selection = null;
+        renderSelection();
+      });
+
+      /* ---------- Link editor ---------- */
+      function openLinkEditor(id) {
+        const l = linkById(id);
+        if (!l) return;
+        const a = byId(l.from);
+        const b = byId(l.to);
+        if (!a || !b) return;
+        selection = { type: "link", id };
+        linkEditor.hidden = false;
+        nodeEditor.hidden = true;
+        editorLinkEndpoints.textContent = (a.title || "Untitled") + "  →  " + (b.title || "Untitled");
+        editorLinkLabel.value = l.label || "";
+        editorLinkArrow.checked = l.arrow;
+        renderSelection();
+        setStatus("Editing connection");
+      }
+
+      editorLinkLabel.addEventListener("input", () => {
+        const l = selectedLink();
+        if (!l) return;
+        l.label = editorLinkLabel.value;
+        renderLinks();
+        save();
+      });
+      editorLinkArrow.addEventListener("change", () => {
+        const l = selectedLink();
+        if (!l) return;
+        l.arrow = editorLinkArrow.checked;
+        renderLinks();
+        save();
+      });
+      document.getElementById("editor-link-flip").addEventListener("click", () => {
+        const l = selectedLink();
+        if (!l) return;
+        [l.from, l.to] = [l.to, l.from];
+        openLinkEditor(l.id);
+        renderLinks();
+        save();
+        setStatus("Direction flipped");
+      });
+      document.getElementById("editor-link-delete").addEventListener("click", () => {
+        const l = selectedLink();
+        if (!l) return;
+        state.links = state.links.filter((x) => x.id !== l.id);
+        closeEditors();
+        selection = null;
+        renderSelection();
+        save();
+        setStatus("Connection removed");
+      });
+      document.getElementById("link-editor-close").addEventListener("click", () => {
+        closeEditors();
+        selection = null;
+        renderSelection();
+      });
+
+      function closeEditors() {
+        nodeEditor.hidden = true;
+        linkEditor.hidden = true;
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && (!nodeEditor.hidden || !linkEditor.hidden)) {
+          closeEditors();
+          selection = null;
+          renderSelection();
+        }
+      });
+
+      /* ---------- Toolbar ---------- */
+      document.getElementById("add-node").addEventListener("click", () => {
+        const r = boardRect();
+        const cx = (r.width / 2 - view.x) / view.scale;
+        const cy = (r.height / 2 - view.y) / view.scale;
+        const n = {
+          id: uid(),
+          title: "New plot point",
+          desc: "",
+          x: Math.round(cx - 104 + (state.nodes.length % 5) * 26),
+          y: Math.round(cy - 50 + (state.nodes.length % 5) * 24),
+          color: config.pointColor
+        };
+        state.nodes.push(n);
+        renderNodes();
+        queueLinks();
+        openNodeEditor(n.id);
+        save();
+        setStatus("Plot point added");
+      });
+
+      document.getElementById("zoom-in").addEventListener("click", () => { const r = boardRect(); zoomAt(r.width / 2, r.height / 2, 1.25); });
+      document.getElementById("zoom-out").addEventListener("click", () => { const r = boardRect(); zoomAt(r.width / 2, r.height / 2, 1 / 1.25); });
+      document.getElementById("fit-view").addEventListener("click", fitView);
+
+      document.getElementById("clear-board").addEventListener("click", () => {
+        if (!confirm("Clear the whole corkboard? This cannot be undone.")) return;
+        state = { nodes: [], links: [] };
+        selection = null;
+        closeEditors();
+        render();
+        fitView();
+        save();
+        setStatus("Board cleared");
+      });
+
+      document.getElementById("export-board").addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify({ nodes: state.nodes, links: state.links, view, config }, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "plot-corkboard.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        setStatus("Exported corkboard JSON");
+      });
+
+      const importFile = document.getElementById("import-file");
+      document.getElementById("import-board").addEventListener("click", () => importFile.click());
+      importFile.addEventListener("change", () => {
+        const file = importFile.files && importFile.files[0];
+        importFile.value = "";
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const parsed = JSON.parse(String(reader.result));
+            if (!parsed || !Array.isArray(parsed.nodes)) throw new Error("bad file");
+            const idMap = new Map();
+            const nodes = parsed.nodes.filter((n) => n && typeof n === "object").map((n) => {
+              let id = typeof n.id === "string" && n.id ? n.id : uid();
+              if (state.nodes.some((x) => x.id === id) || [...idMap.values()].includes(id)) id = uid();
+              if (typeof n.id === "string") idMap.set(n.id, id);
+              return {
+                id,
+                title: typeof n.title === "string" ? n.title : "",
+                desc: typeof n.desc === "string" ? n.desc : "",
+                x: toNum(n.x),
+                y: toNum(n.y),
+                color: NODE_COLORS.includes(n.color) ? n.color : ""
+              };
+            });
+            const links = (Array.isArray(parsed.links) ? parsed.links : [])
+              .filter((l) => l && typeof l === "object" && idMap.has(l.from) && idMap.has(l.to) && idMap.get(l.from) !== idMap.get(l.to))
+              .map((l) => ({ id: uid(), from: idMap.get(l.from), to: idMap.get(l.to), label: typeof l.label === "string" ? l.label : "", arrow: Boolean(l.arrow) }));
+            state = { nodes, links };
+            if (parsed.config && typeof parsed.config === "object") { loadConfig(parsed.config); applyConfig(); }
+            selection = null;
+            closeEditors();
+            render();
+            fitView();
+            save();
+            setStatus("Corkboard imported");
+          } catch {
+            setStatus("Import failed — not a corkboard file");
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      /* ---------- Config ---------- */
+      document.getElementById("config-toggle").addEventListener("click", () => {
+        config.optionsOpen = !config.optionsOpen;
+        applyConfig();
+        save();
+      });
+      document.getElementById("config-theme").addEventListener("change", (e) => {
+        config.theme = e.target.value;
+        applyConfig();
+        save();
+      });
+      document.getElementById("config-color").addEventListener("change", (e) => {
+        config.pointColor = e.target.value;
+        save();
+        setStatus(config.pointColor ? "New points will be " + config.pointColor : "New points use the theme default");
+      });
+      document.getElementById("config-grid-size").addEventListener("change", (e) => {
+        config.gridSize = Number(e.target.value);
+        applyConfig();
+        save();
+      });
+      document.getElementById("config-grid").addEventListener("change", (e) => {
+        config.showGrid = e.target.checked;
+        applyConfig();
+        save();
+      });
+      document.getElementById("config-snap").addEventListener("change", (e) => {
+        config.snapToGrid = e.target.checked;
+        save();
+        setStatus(config.snapToGrid ? "Points snap to the grid" : "Points drag freely");
+      });
+      document.getElementById("config-arrow").addEventListener("change", (e) => {
+        config.arrowDefault = e.target.checked;
+        save();
+      });
+
+      /* ---------- Init ---------- */
+      const hadSaved = loadState();
+      if (!hadSaved) seedState();
+      applyConfig();
+      render();
+      applyView();
+      if (!hadSaved || !state.nodes.length) fitView();
+    })();
+  </script>
+</body>
+</html>

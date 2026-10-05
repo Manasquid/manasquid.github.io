@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="A focused D&D 5.5e monster stat block maker by Manasquid.">
+  <meta name="theme-color" content="#0d1822">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sheet Maker">
+  <link rel="stylesheet" href="./maker.css">
+  <title>Manasquid Monster Stat Block Maker</title>
+</head>
+<body data-theme="streetlamp">
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">M</span> Manasquid <span class="version">/ monster stat block</span></div>
+      <div class="top-actions" id="maker-actions">
+        <span class="status" id="save-status" role="status"></span>
+        <button class="button subtle scrap-toggle" id="scrap-toggle" type="button" aria-expanded="false" aria-controls="scrap-panel">Scrap sheet</button>
+        <a class="button subtle" href="./index.html">Character sheet</a>
+        <a class="button subtle" href="./corkboard.html">Plot corkboard</a>
+        <button class="button primary" id="save-character" type="button">Save / transfer</button>
+        <button class="button subtle" id="clear-sheet" type="button">Clear stat block</button>
+      </div>
+    </div>
+  </header>
+
+  <aside class="scrap-panel" id="scrap-panel" hidden>
+    <label class="field-label" for="scrap-notes">Scrap sheet</label>
+    <textarea id="scrap-notes" placeholder="Quick notes and reminders."></textarea>
+  </aside>
+
+  <main class="shell" id="top">
+    <div class="page-heading">
+      <div>
+        <h1>Monster stat block</h1>
+        <p class="lede">D&amp;D 5.5e Monster statblock maker</p>
+      </div>
+      <div class="sheet-actions">
+        <a class="button" href="#monster-features">Jump to traits &amp; actions</a>
+      </div>
+    </div>
+
+    <details class="panel config-panel" id="configuration">
+      <summary class="panel-heading"><span><h2>Configurations</h2><p id="config-description">Settings for the monster statblock.</p></span></summary>
+      <div class="panel-body config-options">
+        <label class="config-option monster-only"><span class="field-label">Theme preset</span><select name="monster-theme"><option value="streetlamp">Streetlamp</option><option value="ember">Ember</option><option value="depths">Depths</option><option value="starlight">Starlight</option><option value="monochrome">Monochrome</option><option value="office">Office</option><option value="void">Void</option><option value="venom">Venom</option><option value="parchment">Parchment</option><option value="radiation">Radiation</option><option value="neontech">Neontech</option><option value="sunset">Sunset</option><option value="moonwalk">Moonwalk</option><option value="beeswax">Beeswax</option><option value="rosethorn">Rosethorn</option><option value="teapot">Teapot</option><option value="forge">Forge</option><option value="sharp">Sharp</option></select></label>
+        <label class="config-option monster-only"><span class="field-label">Modifier text</span><select name="monster-modifier-color"><option value="default" selected>Theme default</option><option value="red">Red</option><option value="Scarlet">Scarlet</option><option value="Orange">Orange</option><option value="Amber">Amber</option><option value="Yellow">Yellow</option><option value="Lime">Lime</option><option value="Green">Green</option><option value="Turquoise">Turquoise</option><option value="Cyan">Cyan</option><option value="Blue">Blue</option><option value="Purple">Purple</option><option value="Rose">Rose</option><option value="Maroon">Maroon</option></select></label>
+      <div class="config-option monster-only"><span class="field-label">Optional sections</span><label class="config-checkbox"><input name="npc" type="checkbox"> NPC</label><label class="config-checkbox"><input name="monster-spellcaster" type="checkbox"> Spellcasting</label></div>
+      </div>
+    </details>
+
+    <form class="sheet maker-panel" id="monster-sheet">
+      <section class="panel monster-storage-panel" aria-labelledby="monster-storage-heading">
+        <div class="panel-heading">
+          <div><h2 id="monster-storage-heading">Save &amp; transfer stat blocks</h2><p>Export &amp; import options.</p></div>
+          <div class="storage-tools">
+            <button class="button" id="print-monster" type="button">Download PDF</button>
+            <button class="button" id="export-monster" type="button">Download JSON</button>
+            <button class="button" id="import-monster" type="button">Import JSON or PDF</button>
+            <input class="sr-only" id="import-monster-file" type="file" accept="application/json,application/pdf,.json,.pdf">
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="storage-tools">
+            <div class="field"><label for="monster-save-name">Save as</label><input id="monster-save-name" placeholder="e.g. Varkyl, Warden of the Deep"></div>
+            <button class="button primary" id="save-named-monster" type="button">Save browser copy</button>
+          </div>
+          <p class="storage-help">Saved stat blocks stay in this browser until you delete them.</p>
+          <div class="saved-list" id="monster-saved-list" aria-live="polite"></div>
+        </div>
+      </section>
+      <section class="panel" aria-labelledby="monster-identity-heading">
+        <div class="panel-heading"><div><h2 id="monster-identity-heading">Monster identity</h2><p>The basic information about the monster.</p></div></div>
+        <div class="panel-body fields">
+          <div class="field wide"><label for="monster-name">Name</label><input id="monster-name" name="monster-name" placeholder="e.g. Tidepool Behemoth"></div>
+          <div class="field"><label for="monster-size">Size</label><select id="monster-size" name="monster-size"><option>Small</option><option selected>Medium</option><option>Large</option><option>Huge</option><option>Gargantuan</option></select></div>
+          <div class="field"><label for="monster-type">Creature type</label><input id="monster-type" name="monster-type" placeholder="e.g. Aberration"></div>
+          <div class="field"><label for="monster-alignment">Alignment</label><input id="monster-alignment" name="monster-alignment" placeholder="e.g. Unaligned"></div>
+          <div class="field"><label for="monster-cr">Challenge rating</label><select id="monster-cr" name="monster-cr"><option value="">Select CR</option></select></div>
+          <div class="field"><label for="monster-proficiency-bonus">Proficiency bonus</label><input id="monster-proficiency-bonus" name="monster-proficiency-bonus" type="text" readonly aria-readonly="true" placeholder="+2"></div>
+          <div class="field"><span class="monster-xp-label-row"><label for="monster-xp-reward">XP reward</label><label class="monster-lair-toggle"><input name="monster-lair" type="checkbox"> In lair (+1 CR)</label></span><input id="monster-xp-reward" name="monster-xp-reward" readonly aria-readonly="true" placeholder="e.g. 1,800 XP"></div>
+          <div class="field full"><label for="monster-description">Description</label><textarea id="monster-description" name="monster-description" placeholder="Role, habitat, and appearance."></textarea></div>
+        </div>
+      </section>
+      <section class="panel npc-panel" id="npc-details" aria-labelledby="npc-details-heading" hidden>
+        <div class="panel-heading"><div><h2 id="npc-details-heading">NPC details</h2><p>Details for a recurring NPC.</p></div></div>
+        <div class="panel-body fields">
+          <div class="field wide"><label for="npc-alignment">Alignment details</label><textarea id="npc-alignment" name="npc-alignment" placeholder="e.g. Lawful neutral"></textarea></div>
+          <div class="field wide"><label for="npc-goals">Goals</label><textarea id="npc-goals" name="npc-goals" placeholder="What do they want?"></textarea></div>
+          <div class="field wide"><label for="npc-personality">Personality</label><textarea id="npc-personality" name="npc-personality" placeholder="Mannerisms, traits, ideals, bonds, and flaws."></textarea></div>
+          <div class="field wide"><label for="npc-secret">Secret</label><textarea id="npc-secret" name="npc-secret" placeholder="What are they hiding?"></textarea></div>
+        </div>
+      </section>
+      <section class="panel" id="monster-spellcasting" aria-labelledby="monster-spellcasting-heading" hidden>
+        <div class="panel-heading"><div><h2 id="monster-spellcasting-heading">Spellcasting</h2><p>At-will and per-day spell lists.</p></div></div>
+        <div class="panel-body">
+          <div class="monster-spellcasting-fields">
+            <div class="field"><label for="monster-spellcasting-ability">Spellcasting ability</label><select id="monster-spellcasting-ability" name="monster-spellcasting-ability"><option value="" selected>Select ability</option><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
+            <div class="field"><label for="monster-spell-save-dc">Spell save DC</label><input id="monster-spell-save-dc" name="monster-spell-save-dc" readonly aria-readonly="true" placeholder="15"></div>
+            <div class="field wide"><label for="monster-spellcasting-notes">Other details</label><textarea id="monster-spellcasting-notes" name="monster-spellcasting-notes" placeholder="Casting trait text, components, or other specifics."></textarea></div>
+          </div>
+          <div class="monster-spell-groups">
+            <div class="monster-spell-group">
+              <h3>At will</h3>
+              <div class="monster-spell-list" data-monster-atwill-list></div>
+              <button class="button" id="add-monster-atwill" type="button">+ Add spell</button>
+            </div>
+            <div class="monster-spell-group">
+              <h3># per day</h3>
+              <div class="monster-per-day-list" id="monster-per-day-list"></div>
+              <button class="button" id="add-monster-per-day" type="button">+ Add per-day group</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="sheet-grid">
+        <section class="panel" aria-labelledby="monster-defense-heading">
+          <div class="panel-heading"><div><h2 id="monster-defense-heading">Defenses &amp; movement</h2><p>Quickstats for combat.</p></div></div>
+          <div class="panel-body fields">
+            <div class="field"><label for="monster-ac">Armor class</label><input id="monster-ac" name="monster-ac" type="number" placeholder="15"></div>
+            <div class="field"><label for="monster-hp">Hit points</label><input id="monster-hp" name="monster-hp" type="number" readonly aria-readonly="true" placeholder="85"></div>
+            <div class="field"><label for="monster-hit-dice">Hit dice amount</label><input id="monster-hit-dice" name="monster-hit-dice" type="number" min="1" placeholder="10"></div>
+            <div class="field"><label for="monster-hit-die-size">Hit die size</label><select id="monster-hit-die-size" name="monster-hit-die-size"><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10" selected>10</option><option value="12">12</option><option value="20">20</option></select></div>
+            <div class="field"><label for="monster-hp-bonus">Hit point bonus</label><input id="monster-hp-bonus" name="monster-hp-bonus" type="number" placeholder="30"></div>
+            <div class="field"><label for="monster-initiative">Initiative</label><input id="monster-initiative" name="monster-initiative" readonly aria-readonly="true" placeholder="+0"></div>
+            <div class="field wide"><label for="monster-speed">Speed</label><input id="monster-speed" name="monster-speed" placeholder="30 ft., swim 40 ft."></div>
+            <div class="field monster-defense-wide"><label for="monster-resistances">Resistances</label><textarea id="monster-resistances" name="monster-resistances" placeholder="Cold; bludgeoning from nonmagical attacks"></textarea></div>
+            <div class="field monster-defense-wide"><label for="monster-immunities">Immunities</label><textarea id="monster-immunities" name="monster-immunities" placeholder="Poison; poisoned condition"></textarea></div>
+            <div class="field monster-defense-wide"><label for="monster-vulnerabilities">Vulnerabilities</label><textarea id="monster-vulnerabilities" name="monster-vulnerabilities" placeholder="Fire; radiant"></textarea></div>
+          </div>
+        </section>
+        <section class="panel" aria-labelledby="monster-abilities-heading">
+          <div class="panel-heading"><div><h2 id="monster-abilities-heading">Ability scores</h2><p>Scores and modifiers.</p></div></div>
+          <div class="panel-body"><div class="monster-ability-grid">
+            <label class="monster-ability"><span class="ability-name">STR</span><input name="monster-str" type="number" min="1" max="40" value="10" aria-label="Strength score"><span class="ability-mod-wrap"><input name="monster-str-mod" placeholder="+0" aria-label="Strength modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-str-save-proficient" type="checkbox" aria-label="Strength save proficiency"> Save <strong data-msave-for="str">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">DEX</span><input name="monster-dex" type="number" min="1" max="40" value="10" aria-label="Dexterity score"><span class="ability-mod-wrap"><input name="monster-dex-mod" placeholder="+0" aria-label="Dexterity modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-dex-save-proficient" type="checkbox" aria-label="Dexterity save proficiency"> Save <strong data-msave-for="dex">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">CON</span><input name="monster-con" type="number" min="1" max="40" value="10" aria-label="Constitution score"><span class="ability-mod-wrap"><input name="monster-con-mod" placeholder="+0" aria-label="Constitution modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-con-save-proficient" type="checkbox" aria-label="Constitution save proficiency"> Save <strong data-msave-for="con">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">INT</span><input name="monster-int" type="number" min="1" max="40" value="10" aria-label="Intelligence score"><span class="ability-mod-wrap"><input name="monster-int-mod" placeholder="+0" aria-label="Intelligence modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-int-save-proficient" type="checkbox" aria-label="Intelligence save proficiency"> Save <strong data-msave-for="int">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">WIS</span><input name="monster-wis" type="number" min="1" max="40" value="10" aria-label="Wisdom score"><span class="ability-mod-wrap"><input name="monster-wis-mod" placeholder="+0" aria-label="Wisdom modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-wis-save-proficient" type="checkbox" aria-label="Wisdom save proficiency"> Save <strong data-msave-for="wis">+0</strong></span></label>
+            <label class="monster-ability"><span class="ability-name">CHA</span><input name="monster-cha" type="number" min="1" max="40" value="10" aria-label="Charisma score"><span class="ability-mod-wrap"><input name="monster-cha-mod" placeholder="+0" aria-label="Charisma modifier" readonly><span class="ability-mod-caption">Modifier</span></span><span class="save-check"><input name="monster-cha-save-proficient" type="checkbox" aria-label="Charisma save proficiency"> Save <strong data-msave-for="cha">+0</strong></span></label>
+          </div>
+            <div class="custom-fields"><span class="field-label">Custom ability fields</span><div class="custom-field-list" data-monster-custom-abilities></div><button class="button" id="add-monster-ability" type="button">+ Add custom ability</button></div>
+          </div>
+        </section>
+      </div>
+      <section class="panel" aria-labelledby="monster-attacks-heading">
+        <div class="panel-heading"><div><h2 id="monster-attacks-heading">Attack reference</h2><p>Quickstats for attacks.</p></div></div>
+        <div class="panel-body"><div class="monster-attack-list" id="monster-attack-reference"></div></div>
+      </section>
+      <section class="panel" aria-labelledby="monster-details-heading">
+        <div class="panel-heading"><div><h2 id="monster-details-heading">Skills, senses &amp; equipment</h2><p>Skills, senses, languages, and equipment.</p></div></div>
+        <div class="panel-body fields">
+          <div class="field wide"><label for="monster-skills">Skills</label><textarea id="monster-skills" name="monster-skills" placeholder="Perception +6, Stealth +5"></textarea></div>
+          <div class="field wide"><label for="monster-senses">Senses</label><textarea id="monster-senses" name="monster-senses" placeholder="Darkvision 60 ft., passive Perception 16"></textarea></div>
+          <div class="field wide"><label for="monster-languages">Languages</label><textarea id="monster-languages" name="monster-languages" placeholder="Common, Aquan"></textarea></div>
+          <div class="field wide"><label for="monster-gear">Gear</label><textarea id="monster-gear" name="monster-gear" placeholder="Weapons, armor, carried items"></textarea></div>
+        </div>
+      </section>
+      <section class="panel" id="monster-features" aria-labelledby="monster-features-heading">
+        <div class="panel-heading"><div><h2 id="monster-features-heading">Traits, actions &amp; reactions</h2><p>Rules text for the stat block.</p></div><button class="button primary" id="add-monster-entry" type="button">+ Add entry</button></div>
+        <div class="panel-body">
+          <div class="feature-editor" id="monster-entry-editor" hidden>
+            <div class="feature-editor-grid">
+              <div class="field"><label for="monster-entry-editor-group">Group</label><select id="monster-entry-editor-group"><option value="traits">Trait</option><option value="actions">Action</option><option value="bonus-actions">Bonus action</option><option value="reactions">Reaction</option><option value="legendary-actions">Legendary action</option></select></div>
+              <div class="field"><label for="monster-entry-editor-name">Name</label><input id="monster-entry-editor-name" placeholder="e.g. Amphibious"></div>
+              <div class="field"><label for="monster-entry-editor-recharge">Recharge</label><input id="monster-entry-editor-recharge" placeholder="5–6"></div>
+              <div class="field"><label class="config-checkbox" for="monster-entry-editor-attack"><input id="monster-entry-editor-attack" type="checkbox"> Flag as attack</label></div>
+              <div class="field full"><label for="monster-entry-editor-description">Description</label><textarea id="monster-entry-editor-description" rows="3" placeholder="Describe the trait, action, or reaction."></textarea></div>
+              <div class="field full" id="monster-entry-editor-attack-fields" hidden>
+                <span class="field-label">Attack details</span>
+                <div class="monster-entry-editor-attack-grid">
+                  <div class="field"><label for="monster-entry-editor-kind">Roll type</label><select id="monster-entry-editor-kind"><option value="attack" selected>Attack</option><option value="save">Save</option></select></div>
+                  <div class="field"><label for="monster-entry-editor-ability">Ability</label><select id="monster-entry-editor-ability" class="monster-attack-ability"><option>STR</option><option>DEX</option><option>CON</option><option>INT</option><option>WIS</option><option>CHA</option></select></div>
+                  <div class="field"><label for="monster-entry-editor-bonus">Attack bonus (auto)</label><input id="monster-entry-editor-bonus" class="monster-attack-bonus" readonly aria-readonly="true" placeholder="+0"></div>
+                  <div class="field"><label for="monster-entry-editor-damage">Damage dice</label><input id="monster-entry-editor-damage" placeholder="2d10"></div>
+                  <div class="field"><label for="monster-entry-editor-damage-bonus">Dmg bonus (auto)</label><input id="monster-entry-editor-damage-bonus" class="monster-attack-damage-bonus" readonly aria-readonly="true" placeholder="+0"></div>
+                  <div class="field"><label for="monster-entry-editor-damage-type">Damage type</label><input id="monster-entry-editor-damage-type" placeholder="Piercing"></div>
+                  <div class="field"><label for="monster-entry-editor-range">Range / reach</label><input id="monster-entry-editor-range" placeholder="Melee 10 ft."></div>
+                </div>
+              </div>
+            </div>
+            <div class="feature-editor-actions">
+              <button class="button subtle" id="cancel-monster-entry" type="button">Cancel</button>
+              <button class="button primary" id="save-monster-entry" type="button">Save entry</button>
+            </div>
+          </div>
+          <div class="monster-entry-groups">
+            <div class="monster-entry-group"><h3>Traits</h3><div class="monster-entry-list" data-monster-group="traits"></div></div>
+            <div class="monster-entry-group"><h3>Actions</h3><div class="monster-entry-list" data-monster-group="actions"></div></div>
+            <div class="monster-entry-group"><h3>Bonus actions</h3><div class="monster-entry-list" data-monster-group="bonus-actions"></div></div>
+            <div class="monster-entry-group"><h3>Reactions</h3><div class="monster-entry-list" data-monster-group="reactions"></div></div>
+            <div class="monster-entry-group"><h3>Legendary actions</h3><div class="monster-entry-list" data-monster-group="legendary-actions"></div></div>
+            <div class="empty-state" id="monster-entry-empty" hidden>No entries yet. Use “+ Add entry” to create a trait, action, bonus action, reaction, or legendary action.</div>
+          </div>
+        </div>
+      </section>
+      <section class="panel" aria-labelledby="monster-notes-heading">
+        <div class="panel-heading"><div><h2 id="monster-notes-heading">Encounter notes</h2><p>Tactics, loot, and notes.</p></div></div>
+        <div class="panel-body"><textarea class="notes" name="monster-notes" placeholder="Tactics, environment, treasure, or encounter notes."></textarea></div>
+      </section>
+    </form>
+  </main>
+
+  <footer><div class="shell">Manasquid Monster Stat Block Maker Â· Built for personal D&amp;D prep. Stat blocks stay in this browser until you export or save them.</div></footer>
+
+  <template id="monster-custom-ability-template">
+    <div class="custom-ability-row">
+      <label class="monster-ability">
+        <input class="custom-ability-abbr" placeholder="ABC" maxlength="3" aria-label="Custom ability abbreviation">
+        <input class="custom-ability-score" type="number" min="1" max="40" value="10" aria-label="Custom ability score">
+        <span class="ability-mod-wrap"><input class="ability-mod custom-ability-mod" placeholder="+0" aria-label="Custom ability modifier" readonly><span class="ability-mod-caption">Modifier</span></span>
+        <span class="save-check"><input class="custom-ability-save" type="checkbox" aria-label="Custom ability save proficiency"> Save <strong class="custom-ability-save-bonus">+0</strong></span>
+      </label>
+      <button class="icon-button remove-custom-field" type="button" aria-label="Remove custom ability">×</button>
+    </div>
+  </template>
+  <template id="monster-spell-template">
+    <div class="monster-spell-row">
+      <input class="monster-spell-name" placeholder="e.g. Mage hand" aria-label="Spell">
+      <input class="monster-spell-source" placeholder="Source" aria-label="Spell source">
+      <input class="monster-spell-page" placeholder="p." aria-label="Page">
+      <button class="icon-button remove-monster-spell" type="button" aria-label="Remove spell">×</button>
+    </div>
+  </template>
+  <template id="monster-per-day-template">
+    <div class="monster-per-day-group">
+      <div class="monster-per-day-head">
+        <label><span class="field-label">Uses per day</span><input class="monster-per-day-count" type="number" min="1" placeholder="3"></label>
+        <button class="icon-button remove-monster-per-day" type="button" aria-label="Remove group">×</button>
+      </div>
+      <div class="monster-spell-list" data-per-day-spells></div>
+      <button class="button subtle" data-per-day-add type="button">+ Add spell</button>
+    </div>
+  </template>
+  <template id="monster-entry-card-template">
+    <article class="feature-card monster-entry-card">
+      <div>
+        <h3 class="monster-entry-card-title"></h3>
+        <p class="monster-entry-card-description"></p>
+        <div class="feature-meta"><span class="tag monster-entry-card-attack-tag" hidden></span><span class="tag monster-entry-card-details" hidden></span></div>
+      </div>
+      <div class="feature-actions">
+        <button class="icon-button edit-monster-entry-card" type="button" aria-label="Edit entry">✎</button>
+        <button class="icon-button remove-monster-entry-card" type="button" aria-label="Remove entry">×</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="./maker-common.js"></script>
+  <script src="./monster.js"></script>
+  <script>
+    if ("serviceWorker" in navigator && location.protocol === "https:") {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
