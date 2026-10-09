@@ -303,8 +303,14 @@
         width: auto;
         max-height: 58%;
       }
-      .topbar-inner { flex-wrap: wrap; }
+      .topbar-inner { flex-wrap: wrap; gap: .35rem; padding: .45rem .8rem; min-height: 0; }
+      .top-actions { gap: .35rem; }
+      .top-actions .button { min-height: 2.1rem; padding: .3rem .55rem; font-size: .78rem; }
       .version { display: none; }
+      .config-strip { padding: .55rem .8rem .65rem; gap: .45rem; }
+      .config-options { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem .8rem; }
+      .config-option .check-row { min-height: 2rem; }
+      .board-hint { display: none; }
     }
   </style>
 </head>
