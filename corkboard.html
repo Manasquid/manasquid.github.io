@@ -166,6 +166,7 @@
       pointer-events: none;
     }
     #links .link.selected .link-label { fill: var(--accent); }
+    #editor-link-desc { min-height: 4.5rem; }
     #cb-arrow path { fill: var(--link-color); }
     #cb-arrow-active path { fill: var(--accent); }
     #temp-link { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 6; fill: none; pointer-events: none; }
@@ -255,6 +256,11 @@
     }
     .editor-head { display: flex; align-items: center; justify-content: space-between; gap: .8rem; }
     .editor-title { color: var(--text); font-size: .74rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
+    .editor-head-actions { display: flex; align-items: center; gap: .4rem; }
+    .edit-toggle { min-height: 2rem; padding: .3rem .6rem; font-size: .78rem; }
+    .edit-toggle[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+    .editor.read-only .editor-field, .editor.read-only .color-chips, .editor.read-only .check-row, .editor.read-only .editor-row { opacity: .68; }
+    .button:disabled, .icon-button:disabled { opacity: .5; cursor: default; }
     .editor-field { display: grid; gap: .35rem; }
     .field-label { color: var(--text); font-size: .74rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
     input, textarea {
@@ -399,13 +405,16 @@
       </svg>
       <div id="nodes"></div>
     </div>
-    <div class="board-hint">Drag the board to pan · scroll to zoom · drag ● on a card to connect · click a line to edit it</div>
+    <div class="board-hint">Drag the board to pan · scroll to zoom · drag ● to connect · click a card or line, then ✎ Edit to make changes</div>
   </div>
 
   <aside class="editor" id="node-editor" hidden>
     <div class="editor-head">
       <span class="editor-title">Plot point</span>
-      <button class="icon-button" id="node-editor-close" type="button" aria-label="Close editor">×</button>
+      <div class="editor-head-actions">
+        <button class="button subtle edit-toggle" id="node-edit-toggle" type="button" aria-pressed="false">✎ Edit</button>
+        <button class="icon-button" id="node-editor-close" type="button" aria-label="Close editor">×</button>
+      </div>
     </div>
     <label class="editor-field"><span class="field-label">Title</span><input id="editor-node-title" maxlength="80" placeholder="Plot point title"></label>
     <label class="editor-field"><span class="field-label">Description</span><textarea id="editor-node-desc" placeholder="What happens here? Who's involved?"></textarea></label>
@@ -416,10 +425,14 @@
   <aside class="editor" id="link-editor" hidden>
     <div class="editor-head">
       <span class="editor-title">Connection</span>
-      <button class="icon-button" id="link-editor-close" type="button" aria-label="Close editor">×</button>
+      <div class="editor-head-actions">
+        <button class="button subtle edit-toggle" id="link-edit-toggle" type="button" aria-pressed="false">✎ Edit</button>
+        <button class="icon-button" id="link-editor-close" type="button" aria-label="Close editor">×</button>
+      </div>
     </div>
     <p class="link-endpoints" id="link-endpoints"></p>
     <label class="editor-field"><span class="field-label">Label</span><input id="editor-link-label" maxlength="60" placeholder="e.g. leads to, foreshadows…"></label>
+    <label class="editor-field"><span class="field-label">Description</span><textarea id="editor-link-desc" placeholder="What does this connection mean?"></textarea></label>
     <label class="check-row"><input id="editor-link-arrow" type="checkbox"> Show arrow</label>
     <div class="editor-row">
       <button class="button" id="editor-link-flip" type="button">Flip direction</button>
@@ -456,7 +469,30 @@
       const editorNodeDelete = document.getElementById("editor-node-delete");
       const editorLinkEndpoints = document.getElementById("link-endpoints");
       const editorLinkLabel = document.getElementById("editor-link-label");
+      const editorLinkDesc = document.getElementById("editor-link-desc");
       const editorLinkArrow = document.getElementById("editor-link-arrow");
+      const nodeEditToggle = document.getElementById("node-edit-toggle");
+      const linkEditToggle = document.getElementById("link-edit-toggle");
+
+      let editorEditable = false;
+      function setEditorEditable(enabled) {
+        editorEditable = enabled;
+        nodeEditor.classList.toggle("read-only", !enabled);
+        linkEditor.classList.toggle("read-only", !enabled);
+        editorNodeTitle.readOnly = !enabled;
+        editorNodeDesc.readOnly = !enabled;
+        editorNodeDelete.disabled = !enabled;
+        [...editorNodeColors.querySelectorAll(".chip")].forEach((chip) => { chip.disabled = !enabled; });
+        editorLinkLabel.readOnly = !enabled;
+        editorLinkDesc.readOnly = !enabled;
+        editorLinkArrow.disabled = !enabled;
+        document.getElementById("editor-link-flip").disabled = !enabled;
+        document.getElementById("editor-link-delete").disabled = !enabled;
+        nodeEditToggle.setAttribute("aria-pressed", String(enabled));
+        linkEditToggle.setAttribute("aria-pressed", String(enabled));
+        nodeEditToggle.textContent = enabled ? "✓ Done" : "✎ Edit";
+        linkEditToggle.textContent = enabled ? "✓ Done" : "✎ Edit";
+      }
 
       let state = { nodes: [], links: [] };
       let view = { x: 0, y: 0, scale: 1 };
@@ -510,6 +546,7 @@
               from: l.from,
               to: l.to,
               label: typeof l.label === "string" ? l.label : "",
+              description: typeof l.description === "string" ? l.description : "",
               arrow: Boolean(l.arrow)
             }))
           };
@@ -693,12 +730,13 @@
           }
           g.appendChild(hit);
           g.appendChild(vis);
-          if (s.link.label) {
+          const label = String(s.link.label || "").trim();
+          if (label) {
             const text = document.createElementNS(SVG_NS, "text");
             text.setAttribute("class", "link-label");
             text.setAttribute("x", (s.start.x + s.end.x) / 2 + ox);
             text.setAttribute("y", (s.start.y + s.end.y) / 2 + oy);
-            text.textContent = s.link.label;
+            text.textContent = label;
             g.appendChild(text);
           }
           linksGroup.appendChild(g);
@@ -949,7 +987,8 @@
         editorNodeDesc.value = n.desc || "";
         renderColorChips(n.color);
         renderSelection();
-        setStatus("Editing plot point");
+        setEditorEditable(false);
+        setStatus("Viewing plot point");
       }
 
       function renderColorChips(active) {
@@ -1021,15 +1060,24 @@
         nodeEditor.hidden = true;
         editorLinkEndpoints.textContent = (a.title || "Untitled") + "  →  " + (b.title || "Untitled");
         editorLinkLabel.value = l.label || "";
+        editorLinkDesc.value = l.description || "";
         editorLinkArrow.checked = l.arrow;
         renderSelection();
-        setStatus("Editing connection");
+        setEditorEditable(false);
+        setStatus("Viewing connection");
       }
 
       editorLinkLabel.addEventListener("input", () => {
         const l = selectedLink();
         if (!l) return;
         l.label = editorLinkLabel.value;
+        renderLinks();
+        save();
+      });
+      editorLinkDesc.addEventListener("input", () => {
+        const l = selectedLink();
+        if (!l) return;
+        l.description = editorLinkDesc.value;
         renderLinks();
         save();
       });
@@ -1043,8 +1091,10 @@
       document.getElementById("editor-link-flip").addEventListener("click", () => {
         const l = selectedLink();
         if (!l) return;
+        const wasEditable = editorEditable;
         [l.from, l.to] = [l.to, l.from];
         openLinkEditor(l.id);
+        setEditorEditable(wasEditable);
         renderLinks();
         save();
         setStatus("Direction flipped");
@@ -1063,6 +1113,17 @@
         closeEditors();
         selection = null;
         renderSelection();
+      });
+
+      nodeEditToggle.addEventListener("click", () => {
+        setEditorEditable(!editorEditable);
+        if (editorEditable) editorNodeTitle.focus();
+        setStatus(editorEditable ? "Editing plot point" : "Viewing plot point");
+      });
+      linkEditToggle.addEventListener("click", () => {
+        setEditorEditable(!editorEditable);
+        if (editorEditable) editorLinkLabel.focus();
+        setStatus(editorEditable ? "Editing connection" : "Viewing connection");
       });
 
       function closeEditors() {
@@ -1095,8 +1156,11 @@
         renderNodes();
         queueLinks();
         openNodeEditor(n.id);
+        setEditorEditable(true);
+        editorNodeTitle.focus();
+        editorNodeTitle.select();
         save();
-        setStatus("Plot point added");
+        setStatus("Plot point added — editing");
       });
 
       document.getElementById("zoom-in").addEventListener("click", () => { const r = boardRect(); zoomAt(r.width / 2, r.height / 2, 1.25); });
@@ -1152,7 +1216,7 @@
             });
             const links = (Array.isArray(parsed.links) ? parsed.links : [])
               .filter((l) => l && typeof l === "object" && idMap.has(l.from) && idMap.has(l.to) && idMap.get(l.from) !== idMap.get(l.to))
-              .map((l) => ({ id: uid(), from: idMap.get(l.from), to: idMap.get(l.to), label: typeof l.label === "string" ? l.label : "", arrow: Boolean(l.arrow) }));
+              .map((l) => ({ id: uid(), from: idMap.get(l.from), to: idMap.get(l.to), label: typeof l.label === "string" ? l.label : "", description: typeof l.description === "string" ? l.description : "", arrow: Boolean(l.arrow) }));
             state = { nodes, links };
             if (parsed.config && typeof parsed.config === "object") { loadConfig(parsed.config); applyConfig(); }
             selection = null;
