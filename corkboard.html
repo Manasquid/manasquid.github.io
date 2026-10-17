@@ -90,6 +90,8 @@
     .top-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
     .status { color: var(--success); font-size: .78rem; }
     .config-toggle[aria-expanded="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+    .config-toggle .icon { width: 1rem; height: 1rem; flex: none; transition: transform .25s ease; }
+    .config-toggle[aria-expanded="true"] .icon { transform: rotate(60deg); }
     .config-strip {
       border-top: 1px solid var(--line);
       padding: .7rem max(1.25rem, calc((100% - 1240px) / 2)) .85rem;
@@ -124,7 +126,7 @@
       text-decoration: none;
       transition: border-color .15s ease, background .15s ease;
     }
-    .button { min-height: 2.45rem; padding: .5rem .85rem; }
+    .button { min-height: 2.45rem; padding: .5rem .85rem; gap: .4rem; }
     .icon-button { width: 2.2rem; height: 2.2rem; padding: 0; }
     .button:hover, .button:focus-visible, .icon-button:hover, .icon-button:focus-visible { border-color: var(--accent); background: var(--surface-soft); }
     .button.primary { border-color: var(--accent); background: var(--accent); color: var(--button-strong-text); }
@@ -203,6 +205,29 @@
     .node.color-rose { --node-accent: #ff8da1; }
     .node.color-purple { --node-accent: #b98dff; }
     .node.color-slate { --node-accent: #aab4c5; }
+    .node.key {
+      width: 15rem;
+      border-width: 2px;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow);
+    }
+    .node.key .node-title { color: var(--accent); font-size: 1rem; }
+    .node.key .node-desc { -webkit-line-clamp: 6; line-clamp: 6; }
+    .node-key-star {
+      position: absolute;
+      top: -.7rem;
+      left: -.7rem;
+      display: grid;
+      place-items: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--button-strong-text);
+      font-size: .8rem;
+      line-height: 1;
+    }
     .node-link-handle {
       position: absolute;
       top: -.7rem;
@@ -335,7 +360,12 @@
         <button class="button subtle" id="import-board" type="button">Import</button>
         <input type="file" id="import-file" accept=".json,application/json" hidden>
         <button class="button subtle" id="clear-board" type="button">Clear</button>
-        <button class="button subtle config-toggle" id="config-toggle" type="button" aria-expanded="true" aria-controls="config-strip">⚙ Options</button>
+        <button class="button subtle config-toggle" id="config-toggle" type="button" aria-expanded="true" aria-controls="config-strip">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>Options
+        </button>
       </div>
     </div>
     <div class="config-strip" id="config-strip">
@@ -419,6 +449,7 @@
     <label class="editor-field"><span class="field-label">Title</span><input id="editor-node-title" maxlength="80" placeholder="Plot point title"></label>
     <label class="editor-field"><span class="field-label">Description</span><textarea id="editor-node-desc" placeholder="What happens here? Who's involved?"></textarea></label>
     <div class="editor-field"><span class="field-label">Color</span><div class="color-chips" id="editor-node-colors"></div></div>
+    <div class="editor-field"><span class="field-label">Importance</span><label class="check-row"><input id="editor-node-key" type="checkbox"> Key point ★</label></div>
     <button class="button danger" id="editor-node-delete" type="button">Delete plot point</button>
   </aside>
 
@@ -466,6 +497,7 @@
       const editorNodeTitle = document.getElementById("editor-node-title");
       const editorNodeDesc = document.getElementById("editor-node-desc");
       const editorNodeColors = document.getElementById("editor-node-colors");
+      const editorNodeKey = document.getElementById("editor-node-key");
       const editorNodeDelete = document.getElementById("editor-node-delete");
       const editorLinkEndpoints = document.getElementById("link-endpoints");
       const editorLinkLabel = document.getElementById("editor-link-label");
@@ -482,6 +514,7 @@
         editorNodeTitle.readOnly = !enabled;
         editorNodeDesc.readOnly = !enabled;
         editorNodeDelete.disabled = !enabled;
+        editorNodeKey.disabled = !enabled;
         [...editorNodeColors.querySelectorAll(".chip")].forEach((chip) => { chip.disabled = !enabled; });
         editorLinkLabel.readOnly = !enabled;
         editorLinkDesc.readOnly = !enabled;
@@ -539,7 +572,8 @@
               desc: typeof n.desc === "string" ? n.desc : "",
               x: toNum(n.x),
               y: toNum(n.y),
-              color: NODE_COLORS.includes(n.color) ? n.color : ""
+              color: NODE_COLORS.includes(n.color) ? n.color : "",
+              key: n.key === true
             })),
             links: (Array.isArray(parsed.links) ? parsed.links : []).filter((l) => l && typeof l === "object" && typeof l.from === "string" && typeof l.to === "string").map((l) => ({
               id: typeof l.id === "string" && l.id ? l.id : uid(),
@@ -587,19 +621,6 @@
         applyView();
       }
 
-      function seedState() {
-        const a = { id: uid(), title: "Act I — The Summons", desc: "The party receives a letter from an old patron and arrives in the river town of Brindle.", x: 40, y: 90, color: "amber" };
-        const b = { id: uid(), title: "The Missing Cartographer", desc: "Her workshop is ransacked. Half a map is pinned under a knife — the vault is real.", x: 470, y: 300, color: "cyan" };
-        const c = { id: uid(), title: "The Sunken Vault", desc: "Flooded cellar beneath the lighthouse. Whatever the cult wanted is still down there.", x: 900, y: 70, color: "rose" };
-        state = {
-          nodes: [a, b, c],
-          links: [
-            { id: uid(), from: a.id, to: b.id, label: "leads to", arrow: true },
-            { id: uid(), from: b.id, to: c.id, label: "half-map", arrow: true }
-          ]
-        };
-      }
-
       /* ---------- Rendering ---------- */
       function render() {
         renderNodes();
@@ -621,8 +642,15 @@
 
       function buildNodeEl(n) {
         const el = document.createElement("article");
-        el.className = "node" + (n.color ? " color-" + n.color : "");
+        el.className = "node" + (n.color ? " color-" + n.color : "") + (n.key ? " key" : "");
         el.dataset.id = n.id;
+        if (n.key) {
+          const star = document.createElement("span");
+          star.className = "node-key-star";
+          star.setAttribute("aria-hidden", "true");
+          star.textContent = "★";
+          el.appendChild(star);
+        }
         const handle = document.createElement("button");
         handle.type = "button";
         handle.className = "node-link-handle";
@@ -644,6 +672,15 @@
         if (!el) return;
         el.querySelector(".node-title").textContent = n.title || "Untitled plot point";
         el.querySelector(".node-desc").textContent = n.desc || "";
+        el.classList.toggle("key", Boolean(n.key));
+        let star = el.querySelector(".node-key-star");
+        if (n.key && !star) {
+          star = document.createElement("span");
+          star.className = "node-key-star";
+          star.setAttribute("aria-hidden", "true");
+          star.textContent = "★";
+          el.appendChild(star);
+        } else if (!n.key && star) star.remove();
         for (const c of NODE_COLORS) if (c) el.classList.remove("color-" + c);
         if (n.color) el.classList.add("color-" + n.color);
         queueLinks();
@@ -985,6 +1022,7 @@
         linkEditor.hidden = true;
         editorNodeTitle.value = n.title;
         editorNodeDesc.value = n.desc || "";
+        editorNodeKey.checked = Boolean(n.key);
         renderColorChips(n.color);
         renderSelection();
         setEditorEditable(false);
@@ -1028,6 +1066,14 @@
         n.desc = editorNodeDesc.value;
         refreshNodeEl(n);
         save();
+      });
+      editorNodeKey.addEventListener("change", () => {
+        const n = selectedNode();
+        if (!n) return;
+        n.key = editorNodeKey.checked;
+        refreshNodeEl(n);
+        save();
+        setStatus(n.key ? "Marked as a key point" : "Key marking removed");
       });
       editorNodeDelete.addEventListener("click", () => {
         const n = selectedNode();
@@ -1150,7 +1196,8 @@
           desc: "",
           x: Math.round(cx - 104 + (state.nodes.length % 5) * 26),
           y: Math.round(cy - 50 + (state.nodes.length % 5) * 24),
-          color: config.pointColor
+          color: config.pointColor,
+          key: false
         };
         state.nodes.push(n);
         renderNodes();
@@ -1269,12 +1316,11 @@
       });
 
       /* ---------- Init ---------- */
-      const hadSaved = loadState();
-      if (!hadSaved) seedState();
+      loadState();
       applyConfig();
       render();
       applyView();
-      if (!hadSaved || !state.nodes.length) fitView();
+      if (!state.nodes.length) fitView();
     })();
   </script>
 </body>
